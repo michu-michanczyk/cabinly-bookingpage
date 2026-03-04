@@ -2,10 +2,12 @@ import { TopBar } from "./components/layout/TopBar";
 import { Footer } from "./components/layout/Footer";
 import { HeroSection } from "./components/hero/HeroSection";
 import { Gallery } from "./components/gallery/Gallery";
+import { LocationTicker } from "./components/content/LocationTicker";
 import { Description } from "./components/content/Description";
 import { Amenities } from "./components/content/Amenities";
 import { PromoStays } from "./components/content/PromoStays";
 import { Reviews } from "./components/content/Reviews";
+import { PromoBanner } from "./components/content/PromoBanner";
 import { BookingDrawer } from "./components/booking/BookingDrawer";
 import { MobileBookingBar } from "./components/booking/MobileBookingBar";
 import { useChat } from "./hooks/useChat";
@@ -50,6 +52,12 @@ function App() {
           <Reviews reviews={cabin.reviews} rating={cabin.rating} />
         </div>
       </main>
+
+      {/* Promo Banner */}
+      <PromoBanner cabin={cabin} />
+
+      {/* Location Ticker */}
+      <LocationTicker cabin={cabin} />
 
       {/* Footer */}
       <Footer />

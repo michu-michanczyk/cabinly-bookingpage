@@ -61,6 +61,7 @@ export function GalleryModal({ images, isOpen, onClose, initialIndex = 0 }: Gall
             <button
               onClick={onClose}
               className="p-2 rounded-lg hover:opacity-80 transition-opacity"
+              style={{ cursor: 'pointer' }}
             >
               <IconClose size={20} className="text-white" />
             </button>
@@ -85,12 +86,14 @@ export function GalleryModal({ images, isOpen, onClose, initialIndex = 0 }: Gall
             <button
               onClick={prev}
               className="absolute left-4 p-3 rounded-full bg-white/10 hover:opacity-80 transition-opacity"
+              style={{ cursor: 'pointer' }}
             >
               <IconChevronLeft size={24} className="text-white" />
             </button>
             <button
               onClick={next}
               className="absolute right-4 p-3 rounded-full bg-white/10 hover:opacity-80 transition-opacity"
+              style={{ cursor: 'pointer' }}
             >
               <IconArrowRight size={24} className="text-white" />
             </button>
@@ -107,6 +110,7 @@ export function GalleryModal({ images, isOpen, onClose, initialIndex = 0 }: Gall
                     ? "ring-2 ring-white opacity-100"
                     : "opacity-40 hover:opacity-80"
                 }`}
+                style={{ cursor: 'pointer' }}
               >
                 <img src={img.url} alt={img.alt} className="w-full h-full object-cover" />
               </button>

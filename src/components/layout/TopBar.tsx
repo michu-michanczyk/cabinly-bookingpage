@@ -157,9 +157,10 @@ export function TopBar({ cabin, onSendMessage }: TopBarProps) {
         {/* Left: Owner info */}
         <div className="flex items-center gap-2 flex-1 min-w-0">
           <img
-            src={cabin.owner.avatar}
-            alt={cabin.owner.name}
+            src={cabin.images[0].url}
+            alt={cabin.images[0].alt}
             className="w-12 h-12 rounded-full object-cover shrink-0"
+            style={{ imageRendering: 'auto' }}
           />
           <div className="hidden sm:flex flex-col text-xs leading-4">
             <span className="text-text-secondary">{cabin.location.address},</span>
@@ -226,7 +227,7 @@ export function TopBar({ cabin, onSendMessage }: TopBarProps) {
                     onClick={handleSubmit}
                     disabled={!inputValue.trim()}
                     className={cn(
-                      "flex items-center justify-center size-9 rounded-full border-2 transition-all cursor-pointer",
+                      "flex items-center justify-center size-9 rounded-lg border-2 transition-all cursor-pointer",
                       inputValue.trim()
                         ? "border-border-dark text-text-primary hover:opacity-80"
                         : "border-border-light text-text-tertiary cursor-default"
@@ -354,7 +355,7 @@ export function TopBar({ cabin, onSendMessage }: TopBarProps) {
           <div className="hidden sm:flex flex-col items-end text-right">
             <span className="text-[11px] leading-tight text-text-secondary">starts from</span>
             <div className="flex items-baseline gap-0.5">
-              <span className="text-lg font-bold text-text-primary leading-tight">
+              <span className="text-lg font-medium text-text-primary leading-tight">
                 {formatCurrency(cabin.pricing.baseNight, cabin.pricing.currency)}
               </span>
               <span className="text-xs text-text-secondary">/ night</span>

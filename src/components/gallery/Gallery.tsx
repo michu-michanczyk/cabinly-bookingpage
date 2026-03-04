@@ -169,7 +169,7 @@ export function Gallery({ images }: GalleryProps) {
           {images.map((image, i) => (
             <div
               key={i}
-              className="snap-center shrink-0 w-[85vw] aspect-[4/3] rounded-lg overflow-hidden"
+              className="snap-center shrink-0 w-[85vw] aspect-[4/3] rounded-lg overflow-hidden cursor-pointer"
               onClick={() => openModal(i)}
             >
               <img
@@ -228,16 +228,18 @@ function GalleryImage({
 }) {
   return (
     <div
-      className={cn("overflow-hidden cursor-pointer group relative", className)}
+      className={cn("overflow-hidden group relative", className)}
       onClick={onClick}
+      style={{ cursor: 'pointer' }}
     >
       <img
         src={image.url}
         alt={image.alt}
         className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+        style={{ cursor: 'pointer' }}
         loading="lazy"
       />
-      <div className="absolute inset-0 bg-black/10 group-hover:bg-black/5 transition-colors" />
+      <div className="absolute inset-0 bg-black/10 group-hover:bg-black/5 transition-colors" style={{ cursor: 'pointer' }} />
     </div>
   );
 }
