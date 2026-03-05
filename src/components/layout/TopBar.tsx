@@ -353,12 +353,12 @@ export function TopBar({ cabin, onSendMessage }: TopBarProps) {
         {/* Right: Price + Book CTA - Hidden on mobile/tablet */}
         <div className="hidden md:flex items-center justify-end shrink-0 gap-4">
           <div className="flex flex-col items-end text-right whitespace-nowrap">
-            <span className="text-[11px] leading-tight text-text-secondary">starts from</span>
+            <span className="text-sm leading-tight text-text-secondary">starts from</span>
             <div className="flex items-baseline gap-0.5">
-              <span className="text-lg font-medium text-text-primary leading-tight">
+              <span className="text-sm font-semibold text-text-primary leading-tight">
                 {formatCurrency(cabin.pricing.baseNight, cabin.pricing.currency)}
               </span>
-              <span className="text-xs text-text-secondary">/ night</span>
+              <span className="text-sm text-text-secondary">/ night</span>
             </div>
           </div>
           <Button
