@@ -152,7 +152,7 @@ export function TopBar({ cabin, onSendMessage }: TopBarProps) {
   const hasMessages = messages.length > 0 || isLoading;
 
   return (
-    <header className="sticky top-0 z-30 bg-white border-b border-border-light">
+    <header className="sticky top-0 z-30 bg-bg-primary border-b border-border-light">
       <div className="flex items-center justify-between px-4 sm:px-8 py-2 max-w-[1440px] mx-auto gap-2">
         {/* Left: Owner info */}
         <div className="flex items-center gap-2 shrink-0 min-w-[80px] sm:min-w-[120px]">

@@ -75,7 +75,7 @@ export function ChatPanel({ cabin }: ChatPanelProps) {
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.2 }}
-          className="fixed top-[64px] inset-x-0 bottom-0 z-40 bg-white/95 backdrop-blur-sm flex flex-col"
+          className="fixed top-[64px] inset-x-0 bottom-0 z-40 bg-bg-primary/95 backdrop-blur-sm flex flex-col"
         >
           {/* Close bar */}
           <div className="flex items-center justify-end px-6 py-2">
@@ -164,7 +164,7 @@ export function ChatPanel({ cabin }: ChatPanelProps) {
                                   "text-xs font-semibold px-3 py-1.5 rounded-full transition-colors cursor-pointer",
                                   msg.role === "user"
                                     ? "bg-white/20 text-white hover:opacity-80"
-                                    : "bg-white text-text-primary border border-border-light hover:opacity-80"
+                                    : "bg-bg-secondary text-text-primary border border-border-light hover:opacity-80"
                                 )}
                               >
                                 {action.label}

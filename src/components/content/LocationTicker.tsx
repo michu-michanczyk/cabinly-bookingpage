@@ -27,7 +27,7 @@ export function LocationTicker({ cabin }: LocationTickerProps) {
   }, []);
 
   return (
-    <div className="w-full overflow-hidden bg-white border-t-2 border-border-dark py-4">
+    <div className="w-full overflow-hidden bg-bg-primary border-t-2 border-border-dark py-4">
       <div
         ref={tickerRef}
         className="flex animate-scroll items-center"

@@ -49,7 +49,7 @@ export function Drawer({ isOpen, onClose, children, title, className }: DrawerPr
             exit={{ x: "100%" }}
             transition={{ type: "spring", damping: 30, stiffness: 300 }}
             className={cn(
-              "fixed right-0 top-0 bottom-0 z-50 bg-white shadow-2xl",
+              "fixed right-0 top-0 bottom-0 z-50 bg-bg-primary shadow-2xl",
               "w-full sm:w-[480px]",
               "flex flex-col",
               className

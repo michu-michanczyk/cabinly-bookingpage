@@ -14,7 +14,7 @@ export function MobileBookingBar({ cabin }: MobileBookingBarProps) {
   if (isOpen) return null;
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-30 bg-white border-t border-border-light px-4 py-3 md:hidden">
+    <div className="fixed bottom-0 left-0 right-0 z-30 bg-bg-primary border-t border-border-light px-4 py-3 md:hidden">
       <div className="flex items-center justify-between">
         <div className="flex items-baseline gap-1.5">
           <span className="text-sm font-medium text-text-secondary">Start from</span>

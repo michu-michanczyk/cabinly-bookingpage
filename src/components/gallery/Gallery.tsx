@@ -145,7 +145,7 @@ export function Gallery({ images }: GalleryProps) {
             {images.length > 7 && (
               <button
                 onClick={() => openModal(0)}
-                className="group/btn absolute top-4 right-4 flex items-center gap-2 bg-white px-4 py-2.5 rounded-lg text-xs font-semibold text-text-primary shadow-lg hover:opacity-80 transition-opacity cursor-pointer"
+                className="group/btn absolute top-4 right-4 flex items-center gap-2 bg-bg-primary px-4 py-2.5 rounded-lg text-xs font-semibold text-text-primary shadow-lg hover:opacity-80 transition-opacity cursor-pointer"
               >
                 Show all photos ({images.length})
                 <IconArrowRight size={14} className="transition-transform group-hover/btn:animate-[bounceRight_1s_ease-in-out_infinite]" />

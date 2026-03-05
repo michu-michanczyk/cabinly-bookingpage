@@ -135,3 +135,43 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    /* TEXT */
+    --color-text-primary: #f0f0f5;
+    --color-text-secondary: #9898b0;
+    --color-text-disabled: #3a3a4a;
+    --color-text-tertiary: #5a5a72;
+    --color-text-onPrimary: #ffffff;
+
+    /* BACKGROUND */
+    --color-bg-primary: #0f0f14;
+    --color-bg-secondary: #17171f;
+    --color-bg-tertiary: #1e1e28;
+    --color-bg-loader: #2a2a38;
+    --color-bg-disabled: #1a1a24;
+    --color-bg-onSurface: #f0f0f5;
+    --color-bg-onSurface-secondary: #191920;
+    --color-bg-surface-secondary: #191920;
+
+    /* BORDER */
+    --color-border-light: #2a2a38;
+    --color-border-default: #3a3a50;
+    --color-border-focus: #3b82f6;
+    --color-border-dark: #f0f0f5;
+    --color-border-hover: #5a5a72;
+    --color-border-onSurface: #9898b0;
+    --color-border-onSurface-secondary: #c0c0ce;
+
+    /* SHADOW */
+    --color-shadow-light: #000000;
+
+    /* ACCENT fg stays white — accent bg already adapts to chosen color */
+  }
+
+  body {
+    color: #f0f0f5;
+    background: #0f0f14;
+  }
+}
