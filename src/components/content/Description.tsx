@@ -112,9 +112,7 @@ this is the perfect getaway.`;
         <div className="flex-1 flex flex-col">
           {/* Large intro paragraph */}
           <p className="text-2xl sm:text-3xl lg:text-5xl font-semibold leading-tight sm:leading-[48px] lg:leading-[56px]">
-            <span className="text-text-primary">Listen to the birds singing while sipping </span>
-            <span className="text-text-tertiary">freshly grounded coffee</span>
-            <span className="text-text-primary"> on our terrace overlooking the forest, just a meter from the stream.</span>
+            <span className="text-text-primary">Listen to the birds singing while sipping freshly grounded coffee on our terrace overlooking the forest, just a meter from the stream.</span>
           </p>
 
           {/* Features grid */}
