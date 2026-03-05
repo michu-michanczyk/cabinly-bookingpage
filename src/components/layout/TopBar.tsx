@@ -153,23 +153,23 @@ export function TopBar({ cabin, onSendMessage }: TopBarProps) {
 
   return (
     <header className="sticky top-0 z-30 bg-white border-b border-border-light">
-      <div className="flex items-center justify-between px-4 sm:px-8 py-2 max-w-[1440px] mx-auto">
+      <div className="flex items-center justify-between px-4 sm:px-8 py-2 max-w-[1440px] mx-auto gap-2">
         {/* Left: Owner info */}
-        <div className="flex items-center gap-2 flex-1 min-w-0">
+        <div className="flex items-center gap-2 shrink-0 min-w-[80px] sm:min-w-[120px]">
           <img
             src={cabin.images[0].url}
             alt={cabin.images[0].alt}
-            className="w-12 h-12 rounded-full object-cover shrink-0"
+            className="w-10 h-10 sm:w-12 sm:h-12 rounded-full object-cover shrink-0"
             style={{ imageRendering: 'auto' }}
           />
-          <div className="hidden sm:flex flex-col text-xs leading-4">
-            <span className="text-text-secondary">{cabin.location.address},</span>
-            <span className="text-text-secondary">{cabin.location.city}, {cabin.location.country}</span>
+          <div className="flex flex-col text-[10px] sm:text-xs leading-3 sm:leading-4 min-w-0">
+            <span className="text-text-secondary truncate">{cabin.location.address},</span>
+            <span className="text-text-secondary truncate">{cabin.location.city}, {cabin.location.country}</span>
             <a
               href={`https://www.google.com/maps/search/${encodeURIComponent(`${cabin.location.address}, ${cabin.location.city}, ${cabin.location.country}`)}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-text-primary font-semibold underline text-left text-[11px] hover:opacity-80 transition-opacity"
+              className="text-text-primary font-semibold underline text-left text-[9px] sm:text-[11px] hover:opacity-80 transition-opacity whitespace-nowrap"
             >
               show map
             </a>
@@ -177,7 +177,7 @@ export function TopBar({ cabin, onSendMessage }: TopBarProps) {
         </div>
 
         {/* Center: AI Search input + dropdown */}
-        <div className="relative w-full max-w-[608px] mx-2 sm:mx-4" ref={inputWrapperRef}>
+        <div className="relative flex-1 max-w-[608px]" ref={inputWrapperRef}>
           {/* Input — always in the same position */}
           <div
             className={cn(
@@ -214,7 +214,7 @@ export function TopBar({ cabin, onSendMessage }: TopBarProps) {
                   onKeyDown={handleKeyDown}
                   onFocus={() => { if (!isOpen) openChat(); }}
                   placeholder={isOpen ? "" : "Ask me anything about this place"}
-                  className="flex-1 bg-transparent text-sm text-text-primary placeholder:text-text-tertiary outline-none min-w-0"
+                  className="flex-1 bg-transparent text-sm text-text-primary placeholder:text-text-secondary outline-none min-w-0"
                 />
                 <div className="flex items-center gap-2 shrink-0">
                   <button
@@ -350,9 +350,9 @@ export function TopBar({ cabin, onSendMessage }: TopBarProps) {
           </AnimatePresence>
         </div>
 
-        {/* Right: Price + Book CTA */}
-        <div className="flex items-center justify-end flex-1 gap-4">
-          <div className="hidden sm:flex flex-col items-end text-right">
+        {/* Right: Price + Book CTA - Hidden on mobile/tablet */}
+        <div className="hidden md:flex items-center justify-end shrink-0 gap-4">
+          <div className="flex flex-col items-end text-right whitespace-nowrap">
             <span className="text-[11px] leading-tight text-text-secondary">starts from</span>
             <div className="flex items-baseline gap-0.5">
               <span className="text-lg font-medium text-text-primary leading-tight">
@@ -365,17 +365,9 @@ export function TopBar({ cabin, onSendMessage }: TopBarProps) {
             variant="primary"
             size="lg"
             onClick={() => openBooking()}
-            className="hidden sm:flex whitespace-nowrap"
+            className="whitespace-nowrap"
           >
             Book a stay
-          </Button>
-          <Button
-            variant="primary"
-            size="md"
-            onClick={() => openBooking()}
-            className="sm:hidden whitespace-nowrap"
-          >
-            Book
           </Button>
         </div>
       </div>

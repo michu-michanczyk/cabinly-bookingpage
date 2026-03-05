@@ -11,11 +11,13 @@ import { PromoBanner } from "./components/content/PromoBanner";
 import { BookingDrawer } from "./components/booking/BookingDrawer";
 import { MobileBookingBar } from "./components/booking/MobileBookingBar";
 import { useChat } from "./hooks/useChat";
+import { useBookingStore } from "./stores/booking-store";
 import { mockCabin } from "./data/mock-cabin";
 
 function App() {
   const cabin = mockCabin;
   const { send } = useChat(cabin);
+  const openBooking = useBookingStore((s) => s.openBooking);
 
   return (
     <div className="min-h-screen bg-bg-primary flex flex-col">
@@ -34,7 +36,7 @@ function App() {
           <Gallery images={cabin.images} />
         </div>
 
-        {/* Description + Owner */}
+        {/* Description */}
         <Description cabin={cabin} />
 
         {/* Amenities */}
@@ -47,14 +49,14 @@ function App() {
           <PromoStays promos={cabin.promos} currency={cabin.pricing.currency} />
         </div>
 
-        {/* Reviews */}
-        <div id="reviews">
+        {/* Reviews - Hidden on mobile */}
+        <div id="reviews" className="hidden sm:block">
           <Reviews reviews={cabin.reviews} rating={cabin.rating} />
         </div>
       </main>
 
       {/* Promo Banner */}
-      <PromoBanner cabin={cabin} />
+      <PromoBanner cabin={cabin} onBookClick={() => openBooking()} />
 
       {/* Location Ticker */}
       <LocationTicker cabin={cabin} />

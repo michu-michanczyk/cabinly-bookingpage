@@ -1,5 +1,4 @@
 import { Button } from "../ui/Button";
-import { IconStar } from "../icons";
 import { useBookingStore } from "../../stores/booking-store";
 import { formatCurrency } from "../../lib/utils";
 import type { Cabin } from "../../types/cabin";
@@ -15,18 +14,14 @@ export function MobileBookingBar({ cabin }: MobileBookingBarProps) {
   if (isOpen) return null;
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-30 bg-white border-t border-border-light px-4 py-3 sm:hidden">
+    <div className="fixed bottom-0 left-0 right-0 z-30 bg-white border-t border-border-light px-4 py-3 md:hidden">
       <div className="flex items-center justify-between">
-        <div>
-          <div className="text-lg font-bold text-text-primary">
+        <div className="flex items-baseline gap-1.5">
+          <span className="text-sm font-medium text-text-secondary">Start from</span>
+          <span className="text-sm font-medium text-text-primary">
             {formatCurrency(cabin.pricing.baseNight, cabin.pricing.currency)}
-            <span className="text-xs font-normal text-text-secondary"> / night</span>
-          </div>
-          <div className="flex items-center gap-1 text-xs text-text-secondary">
-            <IconStar size={10} className="text-text-primary" />
-            <span>{cabin.rating.score}</span>
-            <span className="text-text-tertiary">· {cabin.rating.count} reviews</span>
-          </div>
+          </span>
+          <span className="text-sm font-medium text-text-secondary">/ night</span>
         </div>
         <Button variant="primary" size="md" onClick={() => openBooking()}>
           Book a stay
