@@ -4,10 +4,6 @@ import { HeroSection } from "./components/hero/HeroSection";
 import { Gallery } from "./components/gallery/Gallery";
 import { LocationTicker } from "./components/content/LocationTicker";
 import { Description } from "./components/content/Description";
-import { Amenities } from "./components/content/Amenities";
-import { PromoStays } from "./components/content/PromoStays";
-import { Reviews } from "./components/content/Reviews";
-import { PromoBanner } from "./components/content/PromoBanner";
 import { BookingDrawer } from "./components/booking/BookingDrawer";
 import { MobileBookingBar } from "./components/booking/MobileBookingBar";
 import { useChat } from "./hooks/useChat";
@@ -39,24 +35,7 @@ function App() {
         {/* Description */}
         <Description cabin={cabin} />
 
-        {/* Amenities */}
-        <div id="amenities">
-          <Amenities amenities={cabin.amenities} />
-        </div>
-
-        {/* Promo Stays - HIGH CONVERSION */}
-        <div id="promos">
-          <PromoStays promos={cabin.promos} currency={cabin.pricing.currency} />
-        </div>
-
-        {/* Reviews - Hidden on mobile */}
-        <div id="reviews" className="hidden sm:block">
-          <Reviews reviews={cabin.reviews} rating={cabin.rating} />
-        </div>
       </main>
-
-      {/* Promo Banner */}
-      <PromoBanner cabin={cabin} onBookClick={() => openBooking()} />
 
       {/* Location Ticker */}
       <LocationTicker cabin={cabin} />

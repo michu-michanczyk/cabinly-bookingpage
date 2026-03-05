@@ -57,10 +57,6 @@ export function Amenities({ amenities }: AmenitiesProps) {
 
   return (
     <section className="max-w-[1440px] mx-auto px-4 sm:px-8 py-10 sm:py-14 border-t border-border-light">
-      <h2 className="text-2xl font-bold text-text-primary mb-6">
-        What this place offers
-      </h2>
-
       {showAll ? (
         // Full view - grouped by category
         <div className="space-y-8">

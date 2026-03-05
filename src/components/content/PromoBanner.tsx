@@ -30,7 +30,6 @@ export function PromoBanner({ cabin, onBookClick }: PromoBannerProps) {
 
         {/* Pricing section */}
         <div className="text-center py-20">
-          <p className="text-white text-2xl font-medium mb-2">starts from</p>
           <h2 className="text-white text-[64px] font-medium leading-none mb-8">
             ${cabin.pricing.baseNight} / night
           </h2>
