@@ -150,7 +150,7 @@ this is the perfect getaway.`;
 function FeatureItem({ icon, value, subtitle }: { icon: string; value: string; subtitle: string }) {
   return (
     <div className="flex items-start gap-3">
-      <img src={icon} alt="" className="w-6 h-6 shrink-0" />
+      <img src={icon} alt="" className="w-6 h-6 shrink-0 icon-adaptive" />
       <div>
         <div className="text-base font-medium text-text-primary">{value}</div>
         <div className="text-base text-text-secondary">{subtitle}</div>

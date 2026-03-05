@@ -136,7 +136,15 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* Icons that need to invert on dark mode */
+.icon-adaptive {
+  filter: none;
+}
+
 @media (prefers-color-scheme: dark) {
+  .icon-adaptive {
+    filter: invert(1);
+  }
   :root {
     /* TEXT */
     --color-text-primary: #f0f0f5;
