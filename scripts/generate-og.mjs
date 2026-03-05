@@ -88,19 +88,19 @@ async function generateOg(cabin) {
       <text x="${OG_WIDTH - 48}" y="76" font-family="Arial, sans-serif" font-size="18"
         fill="white" text-anchor="end">★ ${cabin.rating} · ${cabin.reviewCount} reviews</text>
 
-      <!-- Title -->
-      <text x="64" y="${OG_HEIGHT - 160}" font-family="Arial, sans-serif" font-size="72"
+      <!-- Title (bottom-left) -->
+      <text x="64" y="${OG_HEIGHT - 156}" font-family="Arial, sans-serif" font-size="72"
         font-weight="800" fill="white" letter-spacing="-1">${line1}</text>
-      ${line2 ? `<text x="64" y="${OG_HEIGHT - 74}" font-family="Arial, sans-serif" font-size="72"
+      ${line2 ? `<text x="64" y="${OG_HEIGHT - 68}" font-family="Arial, sans-serif" font-size="72"
         font-weight="800" fill="white" letter-spacing="-1">${line2}</text>` : ""}
 
-      <!-- Location + price pill bottom-right -->
-      <text x="${OG_WIDTH - 64}" y="${OG_HEIGHT - 90}" font-family="Arial, sans-serif"
-        font-size="22" fill="white" text-anchor="end" fill-opacity="0.85">${cabin.location}</text>
-      <rect x="${OG_WIDTH - 250}" y="${OG_HEIGHT - 68}" width="186" height="44" rx="10"
-        fill="white" fill-opacity="0.18"/>
-      <text x="${OG_WIDTH - 64}" y="${OG_HEIGHT - 38}" font-family="Arial, sans-serif"
-        font-size="20" font-weight="700" fill="white" text-anchor="end">
+      <!-- Location + price pill — bottom-right, above title baseline -->
+      <text x="${OG_WIDTH - 64}" y="${OG_HEIGHT - 116}" font-family="Arial, sans-serif"
+        font-size="20" fill="white" text-anchor="end" fill-opacity="0.85">${cabin.location}</text>
+      <rect x="${OG_WIDTH - 64 - 176}" y="${OG_HEIGHT - 96}" width="176" height="40" rx="10"
+        fill="white" fill-opacity="0.2"/>
+      <text x="${OG_WIDTH - 64}" y="${OG_HEIGHT - 68}" font-family="Arial, sans-serif"
+        font-size="18" font-weight="700" fill="white" text-anchor="end">
         from $${cabin.pricePerNight} / night
       </text>
     </svg>
