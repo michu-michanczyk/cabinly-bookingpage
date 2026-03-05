@@ -8,12 +8,17 @@ import { BookingDrawer } from "./components/booking/BookingDrawer";
 import { MobileBookingBar } from "./components/booking/MobileBookingBar";
 import { useChat } from "./hooks/useChat";
 import { useBookingStore } from "./stores/booking-store";
+import { useAccentColor } from "./hooks/useAccentColor";
 import { mockCabin } from "./data/mock-cabin";
+
+// Accent color for this cabin page — change this to customize
+const ACCENT_COLOR = "#010101";
 
 function App() {
   const cabin = mockCabin;
   const { send } = useChat(cabin);
   const openBooking = useBookingStore((s) => s.openBooking);
+  useAccentColor(ACCENT_COLOR);
 
   return (
     <div className="min-h-screen bg-bg-primary flex flex-col">
