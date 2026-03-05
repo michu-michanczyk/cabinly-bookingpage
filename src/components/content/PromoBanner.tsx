@@ -40,7 +40,7 @@ export function PromoBanner({ cabin, onBookClick }: PromoBannerProps) {
           {/* CTA Button */}
           <button
             onClick={onBookClick}
-            className="bg-white px-6 py-3 rounded-lg text-sm font-semibold text-text-primary shadow-lg hover:opacity-80 transition-opacity cursor-pointer"
+            className="bg-accent px-6 py-3 rounded-lg text-sm font-semibold text-accent-fg shadow-lg hover:opacity-80 transition-opacity cursor-pointer"
           >
             Book a stay
           </button>

@@ -20,7 +20,7 @@ export function HeroSection({ cabin }: HeroSectionProps) {
 
       {/* Giant title */}
       <h1
-        className="font-bold text-text-primary leading-[0.88] tracking-tight"
+        className="font-bold text-accent leading-[0.88] tracking-tight"
         style={{
           fontSize: "clamp(3rem, 9vw, 8rem)",
         }}

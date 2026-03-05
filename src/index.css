@@ -69,6 +69,10 @@
   /* ========== SHADOW ========== */
   --color-shadow-light: #dbdbe5;
 
+  /* ========== ACCENT (customizable per-page) ========== */
+  --color-accent: #010101;
+  --color-accent-fg: #ffffff;
+
   /* ========== LEGACY ALIASES (for existing components) ========== */
   --color-accent-blue: #3b82f6;
   --color-accent-navy: #17179a;

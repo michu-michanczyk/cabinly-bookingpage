@@ -21,7 +21,7 @@ export function Button({
     "inline-flex items-center justify-center gap-2 font-semibold rounded-lg transition-all duration-200 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed";
 
   const variants = {
-    primary: "bg-bg-onSurface text-text-onPrimary hover:opacity-80 active:scale-[0.98] disabled:bg-button-primary-disabled",
+    primary: "bg-accent text-accent-fg hover:opacity-80 active:scale-[0.98] disabled:bg-button-primary-disabled",
     secondary: "bg-bg-tertiary text-text-primary hover:opacity-80 active:scale-[0.98]",
     ghost: "text-text-secondary hover:opacity-80",
     outline: "border border-border-light text-text-primary hover:opacity-80 active:scale-[0.98]",
