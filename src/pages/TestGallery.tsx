@@ -4,48 +4,51 @@ import { Footer } from "../components/layout/Footer";
 import { HeroSection } from "../components/hero/HeroSection";
 import { Gallery } from "../components/gallery/Gallery";
 import { Description } from "../components/content/Description";
-import { Amenities } from "../components/content/Amenities";
-import { PromoStays } from "../components/content/PromoStays";
-import { Reviews } from "../components/content/Reviews";
+import { LocationTicker } from "../components/content/LocationTicker";
 import { BookingDrawer } from "../components/booking/BookingDrawer";
 import { MobileBookingBar } from "../components/booking/MobileBookingBar";
 import { useChat } from "../hooks/useChat";
+import { useAccentColor } from "../hooks/useAccentColor";
+import { useSeoMeta } from "../hooks/useSeoMeta";
 import { mockCabin } from "../data/mock-cabin";
+
+const ACCENT_COLOR = "#010101";
 
 export function TestGallery() {
   const { count } = useParams();
   const imageCount = count ? parseInt(count) : 7;
 
-  // Slice images based on count
   const cabin = {
     ...mockCabin,
-    images: mockCabin.images.slice(0, imageCount)
+    images: mockCabin.images.slice(0, imageCount),
   };
 
   const { send } = useChat(cabin);
+  useAccentColor(ACCENT_COLOR);
+  useSeoMeta(cabin);
 
   return (
     <div className="min-h-screen bg-bg-primary flex flex-col">
-      {/* Test navigation */}
-      <div className="bg-yellow-100 border-b-2 border-yellow-400 p-2 sticky top-0 z-50">
+      {/* Test navigation bar */}
+      <div className="bg-bg-secondary border-b border-border-light p-2 sticky top-0 z-50">
         <div className="max-w-[1440px] mx-auto px-4 sm:px-8 flex gap-2 items-center justify-center flex-wrap">
-          <span className="text-xs font-semibold">Gallery Test ({imageCount} images):</span>
+          <span className="text-xs font-semibold text-text-secondary">Gallery Test ({imageCount} images):</span>
           {[1, 2, 3, 4, 5, 6, 7].map((num) => (
             <Link
               key={num}
               to={`/test/${num}`}
-              className={`px-3 py-1 rounded text-xs font-semibold transition-colors ${
+              className={`px-3 py-1 rounded text-xs font-semibold transition-opacity hover:opacity-70 ${
                 num === imageCount
-                  ? "bg-text-primary text-white"
-                  : "bg-white hover:bg-gray-100"
+                  ? "bg-accent text-accent-fg"
+                  : "bg-bg-tertiary text-text-primary"
               }`}
             >
-              {num} img{num !== 1 ? 's' : ''}
+              {num} img{num !== 1 ? "s" : ""}
             </Link>
           ))}
           <Link
             to="/"
-            className="px-3 py-1 rounded text-xs font-semibold bg-blue-500 text-white hover:bg-blue-600 ml-2"
+            className="px-3 py-1 rounded text-xs font-semibold bg-bg-tertiary text-text-primary hover:opacity-70 transition-opacity ml-2"
           >
             ← Back to Main
           </Link>
@@ -67,24 +70,12 @@ export function TestGallery() {
           <Gallery images={cabin.images} />
         </div>
 
-        {/* Description + Owner */}
+        {/* Description */}
         <Description cabin={cabin} />
-
-        {/* Amenities */}
-        <div id="amenities">
-          <Amenities amenities={cabin.amenities} />
-        </div>
-
-        {/* Promo Stays - HIGH CONVERSION */}
-        <div id="promos">
-          <PromoStays promos={cabin.promos} currency={cabin.pricing.currency} />
-        </div>
-
-        {/* Reviews */}
-        <div id="reviews">
-          <Reviews reviews={cabin.reviews} rating={cabin.rating} />
-        </div>
       </main>
+
+      {/* Location Ticker */}
+      <LocationTicker cabin={cabin} />
 
       {/* Footer */}
       <Footer />

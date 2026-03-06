@@ -7,7 +7,6 @@ import { Description } from "./components/content/Description";
 import { BookingDrawer } from "./components/booking/BookingDrawer";
 import { MobileBookingBar } from "./components/booking/MobileBookingBar";
 import { useChat } from "./hooks/useChat";
-import { useBookingStore } from "./stores/booking-store";
 import { useAccentColor } from "./hooks/useAccentColor";
 import { useSeoMeta } from "./hooks/useSeoMeta";
 import { mockCabin } from "./data/mock-cabin";
@@ -18,7 +17,6 @@ const ACCENT_COLOR = "#010101";
 function App() {
   const cabin = mockCabin;
   const { send } = useChat(cabin);
-  const openBooking = useBookingStore((s) => s.openBooking);
   useAccentColor(ACCENT_COLOR);
   useSeoMeta(cabin);
 
