@@ -264,9 +264,9 @@ export function TopBar({ cabin, onSendMessage }: TopBarProps) {
                         <button
                           key={prompt.text}
                           onClick={() => handlePromptClick(prompt.text)}
-                          className="flex items-center gap-2 p-2 rounded-lg text-[14px] leading-[18px] text-text-tertiary hover:opacity-80 transition-opacity cursor-pointer text-left"
+                          className="flex items-center gap-2 p-2 rounded-lg text-[14px] leading-[18px] text-white/70 hover:text-white/90 transition-colors cursor-pointer text-left"
                         >
-                          <prompt.icon size={16} className="text-text-tertiary shrink-0" />
+                          <prompt.icon size={16} className="text-white/70 shrink-0" />
                           {prompt.text}
                         </button>
                       ))}
