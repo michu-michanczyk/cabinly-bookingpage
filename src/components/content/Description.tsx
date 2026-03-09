@@ -150,13 +150,9 @@ this is the perfect getaway.`;
   };
 
   return (
-    <section
-      id="overview"
-      className="pt-12 sm:pt-20"
-    >
-      {/* Two column layout: sticky nav left, all content right */}
+    <div id="overview" className="pt-12 sm:pt-20 overflow-x-hidden">
       <div className="max-w-[1440px] mx-auto px-4 sm:px-8 flex flex-col lg:flex-row gap-4 lg:gap-8">
-        {/* Left nav - sticky */}
+        {/* Sticky nav — spans full height of overview + rooms */}
         <DescriptionMenu
           ref={navRef}
           activeSection={activeSection}
@@ -164,70 +160,66 @@ this is the perfect getaway.`;
           onDark={navOnDark}
         />
 
-        {/* Right column - overview content */}
-        <div className="flex-1 flex flex-col pb-10 sm:pb-14">
-          {/* Large intro paragraph */}
-          <p className="text-2xl sm:text-3xl lg:text-5xl font-semibold leading-tight sm:leading-[48px] lg:leading-[56px]">
-            <span className="text-text-primary">Listen to the birds singing while sipping freshly grounded coffee on our terrace overlooking the forest, just a meter from the stream.</span>
-          </p>
-
-          {/* Features grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-4 sm:gap-x-8 gap-y-6 lg:gap-y-8 mt-6 lg:mt-10 mb-6 lg:mb-10">
-            <FeatureItem icon="/icons/users.svg" value={`${cabin.maxGuests} guests`} subtitle={`Up to ${cabin.maxGuests} people`} />
-            <FeatureItem icon="/icons/bedroom.svg" value={`${cabin.bedrooms} bedrooms`} subtitle="10 single beds" />
-            <FeatureItem icon="/icons/bathroom.svg" value={`${cabin.bathrooms} bathrooms`} subtitle="Bath & shower" />
-            <FeatureItem icon="/icons/parking.svg" value="6 parking spots" subtitle="Up to 6 cars" />
-            <FeatureItem icon="/icons/pets.svg" value="2 pets allowed" subtitle="Small cats & dogs" />
-            <FeatureItem icon="/icons/home.svg" value="1 property" subtitle="One house on a plot" />
-          </div>
-
-          {/* Description text */}
-          <div className="flex-1">
-            <div
-              className={`cabin-description text-base text-text-secondary leading-6 whitespace-pre-line transition-all duration-300 ease-in-out ${!expanded ? 'line-clamp-3' : ''}`}
-            >
-              {descriptionText}
+        {/* Right column */}
+        <div className="flex-1 min-w-0">
+          {/* Overview content — white bg */}
+          <div className="pb-10 sm:pb-14">
+            <p className="text-2xl sm:text-3xl lg:text-5xl font-semibold leading-tight sm:leading-[48px] lg:leading-[56px]">
+              <span className="text-text-primary">Listen to the birds singing while sipping freshly grounded coffee on our terrace overlooking the forest, just a meter from the stream.</span>
+            </p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-4 sm:gap-x-8 gap-y-6 lg:gap-y-8 mt-6 lg:mt-10 mb-6 lg:mb-10">
+              <FeatureItem icon="/icons/users.svg" value={`${cabin.maxGuests} guests`} subtitle={`Up to ${cabin.maxGuests} people`} />
+              <FeatureItem icon="/icons/bedroom.svg" value={`${cabin.bedrooms} bedrooms`} subtitle="10 single beds" />
+              <FeatureItem icon="/icons/bathroom.svg" value={`${cabin.bathrooms} bathrooms`} subtitle="Bath & shower" />
+              <FeatureItem icon="/icons/parking.svg" value="6 parking spots" subtitle="Up to 6 cars" />
+              <FeatureItem icon="/icons/pets.svg" value="2 pets allowed" subtitle="Small cats & dogs" />
+              <FeatureItem icon="/icons/home.svg" value="1 property" subtitle="One house on a plot" />
             </div>
-
-            <button
-              onClick={() => setExpanded(!expanded)}
-              className="mt-3 text-base font-medium text-text-primary underline underline-offset-2 hover:opacity-80 transition-opacity"
-              style={{ cursor: 'pointer' }}
-            >
-              {expanded ? "show less" : "show more"}
-            </button>
+            <div>
+              <div className={`cabin-description text-base text-text-secondary leading-6 whitespace-pre-line transition-all duration-300 ease-in-out ${!expanded ? 'line-clamp-3' : ''}`}>
+                {descriptionText}
+              </div>
+              <button
+                onClick={() => setExpanded(!expanded)}
+                className="mt-3 text-base font-medium text-text-primary underline underline-offset-2 hover:opacity-80 transition-opacity cursor-pointer"
+              >
+                {expanded ? "show less" : "show more"}
+              </button>
+            </div>
           </div>
+
+          {/* Rooms — dark bg extends to viewport edges on both sides using negative margin */}
+          {cabin.rooms && cabin.rooms.length > 0 && (
+            <div
+              id="rooms"
+              className="bg-[#0e0e0e] py-12 sm:py-16"
+              style={{ marginLeft: '-9999px', paddingLeft: '9999px', marginRight: '-9999px', paddingRight: '9999px' }}
+            >
+              <h2 className="text-3xl sm:text-4xl font-bold text-white mb-8 sm:mb-10">
+                Place you'll stay in
+              </h2>
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
+                {cabin.rooms.map((room) => (
+                  <div key={room.id} className="flex flex-col gap-3">
+                    <div className="aspect-[4/3] rounded-xl overflow-hidden bg-white/10">
+                      <img
+                        src={room.image}
+                        alt={room.name}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                    <div>
+                      <div className="text-white font-medium text-sm sm:text-base">{room.name}</div>
+                      <div className="text-white/60 text-xs sm:text-sm mt-0.5">{room.beds}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       </div>
-
-      {/* Rooms section — full-width dark background */}
-      {cabin.rooms && cabin.rooms.length > 0 && (
-        <div id="rooms" className="bg-[#0e0e0e] mt-10 sm:mt-16 py-12 sm:py-16">
-          <div className="max-w-[1440px] mx-auto px-4 sm:px-8">
-            <h2 className="text-3xl sm:text-4xl font-bold text-white mb-8 sm:mb-10">
-              Place you'll stay in
-            </h2>
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
-              {cabin.rooms.map((room) => (
-                <div key={room.id} className="flex flex-col gap-3">
-                  <div className="aspect-[4/3] rounded-xl overflow-hidden bg-white/10">
-                    <img
-                      src={room.image}
-                      alt={room.name}
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                  <div>
-                    <div className="text-white font-medium text-sm sm:text-base">{room.name}</div>
-                    <div className="text-white/60 text-xs sm:text-sm mt-0.5">{room.beds}</div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      )}
-    </section>
+    </div>
   );
 }
 
