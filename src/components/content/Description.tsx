@@ -128,7 +128,7 @@ this is the perfect getaway.`;
           {/* Description text */}
           <div className="flex-1">
           <div
-            className={`text-base text-text-secondary leading-6 whitespace-pre-line transition-all duration-300 ease-in-out ${!expanded ? 'line-clamp-3' : ''}`}
+            className={`cabin-description text-base text-text-secondary leading-6 whitespace-pre-line transition-all duration-300 ease-in-out ${!expanded ? 'line-clamp-3' : ''}`}
           >
             {descriptionText}
           </div>
