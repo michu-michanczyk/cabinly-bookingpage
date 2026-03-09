@@ -185,7 +185,7 @@ this is the perfect getaway.`;
             <div id="rooms" className="relative py-12 sm:py-16">
               {/* Full-width dark background: extends left to cover nav column and beyond */}
               <div
-                className="absolute inset-y-0 bg-[#0e0e0e] dark:bg-white"
+                className="absolute inset-y-0 bg-accent"
                 style={{ left: 'calc(-1 * (100vw))', right: '-9999px', zIndex: 0 }}
                 aria-hidden="true"
               />
