@@ -150,7 +150,7 @@ this is the perfect getaway.`;
   };
 
   return (
-    <div id="overview" className="pt-12 sm:pt-20 overflow-x-hidden">
+    <div id="overview" className="pt-12 sm:pt-20">
       <div className="max-w-[1440px] mx-auto px-4 sm:px-8 flex flex-col lg:flex-row gap-4 lg:gap-8">
         {/* Sticky nav — spans full height of overview + rooms */}
         <DescriptionMenu
@@ -188,32 +188,37 @@ this is the perfect getaway.`;
             </div>
           </div>
 
-          {/* Rooms — dark bg extends to viewport edges on both sides using negative margin */}
+          {/* Rooms — dark bg. The bg div is absolute and extends left into the nav column. */}
           {cabin.rooms && cabin.rooms.length > 0 && (
-            <div
-              id="rooms"
-              className="bg-[#0e0e0e] py-12 sm:py-16"
-              style={{ marginLeft: '-9999px', paddingLeft: '9999px', marginRight: '-9999px', paddingRight: '9999px' }}
-            >
-              <h2 className="text-3xl sm:text-4xl font-bold text-white mb-8 sm:mb-10">
-                Place you'll stay in
-              </h2>
-              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
-                {cabin.rooms.map((room) => (
-                  <div key={room.id} className="flex flex-col gap-3">
-                    <div className="aspect-[4/3] rounded-xl overflow-hidden bg-white/10">
-                      <img
-                        src={room.image}
-                        alt={room.name}
-                        className="w-full h-full object-cover"
-                      />
+            <div id="rooms" className="relative py-12 sm:py-16">
+              {/* Full-width dark background: extends left to cover nav column and beyond */}
+              <div
+                className="absolute inset-y-0 right-0 bg-[#0e0e0e]"
+                style={{ left: 'calc(-1 * (100vw))' }}
+                aria-hidden="true"
+              />
+              {/* Content sits above the bg */}
+              <div className="relative">
+                <h2 className="text-3xl sm:text-4xl font-bold text-white mb-8 sm:mb-10">
+                  Place you'll stay in
+                </h2>
+                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
+                  {cabin.rooms.map((room) => (
+                    <div key={room.id} className="flex flex-col gap-3">
+                      <div className="aspect-[4/3] rounded-xl overflow-hidden bg-white/10">
+                        <img
+                          src={room.image}
+                          alt={room.name}
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                      <div>
+                        <div className="text-white font-medium text-sm sm:text-base">{room.name}</div>
+                        <div className="text-white/60 text-xs sm:text-sm mt-0.5">{room.beds}</div>
+                      </div>
                     </div>
-                    <div>
-                      <div className="text-white font-medium text-sm sm:text-base">{room.name}</div>
-                      <div className="text-white/60 text-xs sm:text-sm mt-0.5">{room.beds}</div>
-                    </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
             </div>
           )}
