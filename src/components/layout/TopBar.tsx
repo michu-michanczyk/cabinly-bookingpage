@@ -153,9 +153,9 @@ export function TopBar({ cabin, onSendMessage }: TopBarProps) {
 
   return (
     <header className="sticky top-0 z-30 bg-bg-primary border-b border-border-light">
-      <div className="flex items-center justify-between px-4 sm:px-8 py-2 max-w-[1440px] mx-auto gap-2">
+      <div className="flex items-center px-4 sm:px-8 py-2 max-w-[1440px] mx-auto gap-2">
         {/* Left: Owner info */}
-        <div className="flex items-center gap-2 shrink-0 min-w-[80px] sm:min-w-[120px]">
+        <div className="flex items-center gap-2 shrink-0 min-w-0 w-[200px] lg:w-[260px]">
           <img
             src={cabin.images[0].url}
             alt={cabin.images[0].alt}
@@ -177,7 +177,7 @@ export function TopBar({ cabin, onSendMessage }: TopBarProps) {
         </div>
 
         {/* Center: AI Search input + dropdown */}
-        <div className="relative flex-1 max-w-[608px]" ref={inputWrapperRef}>
+        <div className="relative flex-1 min-w-0 max-w-[554px] mx-auto" ref={inputWrapperRef}>
           {/* Input — always in the same position */}
           <div
             className={cn(
@@ -264,9 +264,8 @@ export function TopBar({ cabin, onSendMessage }: TopBarProps) {
                         <button
                           key={prompt.text}
                           onClick={() => handlePromptClick(prompt.text)}
-                          className="flex items-center gap-2 p-2 rounded-lg text-[14px] leading-[18px] text-white/70 hover:text-white/90 transition-colors cursor-pointer text-left"
+                          className="py-2 rounded-lg text-[14px] leading-[18px] text-white/70 hover:text-white/90 transition-colors cursor-pointer text-left"
                         >
-                          <prompt.icon size={16} className="text-white/70 shrink-0" />
                           {prompt.text}
                         </button>
                       ))}
@@ -308,7 +307,7 @@ export function TopBar({ cabin, onSendMessage }: TopBarProps) {
                             className={cn(
                               "max-w-[80%] rounded-xl px-3 py-2 text-sm",
                               msg.role === "user"
-                                ? "bg-bg-onSurface text-white rounded-br-sm"
+                                ? "bg-[#010101] text-white rounded-br-sm"
                                 : "text-white/90 rounded-bl-sm"
                             )}
                           >
@@ -351,7 +350,7 @@ export function TopBar({ cabin, onSendMessage }: TopBarProps) {
         </div>
 
         {/* Right: Price + Book CTA - Hidden on mobile/tablet */}
-        <div className="hidden md:flex items-center justify-end shrink-0 gap-4">
+        <div className="hidden md:flex items-center justify-end shrink-0 w-[200px] lg:w-[260px] gap-4">
           <div className="flex flex-col items-end text-right whitespace-nowrap">
             <span className="text-sm leading-tight text-text-secondary">starts from</span>
             <div className="flex items-baseline gap-0.5">

@@ -45,7 +45,9 @@
       "Bash(npm run dev:*)",
       "Bash(open -a \"Google Chrome\" \"http://localhost:5173/\")",
       "mcp__playwright__browser_install",
-      "mcp__playwright__browser_console_messages"
+      "mcp__playwright__browser_console_messages",
+      "mcp__figma-console__figma_get_file_data",
+      "mcp__figma-console__figma_get_component_image"
     ]
   }
 }
