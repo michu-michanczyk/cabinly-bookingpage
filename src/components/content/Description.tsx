@@ -1,13 +1,14 @@
-import { useEffect, useState } from "react";
+import { forwardRef, useEffect, useRef, useState } from "react";
 import type { Cabin } from "../../types/cabin";
 
 interface DescriptionProps {
   cabin: Cabin;
 }
 
-type SectionId = "our-cabin" | "amenities" | "host" | "special-offers" | "faq" | "calendar";
+type SectionId = "our-cabin" | "rooms" | "amenities" | "host" | "special-offers" | "faq" | "calendar";
 
 const DESCRIPTION_MENU_ITEMS: { id: SectionId; label: string }[] = [
+  { id: "rooms", label: "Rooms" },
   { id: "amenities", label: "Amenities" },
   { id: "special-offers", label: "Special offers" },
   { id: "host", label: "Host" },
@@ -17,6 +18,7 @@ const DESCRIPTION_MENU_ITEMS: { id: SectionId; label: string }[] = [
 
 const SECTION_DOM_TARGETS: Record<SectionId, string> = {
   "our-cabin": "overview",
+  rooms: "rooms",
   amenities: "amenities",
   host: "host",
   "special-offers": "special-offers",
@@ -27,6 +29,8 @@ const SECTION_DOM_TARGETS: Record<SectionId, string> = {
 export function Description({ cabin }: DescriptionProps) {
   const [expanded, setExpanded] = useState(false);
   const [activeSection, setActiveSection] = useState<SectionId>("our-cabin");
+  const [navOnDark, setNavOnDark] = useState(false);
+  const navRef = useRef<HTMLDivElement>(null);
 
   const descriptionText = `Browse the internet, play board games or PlayStation with your family, have fun with the dog, or take a nap in the hammock.
 And after all that - relax in the jacuzzi or grill yourself a sausage.  Drugi Dom is a comfortable stay for up to 10 people, located
@@ -37,6 +41,53 @@ The cabin is surrounded by beautiful Kashubian forests, perfect for hiking and c
 away, and the charming town of Kartuzy is a short drive. Whether you're looking for adventure or relaxation,
 this is the perfect getaway.`;
 
+  // Detect if sticky nav is overlapping a dark section
+  useEffect(() => {
+    const checkNavBackground = () => {
+      const nav = navRef.current;
+      if (!nav) return;
+
+      const navRect = nav.getBoundingClientRect();
+      const navCenterY = navRect.top + navRect.height / 2;
+      const navCenterX = navRect.left + navRect.width / 2;
+
+      // Hide nav temporarily to sample element underneath
+      nav.style.visibility = "hidden";
+      const elBelow = document.elementFromPoint(navCenterX, navCenterY);
+      nav.style.visibility = "";
+
+      if (!elBelow) return;
+
+      // Walk up the DOM to find a background color
+      let el: Element | null = elBelow;
+      let isDark = false;
+      while (el && el !== document.body) {
+        const bg = window.getComputedStyle(el).backgroundColor;
+        const match = bg.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/);
+        if (match) {
+          const r = parseInt(match[1]);
+          const g = parseInt(match[2]);
+          const b = parseInt(match[3]);
+          // Skip transparent
+          if (!(r === 0 && g === 0 && b === 0 && bg.includes("0)"))) {
+            // Relative luminance
+            const luminance = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+            isDark = luminance < 100;
+            break;
+          }
+        }
+        el = el.parentElement;
+      }
+
+      setNavOnDark(isDark);
+    };
+
+    window.addEventListener("scroll", checkNavBackground, { passive: true });
+    checkNavBackground();
+    return () => window.removeEventListener("scroll", checkNavBackground);
+  }, []);
+
+  // Section intersection observer
   useEffect(() => {
     if (typeof window === "undefined" || !("IntersectionObserver" in window)) {
       return;
@@ -101,15 +152,20 @@ this is the perfect getaway.`;
   return (
     <section
       id="overview"
-      className="max-w-[1440px] mx-auto px-4 sm:px-8 pt-12 sm:pt-20 pb-10 sm:pb-14"
+      className="pt-12 sm:pt-20"
     >
       {/* Two column layout: sticky nav left, all content right */}
-      <div className="flex flex-col lg:flex-row gap-4 lg:gap-8">
+      <div className="max-w-[1440px] mx-auto px-4 sm:px-8 flex flex-col lg:flex-row gap-4 lg:gap-8">
         {/* Left nav - sticky */}
-        <DescriptionMenu activeSection={activeSection} onSectionClick={handleMenuClick} />
+        <DescriptionMenu
+          ref={navRef}
+          activeSection={activeSection}
+          onSectionClick={handleMenuClick}
+          onDark={navOnDark}
+        />
 
-        {/* Right column - all content stacked */}
-        <div className="flex-1 flex flex-col">
+        {/* Right column - overview content */}
+        <div className="flex-1 flex flex-col pb-10 sm:pb-14">
           {/* Large intro paragraph */}
           <p className="text-2xl sm:text-3xl lg:text-5xl font-semibold leading-tight sm:leading-[48px] lg:leading-[56px]">
             <span className="text-text-primary">Listen to the birds singing while sipping freshly grounded coffee on our terrace overlooking the forest, just a meter from the stream.</span>
@@ -127,22 +183,50 @@ this is the perfect getaway.`;
 
           {/* Description text */}
           <div className="flex-1">
-          <div
-            className={`cabin-description text-base text-text-secondary leading-6 whitespace-pre-line transition-all duration-300 ease-in-out ${!expanded ? 'line-clamp-3' : ''}`}
-          >
-            {descriptionText}
-          </div>
+            <div
+              className={`cabin-description text-base text-text-secondary leading-6 whitespace-pre-line transition-all duration-300 ease-in-out ${!expanded ? 'line-clamp-3' : ''}`}
+            >
+              {descriptionText}
+            </div>
 
-          <button
-            onClick={() => setExpanded(!expanded)}
-            className="mt-3 text-base font-medium text-text-primary underline underline-offset-2 hover:opacity-80 transition-opacity"
-            style={{ cursor: 'pointer' }}
-          >
-            {expanded ? "show less" : "show more"}
-          </button>
+            <button
+              onClick={() => setExpanded(!expanded)}
+              className="mt-3 text-base font-medium text-text-primary underline underline-offset-2 hover:opacity-80 transition-opacity"
+              style={{ cursor: 'pointer' }}
+            >
+              {expanded ? "show less" : "show more"}
+            </button>
           </div>
         </div>
       </div>
+
+      {/* Rooms section — full-width dark background */}
+      {cabin.rooms && cabin.rooms.length > 0 && (
+        <div id="rooms" className="bg-[#0e0e0e] mt-10 sm:mt-16 py-12 sm:py-16">
+          <div className="max-w-[1440px] mx-auto px-4 sm:px-8">
+            <h2 className="text-3xl sm:text-4xl font-bold text-white mb-8 sm:mb-10">
+              Place you'll stay in
+            </h2>
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
+              {cabin.rooms.map((room) => (
+                <div key={room.id} className="flex flex-col gap-3">
+                  <div className="aspect-[4/3] rounded-xl overflow-hidden bg-white/10">
+                    <img
+                      src={room.image}
+                      alt={room.name}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <div>
+                    <div className="text-white font-medium text-sm sm:text-base">{room.name}</div>
+                    <div className="text-white/60 text-xs sm:text-sm mt-0.5">{room.beds}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   );
 }
@@ -162,31 +246,39 @@ function FeatureItem({ icon, value, subtitle }: { icon: string; value: string; s
 interface DescriptionMenuProps {
   activeSection: SectionId;
   onSectionClick: (id: SectionId) => void;
+  onDark: boolean;
 }
 
-function DescriptionMenu({ activeSection, onSectionClick }: DescriptionMenuProps) {
+const DescriptionMenu = forwardRef<HTMLDivElement, DescriptionMenuProps>(
+  ({ activeSection, onSectionClick, onDark }, ref) => {
   const allItems: { id: SectionId; label: string }[] = [
     { id: "our-cabin", label: "Our cabin" },
     ...DESCRIPTION_MENU_ITEMS,
   ];
 
   return (
-    <div className="w-full lg:w-56 lg:shrink-0 lg:sticky lg:top-20 lg:self-start">
+    <div ref={ref} className="w-full lg:w-56 lg:shrink-0 lg:sticky lg:top-20 lg:self-start">
       <nav className="flex flex-row gap-2 lg:flex-col lg:gap-2">
         {allItems.map((item) => {
           const isActive = item.id === activeSection;
-          const baseItemClasses =
-            "flex items-center text-base font-medium transition-colors duration-150 text-left cursor-pointer";
-          const stateClasses = isActive
-            ? "text-text-primary"
-            : "text-text-tertiary hover:text-text-secondary";
+
+          let textClass: string;
+          if (onDark) {
+            textClass = isActive
+              ? "text-white"
+              : "text-white/50 hover:text-white/80";
+          } else {
+            textClass = isActive
+              ? "text-text-primary"
+              : "text-text-tertiary hover:text-text-secondary";
+          }
 
           return (
             <button
               key={item.id}
               type="button"
               onClick={() => onSectionClick(item.id)}
-              className={`group ${baseItemClasses} ${stateClasses}`}
+              className={`flex items-center text-base font-medium transition-colors duration-300 text-left cursor-pointer ${textClass}`}
             >
               <span>{item.label}</span>
             </button>
@@ -195,4 +287,5 @@ function DescriptionMenu({ activeSection, onSectionClick }: DescriptionMenuProps
       </nav>
     </div>
   );
-}
+});
+DescriptionMenu.displayName = "DescriptionMenu";

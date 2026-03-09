@@ -1,8 +1,16 @@
+export interface Room {
+  id: string;
+  name: string;
+  beds: string;
+  image: string;
+}
+
 export interface Cabin {
   id: string;
   slug: string;
   title: string;
   description: string;
+  rooms?: Room[];
   location: {
     address: string;
     city: string;
