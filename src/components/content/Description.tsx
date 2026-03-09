@@ -87,57 +87,49 @@ this is the perfect getaway.`;
     return () => window.removeEventListener("scroll", checkNavBackground);
   }, []);
 
-  // Section intersection observer
+  // Scroll-based active section tracker
   useEffect(() => {
-    if (typeof window === "undefined" || !("IntersectionObserver" in window)) {
-      return;
-    }
+    const sectionEntries = Object.entries(SECTION_DOM_TARGETS) as [SectionId, string][];
 
-    const domIdToSectionId = Object.entries(SECTION_DOM_TARGETS).reduce<
-      Partial<Record<string, SectionId>>
-    >((acc, [sectionId, domId]) => {
-      acc[domId] = sectionId as SectionId;
-      return acc;
-    }, {});
+    const getActiveSection = (): SectionId => {
+      const triggerY = window.innerHeight * 0.35;
+      let active: SectionId = "our-cabin";
+      let closestDist = Infinity;
 
-    const uniqueDomIds = Array.from(new Set(Object.values(SECTION_DOM_TARGETS)));
-
-    const elements = uniqueDomIds
-      .map((domId) => document.getElementById(domId))
-      .filter((el): el is HTMLElement => Boolean(el));
-
-    if (elements.length === 0) return;
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const visible = entries
-          .filter((entry) => entry.isIntersecting)
-          .sort(
-            (a, b) =>
-              (a.target as HTMLElement).getBoundingClientRect().top -
-              (b.target as HTMLElement).getBoundingClientRect().top,
-          );
-
-        if (visible[0]) {
-          const domId = (visible[0].target as HTMLElement).id;
-          const sectionId = domIdToSectionId[domId];
-          if (sectionId) {
-            setActiveSection(sectionId);
+      for (const [sectionId, domId] of sectionEntries) {
+        const el = document.getElementById(domId);
+        if (!el) continue;
+        const top = el.getBoundingClientRect().top;
+        // Section must have entered the top 35% of viewport
+        if (top <= triggerY) {
+          const dist = triggerY - top;
+          if (dist < closestDist) {
+            closestDist = dist;
+            active = sectionId;
           }
         }
-      },
-      {
-        root: null,
-        rootMargin: "-45% 0px -45% 0px",
-        threshold: 0.15,
-      },
-    );
-
-    elements.forEach((el) => observer.observe(el));
-
-    return () => {
-      observer.disconnect();
+      }
+      return active;
     };
+
+    const onScroll = () => {
+      setActiveSection(getActiveSection());
+    };
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    onScroll();
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  // Handle hash on load for deep links
+  useEffect(() => {
+    const hash = window.location.hash.replace("#", "") as SectionId;
+    if (hash && SECTION_DOM_TARGETS[hash]) {
+      const el = document.getElementById(SECTION_DOM_TARGETS[hash]);
+      if (el) {
+        setTimeout(() => el.scrollIntoView({ behavior: "smooth", block: "start" }), 100);
+      }
+    }
   }, []);
 
   const handleMenuClick = (id: SectionId) => {
@@ -146,7 +138,7 @@ this is the perfect getaway.`;
     if (!el) return;
 
     el.scrollIntoView({ behavior: "smooth", block: "start" });
-    setActiveSection(id);
+    history.pushState(null, "", `#${id}`);
   };
 
   return (
@@ -193,8 +185,8 @@ this is the perfect getaway.`;
             <div id="rooms" className="relative py-12 sm:py-16">
               {/* Full-width dark background: extends left to cover nav column and beyond */}
               <div
-                className="absolute inset-y-0 right-0 bg-[#0e0e0e] dark:bg-white"
-                style={{ left: 'calc(-1 * (100vw))', zIndex: 0 }}
+                className="absolute inset-y-0 bg-[#0e0e0e] dark:bg-white"
+                style={{ left: 'calc(-1 * (100vw))', right: '-9999px', zIndex: 0 }}
                 aria-hidden="true"
               />
               {/* Content sits above the bg */}
@@ -205,7 +197,7 @@ this is the perfect getaway.`;
                 <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
                   {cabin.rooms.map((room) => (
                     <div key={room.id} className="flex flex-col gap-3">
-                      <div className="aspect-[4/3] rounded-xl overflow-hidden bg-white/10 dark:bg-black/10">
+                      <div className="aspect-[4/3] overflow-hidden bg-white/10 dark:bg-black/10">
                         <img
                           src={room.image}
                           alt={room.name}
@@ -254,20 +246,22 @@ const DescriptionMenu = forwardRef<HTMLDivElement, DescriptionMenuProps>(
   ];
 
   return (
-    <div ref={ref} className="w-full lg:w-56 lg:shrink-0 lg:sticky lg:top-20 lg:self-start relative z-10">
+    <div ref={ref} className="w-full lg:w-56 lg:shrink-0 lg:sticky lg:top-20 lg:self-start relative z-10 lg:pt-4">
       <nav className="flex flex-row gap-2 lg:flex-col lg:gap-2">
         {allItems.map((item) => {
           const isActive = item.id === activeSection;
 
           let textClass: string;
           if (onDark) {
+            // nav over dark bg (light mode) or dark bg (dark mode) → need light text
             textClass = isActive
               ? "text-white"
               : "text-white/50 hover:text-white/80";
           } else {
+            // nav over light bg (light mode) or white bg (dark mode) → need dark text
             textClass = isActive
-              ? "text-text-primary"
-              : "text-text-tertiary hover:text-text-secondary";
+              ? "text-[#010101] dark:text-[#010101]"
+              : "text-[#010101]/40 dark:text-[#010101]/50 hover:text-[#010101]/70 dark:hover:text-[#010101]/80";
           }
 
           return (
