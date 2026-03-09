@@ -193,19 +193,19 @@ this is the perfect getaway.`;
             <div id="rooms" className="relative py-12 sm:py-16">
               {/* Full-width dark background: extends left to cover nav column and beyond */}
               <div
-                className="absolute inset-y-0 right-0 bg-[#0e0e0e]"
-                style={{ left: 'calc(-1 * (100vw))' }}
+                className="absolute inset-y-0 right-0 bg-[#0e0e0e] dark:bg-white"
+                style={{ left: 'calc(-1 * (100vw))', zIndex: 0 }}
                 aria-hidden="true"
               />
               {/* Content sits above the bg */}
-              <div className="relative">
-                <h2 className="text-3xl sm:text-4xl font-bold text-white mb-8 sm:mb-10">
+              <div className="relative" style={{ zIndex: 1 }}>
+                <h2 className="text-3xl sm:text-4xl font-bold text-white dark:text-[#010101] mb-8 sm:mb-10">
                   Place you'll stay in
                 </h2>
                 <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
                   {cabin.rooms.map((room) => (
                     <div key={room.id} className="flex flex-col gap-3">
-                      <div className="aspect-[4/3] rounded-xl overflow-hidden bg-white/10">
+                      <div className="aspect-[4/3] rounded-xl overflow-hidden bg-white/10 dark:bg-black/10">
                         <img
                           src={room.image}
                           alt={room.name}
@@ -213,8 +213,8 @@ this is the perfect getaway.`;
                         />
                       </div>
                       <div>
-                        <div className="text-white font-medium text-sm sm:text-base">{room.name}</div>
-                        <div className="text-white/60 text-xs sm:text-sm mt-0.5">{room.beds}</div>
+                        <div className="text-white dark:text-[#010101] font-medium text-sm sm:text-base">{room.name}</div>
+                        <div className="text-white/60 dark:text-[#010101]/60 text-xs sm:text-sm mt-0.5">{room.beds}</div>
                       </div>
                     </div>
                   ))}
@@ -254,7 +254,7 @@ const DescriptionMenu = forwardRef<HTMLDivElement, DescriptionMenuProps>(
   ];
 
   return (
-    <div ref={ref} className="w-full lg:w-56 lg:shrink-0 lg:sticky lg:top-20 lg:self-start">
+    <div ref={ref} className="w-full lg:w-56 lg:shrink-0 lg:sticky lg:top-20 lg:self-start relative z-10">
       <nav className="flex flex-row gap-2 lg:flex-col lg:gap-2">
         {allItems.map((item) => {
           const isActive = item.id === activeSection;
