@@ -10,8 +10,8 @@ export function CtaSection({ cabin }: CtaSectionProps) {
   const openBooking = useBookingStore((s) => s.openBooking);
 
   return (
-    <section className="w-full bg-accent" style={{ padding: "40px" }}>
-      <div className="max-w-[1440px] mx-auto flex flex-col gap-10">
+    <section className="w-full bg-accent">
+      <div className="max-w-[1440px] mx-auto px-4 sm:px-8 py-10 flex flex-col gap-10">
         {/* Main content: centered */}
         <div
           className="flex flex-col items-center justify-center gap-6 rounded-2xl"
