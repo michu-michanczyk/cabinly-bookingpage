@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { IconAI, IconMicrophone, IconArrowUp, IconLoading, IconCalendar, IconChartSquare, IconFinances, IconRanking, IconGPS, IconMessageText, IconChevronLeft } from "../icons";
+import { IconMicrophone, IconArrowUp, IconLoading, IconCalendar, IconChartSquare, IconFinances, IconRanking, IconGPS, IconMessageText, IconChevronLeft } from "../icons";
 import { Button } from "../ui/Button";
 import { useBookingStore } from "../../stores/booking-store";
 import { useChatStore } from "../../stores/chat-store";
@@ -273,7 +273,7 @@ export function TopBar({ cabin, onSendMessage }: TopBarProps) {
                   </div>
                 ) : (
                   /* Chat conversation */
-                  <div className="flex flex-col max-h-[400px]">
+                  <div className="flex flex-col max-h-[40vh] md:max-h-[400px]">
                     {/* Back to suggestions button */}
                     <div className="flex items-center px-4 pt-3 pb-1">
                       <button

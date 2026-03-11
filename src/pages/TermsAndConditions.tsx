@@ -27,7 +27,7 @@ function PolicyLayout({ title, children }: { title: string; children: React.Reac
           </div>
 
           {/* Title */}
-          <h1 className="font-medium text-text-primary mb-16" style={{ fontSize: "48px", lineHeight: "56px" }}>
+          <h1 className="font-medium text-text-primary mb-8 sm:mb-16" style={{ fontSize: "clamp(1.75rem, 5vw, 3rem)", lineHeight: "1.2" }}>
             {title}
           </h1>
 

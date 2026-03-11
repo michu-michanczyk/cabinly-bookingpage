@@ -15,7 +15,7 @@ export function CtaSection({ cabin }: CtaSectionProps) {
         {/* Main content: centered */}
         <div
           className="flex flex-col items-center justify-center gap-6 rounded-2xl"
-          style={{ minHeight: "500px", padding: "80px 40px" }}
+          style={{ minHeight: "clamp(300px, 50vw, 500px)", padding: "clamp(40px, 8vw, 80px) clamp(16px, 5vw, 40px)" }}
         >
           {/* AI sparkle icons */}
           <div className="flex items-center gap-2">
@@ -29,7 +29,7 @@ export function CtaSection({ cabin }: CtaSectionProps) {
           {/* Heading */}
           <h2
             className="font-medium text-accent-fg text-center"
-            style={{ fontSize: "48px", lineHeight: "56px" }}
+            style={{ fontSize: "clamp(1.75rem, 5vw, 3rem)", lineHeight: "1.2" }}
           >
             Reserve your<br />magic time now
           </h2>

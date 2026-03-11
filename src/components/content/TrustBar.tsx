@@ -46,15 +46,15 @@ const TRUST_ITEMS = [
 export function TrustBar() {
   return (
     <div className="max-w-[1440px] mx-auto px-4 sm:px-8 mt-10">
-      <div className="flex items-center justify-center gap-3 py-2">
+      <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-2 py-2">
         {TRUST_ITEMS.map((item, i) => (
           <div key={item.label} className="flex items-center gap-3">
             <div className="flex items-center gap-1">
               <span className="text-text-primary">{item.icon}</span>
-              <span className="text-base font-medium text-text-primary whitespace-nowrap">{item.label}</span>
+              <span className="text-sm sm:text-base font-medium text-text-primary whitespace-nowrap">{item.label}</span>
             </div>
             {i < TRUST_ITEMS.length - 1 && (
-              <span className="w-4 h-0.5 bg-text-primary shrink-0" />
+              <span className="hidden sm:block w-4 h-0.5 bg-text-primary shrink-0" />
             )}
           </div>
         ))}

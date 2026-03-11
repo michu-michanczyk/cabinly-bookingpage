@@ -252,8 +252,8 @@ function OurCabinSection({ cabin }: { cabin: Cabin }) {
       {/* Headline + text block */}
       <div className="flex flex-col gap-4">
         <h2
-          className="font-medium text-text-primary leading-[1.167]"
-          style={{ fontSize: "clamp(2rem, 4vw, 3rem)", lineHeight: "56px" }}
+          className="font-medium text-text-primary leading-[1.2]"
+          style={{ fontSize: "clamp(1.5rem, 4vw, 3rem)" }}
         >
           Listen to the birds singing while sipping freshly grounded coffee on our terrace overlooking the forest, just a meter from the stream.
         </h2>
@@ -280,12 +280,12 @@ function OurCabinSection({ cabin }: { cabin: Cabin }) {
         {STATS.map((stat) => (
           <div
             key={stat.label}
-            className="flex flex-col justify-between bg-bg-secondary rounded-2xl p-6"
-            style={{ minHeight: "210px" }}
+            className="flex flex-col justify-between bg-bg-secondary rounded-2xl p-5 sm:p-6"
+            style={{ minHeight: "clamp(140px, 25vw, 210px)" }}
           >
             <span className="text-text-primary">{stat.icon}</span>
             <div className="flex flex-col gap-1">
-              <span className="font-medium text-text-primary leading-none" style={{ fontSize: "64px" }}>{stat.value}</span>
+              <span className="font-medium text-text-primary leading-none" style={{ fontSize: "clamp(40px, 8vw, 64px)" }}>{stat.value}</span>
               <span className="text-base text-text-secondary">{stat.label}</span>
             </div>
           </div>
@@ -304,7 +304,7 @@ function RoomsSection({ cabin }: { cabin: Cabin }) {
   }
 
   return (
-    <section id="rooms" className="pt-32 flex flex-col gap-12">
+    <section id="rooms" className="pt-16 sm:pt-32 flex flex-col gap-12">
       {/* Badge */}
       <div className="inline-flex">
         <span className="inline-flex items-center px-3 py-1 rounded-full border border-border-light text-base font-medium text-text-primary">
@@ -315,7 +315,7 @@ function RoomsSection({ cabin }: { cabin: Cabin }) {
       {/* Heading */}
       <h2
         className="font-medium text-text-primary"
-        style={{ fontSize: "48px", lineHeight: "56px" }}
+        style={{ fontSize: "clamp(1.75rem, 4vw, 3rem)", lineHeight: "1.2" }}
       >
         You'll stay in here
       </h2>
@@ -327,7 +327,7 @@ function RoomsSection({ cabin }: { cabin: Cabin }) {
             {row.map((room) => (
               <div key={room.id} className="flex flex-col gap-4">
                 {/* Image with inset padding — card clips at rounded-2xl */}
-                <div className="rounded-2xl overflow-hidden" style={{ height: "252px" }}>
+                <div className="rounded-2xl overflow-hidden" style={{ height: "clamp(180px, 30vw, 252px)" }}>
                   <img
                     src={room.image}
                     alt={room.name}
@@ -468,7 +468,7 @@ function AmenitiesSection({ cabin }: { cabin: Cabin }) {
   }
 
   return (
-    <section id="amenities" className="pt-32 flex flex-col gap-12">
+    <section id="amenities" className="pt-16 sm:pt-32 flex flex-col gap-12">
       {/* Badge */}
       <div className="inline-flex">
         <span className="inline-flex items-center px-3 py-1 rounded-full border border-border-light text-base font-medium text-text-primary">
@@ -479,7 +479,7 @@ function AmenitiesSection({ cabin }: { cabin: Cabin }) {
       {/* Heading */}
       <h2
         className="font-medium text-text-primary"
-        style={{ fontSize: "48px", lineHeight: "56px" }}
+        style={{ fontSize: "clamp(1.75rem, 4vw, 3rem)", lineHeight: "1.2" }}
       >
         See what we offer and what makes<br />your stay comfortable
       </h2>
@@ -522,7 +522,7 @@ function SpecialOffersSection({ cabin }: { cabin: Cabin }) {
   if (!cabin.promos || cabin.promos.length === 0) return null;
 
   return (
-    <section id="special-offers" className="pt-32 flex flex-col gap-12">
+    <section id="special-offers" className="pt-16 sm:pt-32 flex flex-col gap-12">
       {/* Badge */}
       <div className="inline-flex">
         <span className="inline-flex items-center px-3 py-1 rounded-full border border-border-light text-base font-medium text-text-primary">
@@ -531,7 +531,7 @@ function SpecialOffersSection({ cabin }: { cabin: Cabin }) {
       </div>
 
       {/* Heading */}
-      <h2 className="font-medium text-text-primary" style={{ fontSize: "48px", lineHeight: "56px" }}>
+      <h2 className="font-medium text-text-primary" style={{ fontSize: "clamp(1.75rem, 4vw, 3rem)", lineHeight: "1.2" }}>
         Book a stay with best deal
       </h2>
 
@@ -540,7 +540,7 @@ function SpecialOffersSection({ cabin }: { cabin: Cabin }) {
         {cabin.promos.map((promo) => (
           <div
             key={promo.id}
-            className="flex items-center justify-between gap-4 px-8 py-8 rounded-2xl border border-border-light"
+            className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 px-4 py-4 sm:px-8 sm:py-8 rounded-2xl border border-border-light"
           >
             {/* Left: icon box + text */}
             <div className="flex items-center gap-4 flex-1 min-w-0">
@@ -586,7 +586,7 @@ function SpecialOffersSection({ cabin }: { cabin: Cabin }) {
 
 function HostSection({ cabin }: { cabin: Cabin }) {
   return (
-    <section id="host" className="pt-32">
+    <section id="host" className="pt-16 sm:pt-32">
       {/* Badge */}
       <div className="inline-flex mb-12">
         <span className="inline-flex items-center px-3 py-1 rounded-full border border-border-light text-base font-medium text-text-primary">
@@ -597,12 +597,12 @@ function HostSection({ cabin }: { cabin: Cabin }) {
       {/* Accent card */}
       <div
         className="bg-accent rounded-2xl overflow-hidden flex flex-col justify-end"
-        style={{ padding: "40px", minHeight: "560px" }}
+        style={{ padding: "clamp(20px, 5vw, 40px)", minHeight: "clamp(320px, 60vh, 560px)" }}
       >
         {/* Quote */}
         <p
-          className="text-accent-fg font-medium flex-1 flex items-end mb-20"
-          style={{ fontSize: "48px", lineHeight: "56px" }}
+          className="text-accent-fg font-medium flex-1 flex items-end mb-8 sm:mb-20"
+          style={{ fontSize: "clamp(1.75rem, 4vw, 3rem)", lineHeight: "1.2" }}
         >
           "Nestled in the heart of Kashubia, surrounded by forests and lakes, it's a peaceful retreat where you can relax, reconnect with nature, and enjoy your own second home away from the city."
         </p>
@@ -636,7 +636,7 @@ function LocationSection({ cabin }: { cabin: Cabin }) {
   const mapsEmbedUrl = `https://maps.google.com/maps?q=${addressQuery}&z=14&output=embed`;
 
   return (
-    <section id="location" className="pt-32 flex flex-col gap-12">
+    <section id="location" className="pt-16 sm:pt-32 flex flex-col gap-12">
       {/* Badge */}
       <div className="inline-flex">
         <span className="inline-flex items-center px-3 py-1 rounded-full border border-border-light text-base font-medium text-text-primary">
@@ -645,7 +645,7 @@ function LocationSection({ cabin }: { cabin: Cabin }) {
       </div>
 
       {/* Map container */}
-      <div className="relative rounded-2xl overflow-hidden" style={{ height: "560px" }}>
+      <div className="relative rounded-2xl overflow-hidden" style={{ height: "clamp(280px, 55vw, 560px)" }}>
         <iframe
           title="Cabin location"
           src={mapsEmbedUrl}
@@ -707,7 +707,7 @@ function FAQSection() {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   return (
-    <section id="faq" className="pt-32 flex flex-col gap-12">
+    <section id="faq" className="pt-16 sm:pt-32 flex flex-col gap-12">
       {/* Badge */}
       <div className="inline-flex">
         <span className="inline-flex items-center px-3 py-1 rounded-full border border-border-light text-base font-medium text-text-primary">
@@ -718,7 +718,7 @@ function FAQSection() {
       {/* Heading */}
       <h2
         className="font-medium text-text-primary"
-        style={{ fontSize: "48px", lineHeight: "56px" }}
+        style={{ fontSize: "clamp(1.75rem, 4vw, 3rem)", lineHeight: "1.2" }}
       >
         Check-in and Check-out<br />rules and many more
       </h2>
@@ -735,7 +735,7 @@ function FAQSection() {
               <button
                 type="button"
                 onClick={() => setOpenIndex(isOpen ? null : idx)}
-                className="w-full flex items-center justify-between px-6 py-6 text-left cursor-pointer group"
+                className="w-full flex items-center justify-between px-4 py-4 sm:px-6 sm:py-5 text-left cursor-pointer group"
               >
                 <span className="text-base font-medium text-text-primary pr-4">
                   {item.question}
@@ -756,7 +756,7 @@ function FAQSection() {
                   isOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
                 }`}
               >
-                <p className="px-6 pb-6 text-base font-normal text-text-secondary" style={{ lineHeight: "28px" }}>
+                <p className="px-4 pb-4 sm:px-6 sm:pb-6 text-base font-normal text-text-secondary" style={{ lineHeight: "28px" }}>
                   {item.answer}
                 </p>
               </div>
