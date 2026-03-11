@@ -4,6 +4,8 @@ import { HeroSection } from "./components/hero/HeroSection";
 import { Gallery } from "./components/gallery/Gallery";
 import { LocationTicker } from "./components/content/LocationTicker";
 import { Description } from "./components/content/Description";
+import { CtaSection } from "./components/content/CtaSection";
+import { TrustBar } from "./components/content/TrustBar";
 import { BookingDrawer } from "./components/booking/BookingDrawer";
 import { MobileBookingBar } from "./components/booking/MobileBookingBar";
 import { useChat } from "./hooks/useChat";
@@ -37,6 +39,9 @@ function App() {
           <Gallery images={cabin.images} />
         </div>
 
+        {/* Trust bar */}
+        <TrustBar />
+
         {/* Description */}
         <Description cabin={cabin} />
 
@@ -44,6 +49,9 @@ function App() {
 
       {/* Location Ticker */}
       <LocationTicker cabin={cabin} />
+
+      {/* CTA section */}
+      <CtaSection cabin={cabin} />
 
       {/* Footer */}
       <Footer />

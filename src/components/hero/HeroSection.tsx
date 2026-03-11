@@ -11,7 +11,7 @@ export function HeroSection({ cabin }: HeroSectionProps) {
       {/* Rating badge */}
       <div className="flex items-center justify-center gap-1 mb-2">
         <IconStar size={16} className="text-text-primary" />
-        <span className="text-sm text-text-secondary">
+        <span className="text-base text-text-secondary font-normal">
           {cabin.rating.score.toFixed(2)}
           <span className="mx-2 text-text-tertiary">|</span>
           {cabin.rating.count} reviews on {cabin.rating.source}
