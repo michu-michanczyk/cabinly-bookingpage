@@ -154,8 +154,8 @@ export function TopBar({ cabin, onSendMessage }: TopBarProps) {
   return (
     <header className="sticky top-0 z-30 bg-bg-primary border-b border-border-light">
       <div className="flex items-center px-4 sm:px-8 py-2 max-w-[1440px] mx-auto gap-2">
-        {/* Left: Owner info */}
-        <div className="flex items-center gap-2 shrink-0 min-w-0 w-[200px] lg:w-[260px]">
+        {/* Left: Owner info — hidden on xs, visible sm+ */}
+        <div className="hidden sm:flex items-center gap-2 shrink-0 min-w-0 w-[200px] lg:w-[260px]">
           <img
             src={cabin.images[0].url}
             alt={cabin.images[0].alt}
@@ -163,8 +163,8 @@ export function TopBar({ cabin, onSendMessage }: TopBarProps) {
             style={{ imageRendering: 'auto' }}
           />
           <div className="flex flex-col text-[10px] sm:text-xs leading-3 sm:leading-4 min-w-0">
-            <span className="text-text-secondary truncate">{cabin.location.address},</span>
-            <span className="text-text-secondary truncate">{cabin.location.city}, {cabin.location.country}</span>
+            <span className="text-text-primary font-medium truncate">{cabin.location.address},</span>
+            <span className="text-text-primary font-medium truncate">{cabin.location.city}, {cabin.location.country}</span>
             <a
               href={`https://www.google.com/maps/search/${encodeURIComponent(`${cabin.location.address}, ${cabin.location.city}, ${cabin.location.country}`)}`}
               target="_blank"
