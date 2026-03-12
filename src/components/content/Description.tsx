@@ -1,6 +1,8 @@
-import { forwardRef, useEffect, useRef, useState } from "react";
+import { forwardRef, useEffect, useMemo, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { format, parseISO } from "date-fns";
+import { formatCurrency } from "../../lib/utils";
 import type { Cabin } from "../../types/cabin";
-import { useBookingStore } from "../../stores/booking-store";
 
 // Stat card icons — outline style
 function IconGuests() {
@@ -133,9 +135,18 @@ export function Description({ cabin }: DescriptionProps) {
       setNavOnDark(isDark);
     };
 
-    window.addEventListener("scroll", checkNavBackground, { passive: true });
+    let rafId: number;
+    const handleScroll = () => {
+      cancelAnimationFrame(rafId);
+      rafId = requestAnimationFrame(checkNavBackground);
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
     checkNavBackground();
-    return () => window.removeEventListener("scroll", checkNavBackground);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      cancelAnimationFrame(rafId);
+    };
   }, []);
 
   // Scroll-based active section tracker
@@ -170,13 +181,20 @@ export function Description({ cabin }: DescriptionProps) {
       return active;
     };
 
+    let rafId: number;
     const onScroll = () => {
-      setActiveSection(getActiveSection());
+      cancelAnimationFrame(rafId);
+      rafId = requestAnimationFrame(() => {
+        setActiveSection(getActiveSection());
+      });
     };
 
     window.addEventListener("scroll", onScroll, { passive: true });
     onScroll();
-    return () => window.removeEventListener("scroll", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      cancelAnimationFrame(rafId);
+    };
   }, []);
 
   // Handle hash on load for deep links
@@ -227,18 +245,22 @@ export function Description({ cabin }: DescriptionProps) {
 }
 
 
-function OurCabinSection({ cabin }: { cabin: Cabin }) {
-  const [expanded, setExpanded] = useState(false);
-
-  const descriptionText = cabin.description;
-
-  const STATS = [
+function getCabinStats(cabin: Cabin) {
+  return [
     { icon: <IconGuests />, value: cabin.maxGuests, label: "Guests" },
     { icon: <IconBedroom />, value: cabin.bedrooms, label: "Bedrooms" },
     { icon: <IconBathroom />, value: cabin.bathrooms, label: "Bathrooms" },
     { icon: <IconParking />, value: 6, label: "Parking spots" },
     { icon: <IconPet />, value: 2, label: "Pets allowed" },
   ];
+}
+
+function OurCabinSection({ cabin }: { cabin: Cabin }) {
+  const [expanded, setExpanded] = useState(false);
+
+  const descriptionText = cabin.description;
+
+  const STATS = useMemo(() => getCabinStats(cabin), [cabin]);
 
   return (
     <section id="our-cabin-section" className="flex flex-col gap-10">
@@ -298,11 +320,6 @@ function OurCabinSection({ cabin }: { cabin: Cabin }) {
 function RoomsSection({ cabin }: { cabin: Cabin }) {
   const rooms = cabin.rooms ?? [];
 
-  const rows: (typeof rooms)[] = [];
-  for (let i = 0; i < rooms.length; i += 3) {
-    rows.push(rooms.slice(i, i + 3));
-  }
-
   return (
     <section id="rooms" className="pt-16 sm:pt-32 flex flex-col gap-12">
       {/* Badge */}
@@ -320,27 +337,24 @@ function RoomsSection({ cabin }: { cabin: Cabin }) {
         You'll stay in here
       </h2>
 
-      {/* Card rows */}
-      <div className="flex flex-col gap-8">
-        {rows.map((row, rowIdx) => (
-          <div key={rowIdx} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {row.map((room) => (
-              <div key={room.id} className="flex flex-col gap-4">
-                {/* Image with inset padding — card clips at rounded-2xl */}
-                <div className="rounded-2xl overflow-hidden" style={{ height: "clamp(180px, 30vw, 252px)" }}>
-                  <img
-                    src={room.image}
-                    alt={room.name}
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-                {/* Label */}
-                <div className="flex flex-col">
-                  <span className="text-base font-medium text-text-primary" style={{ lineHeight: "21px" }}>{room.name}</span>
-                  <span className="text-base font-normal text-text-secondary" style={{ lineHeight: "28px" }}>{room.beds}</span>
-                </div>
-              </div>
-            ))}
+      {/* Cards */}
+      <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
+        {rooms.map((room) => (
+          <div key={room.id} className="flex flex-col gap-4">
+            <div className="rounded-2xl overflow-hidden" style={{ height: "clamp(180px, 30vw, 252px)" }}>
+              <img
+                src={room.image}
+                alt={room.name}
+                className="w-full h-full object-cover"
+                loading="lazy"
+                width={400}
+                height={252}
+              />
+            </div>
+            <div className="flex flex-col">
+              <span className="text-base font-medium text-text-primary" style={{ lineHeight: "21px" }}>{room.name}</span>
+              <span className="text-base font-normal text-text-secondary" style={{ lineHeight: "28px" }}>{room.beds}</span>
+            </div>
           </div>
         ))}
       </div>
@@ -457,15 +471,8 @@ function AmenityIcon({ icon }: { icon: string }) {
 
 function AmenitiesSection({ cabin }: { cabin: Cabin }) {
   const [showAll, setShowAll] = useState(false);
-  const ITEMS_PER_ROW = 3;
-  const VISIBLE_ROWS = 4;
-  const visibleCount = ITEMS_PER_ROW * VISIBLE_ROWS;
-  const displayed = showAll ? cabin.amenities : cabin.amenities.slice(0, visibleCount);
-
-  const rows: typeof cabin.amenities[] = [];
-  for (let i = 0; i < displayed.length; i += ITEMS_PER_ROW) {
-    rows.push(displayed.slice(i, i + ITEMS_PER_ROW));
-  }
+  const VISIBLE_COUNT = 12;
+  const displayed = showAll ? cabin.amenities : cabin.amenities.slice(0, VISIBLE_COUNT);
 
   return (
     <section id="amenities" className="pt-16 sm:pt-32 flex flex-col gap-12">
@@ -486,25 +493,23 @@ function AmenitiesSection({ cabin }: { cabin: Cabin }) {
 
       {/* List */}
       <div className="flex flex-col gap-4">
-        {rows.map((row, rowIdx) => (
-          <div key={rowIdx} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {row.map((amenity) => (
-              <div
-                key={amenity.id}
-                className="flex items-center justify-between px-6 py-6 rounded-2xl border border-border-light"
-                style={{ minHeight: "72px" }}
-              >
-                <span className="text-base font-medium text-text-primary">{amenity.name}</span>
-                <span className="text-text-primary shrink-0 ml-2">
-                  <AmenityIcon icon={amenity.icon} />
-                </span>
-              </div>
-            ))}
-          </div>
-        ))}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {displayed.map((amenity) => (
+            <div
+              key={amenity.id}
+              className="flex items-center justify-between px-6 py-6 rounded-2xl border border-border-light"
+              style={{ minHeight: "72px" }}
+            >
+              <span className="text-base font-medium text-text-primary">{amenity.name}</span>
+              <span className="text-text-primary shrink-0 ml-2">
+                <AmenityIcon icon={amenity.icon} />
+              </span>
+            </div>
+          ))}
+        </div>
 
         {/* Show more / less */}
-        {cabin.amenities.length > visibleCount && (
+        {cabin.amenities.length > VISIBLE_COUNT && (
           <button
             onClick={() => setShowAll(!showAll)}
             className="text-base font-medium text-text-primary underline underline-offset-4 text-left cursor-pointer hover:opacity-70 transition-opacity w-fit pt-2"
@@ -517,8 +522,18 @@ function AmenitiesSection({ cabin }: { cabin: Cabin }) {
   );
 }
 
+function PromoBadge({ badge }: { badge: string }) {
+  const isPercent = badge.includes("%");
+  const isFor = badge.toLowerCase().includes("for");
+  const isSeasonal = badge.toLowerCase().includes("seasonal");
+  if (isPercent) return <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-[12px] font-semibold" style={{ background: "#FFE4D0", color: "#FF8427" }}>{badge}</span>;
+  if (isFor) return <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-[12px] font-semibold" style={{ background: "#FFEDED", color: "#E53E3E" }}>{badge}</span>;
+  if (isSeasonal) return <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-[12px] font-semibold" style={{ background: "#E3EEFC", color: "#0C3B7C" }}>{badge}</span>;
+  return <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-[12px] font-semibold" style={{ background: "#FFE4D0", color: "#FF8427" }}>{badge}</span>;
+}
+
 function SpecialOffersSection({ cabin }: { cabin: Cabin }) {
-  const openBooking = useBookingStore((s) => s.openBooking);
+  const navigate = useNavigate();
   if (!cabin.promos || cabin.promos.length === 0) return null;
 
   return (
@@ -537,48 +552,47 @@ function SpecialOffersSection({ cabin }: { cabin: Cabin }) {
 
       {/* Promo cards */}
       <div className="flex flex-col gap-4">
-        {cabin.promos.map((promo) => (
-          <div
-            key={promo.id}
-            className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 px-4 py-4 sm:px-8 sm:py-8 rounded-2xl border border-border-light"
-          >
-            {/* Left: icon box + text */}
-            <div className="flex items-center gap-4 flex-1 min-w-0">
-              {/* Icon box */}
-              <div className="shrink-0 w-12 h-12 flex items-center justify-center rounded-2xl border border-border-light text-2xl">
-                {promo.badge.split(" ")[0]}
-              </div>
-
-              {/* Text */}
-              <div className="flex flex-col gap-1 min-w-0">
-                {/* Title + tag */}
-                <div className="flex items-center gap-4 flex-wrap">
-                  <span className="text-base font-medium text-text-primary">{promo.title}</span>
-                  {promo.type === "last-minute" && (
-                    <span className="inline-flex items-center px-1 py-0.5 rounded-xl text-xs font-semibold" style={{ background: "#DDF9E1", color: "#157022" }}>
-                      MOST POPULAR
-                    </span>
-                  )}
-                </div>
-                {/* Description */}
-                <span className="text-base font-normal text-text-secondary" style={{ lineHeight: "20px" }}>{promo.description}</span>
-                {/* Prices */}
-                <div className="flex items-center gap-4">
-                  <span className="text-base font-normal text-text-primary">{promo.dealPrice} {cabin.pricing.currency}</span>
-                  <span className="text-base font-normal text-text-secondary line-through">{promo.originalPrice} {cabin.pricing.currency}</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Book now button */}
-            <button
-              onClick={() => openBooking(promo)}
-              className="shrink-0 h-12 px-6 rounded-lg border border-text-primary text-base font-semibold text-text-primary hover:opacity-70 transition-opacity cursor-pointer whitespace-nowrap"
+        {cabin.promos.map((promo) => {
+          const nights = Math.round(
+            (new Date(promo.dates.end).getTime() - new Date(promo.dates.start).getTime()) /
+              (1000 * 60 * 60 * 24)
+          );
+          const perNight = Math.round(promo.dealPrice / nights);
+          return (
+            <div
+              key={promo.id}
+              className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 px-4 py-4 sm:px-8 sm:py-8 rounded-2xl border border-border-default"
             >
-              Book now
-            </button>
-          </div>
-        ))}
+              {/* Left: text */}
+              <div className="flex flex-col gap-1 min-w-0 flex-1">
+                {/* Date + badge */}
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className="text-base font-medium text-text-primary">
+                    {format(parseISO(promo.dates.start), "d MMM")} – {format(parseISO(promo.dates.end), "d MMM")}
+                  </span>
+                  <PromoBadge badge={promo.badge} />
+                </div>
+                {/* Nights + description */}
+                <span className="text-base font-normal text-text-secondary" style={{ lineHeight: "20px" }}>
+                  {nights} night{nights !== 1 ? "s" : ""} · {promo.description}
+                </span>
+                {/* Prices */}
+                <div className="flex items-center gap-4 mt-1">
+                  <span className="text-base font-semibold text-text-primary">{formatCurrency(perNight, cabin.pricing.currency)} / night</span>
+                  <span className="text-base font-normal text-text-secondary line-through">{formatCurrency(promo.originalPrice, cabin.pricing.currency)}</span>
+                </div>
+              </div>
+
+              {/* Book now button */}
+              <button
+                onClick={() => navigate("/book?promo=" + promo.id)}
+                className="shrink-0 h-12 px-6 rounded-lg border border-text-primary text-base font-semibold text-text-primary hover:opacity-70 transition-opacity cursor-pointer whitespace-nowrap"
+              >
+                Book now
+              </button>
+            </div>
+          );
+        })}
       </div>
     </section>
   );
@@ -614,13 +628,15 @@ function HostSection({ cabin }: { cabin: Cabin }) {
             src={cabin.owner.avatar}
             alt={cabin.owner.name}
             className="w-12 h-12 rounded-full object-cover shrink-0"
+            width={48}
+            height={48}
           />
           {/* Name + label */}
           <div className="flex flex-col">
             <span className="text-base font-medium text-accent-fg" style={{ lineHeight: "21px" }}>
               {cabin.owner.name}
             </span>
-            <span className="text-base font-normal" style={{ lineHeight: "20px", color: "rgba(255,255,255,0.6)" }}>
+            <span className="text-base font-normal text-accent-fg opacity-60" style={{ lineHeight: "20px" }}>
               Your host
             </span>
           </div>
@@ -635,6 +651,25 @@ function LocationSection({ cabin }: { cabin: Cabin }) {
   const addressQuery = encodeURIComponent(`${address}, ${city}, ${country}`);
   const mapsEmbedUrl = `https://maps.google.com/maps?q=${addressQuery}&z=14&output=embed`;
 
+  const [mapVisible, setMapVisible] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setMapVisible(true);
+          observer.disconnect();
+        }
+      },
+      { rootMargin: "200px" }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
   return (
     <section id="location" className="pt-16 sm:pt-32 flex flex-col gap-12">
       {/* Badge */}
@@ -645,18 +680,26 @@ function LocationSection({ cabin }: { cabin: Cabin }) {
       </div>
 
       {/* Map container */}
-      <div className="relative rounded-2xl overflow-hidden" style={{ height: "clamp(280px, 55vw, 560px)" }}>
-        <iframe
-          title="Cabin location"
-          src={mapsEmbedUrl}
-          width="100%"
-          height="100%"
-          style={{ border: 0 }}
-          allowFullScreen
-          loading="lazy"
-          referrerPolicy="no-referrer-when-downgrade"
-          className="absolute inset-0 w-full h-full"
-        />
+      <div
+        ref={containerRef}
+        className="relative rounded-2xl overflow-hidden"
+        style={{ height: "clamp(280px, 55vw, 560px)" }}
+      >
+        {mapVisible ? (
+          <iframe
+            title="Cabin location"
+            src={mapsEmbedUrl}
+            width="100%"
+            height="100%"
+            style={{ border: 0 }}
+            allowFullScreen
+            loading="lazy"
+            referrerPolicy="no-referrer-when-downgrade"
+            className="absolute inset-0 w-full h-full"
+          />
+        ) : (
+          <div className="absolute inset-0 w-full h-full bg-bg-secondary" />
+        )}
 
         {/* Info card overlay commented out — address already shown by Google Maps embed
         <div className="absolute bottom-10 left-10 right-10 flex items-center gap-4 bg-bg-primary border border-border-light rounded-2xl px-4 py-4" style={{ minHeight: "80px" }}>
@@ -730,7 +773,7 @@ function FAQSection() {
           return (
             <div
               key={idx}
-              className="rounded-2xl border border-border-light overflow-hidden"
+              className="rounded-2xl border border-border-default overflow-hidden transition-colors hover:border-border-hover"
             >
               <button
                 type="button"
@@ -782,8 +825,8 @@ const DescriptionMenu = forwardRef<HTMLDivElement, DescriptionMenuProps>(
   ];
 
   return (
-    <div ref={ref} className="w-full lg:w-56 lg:shrink-0 lg:sticky lg:top-24 lg:self-start relative z-10">
-      <nav className="flex flex-row gap-2 lg:flex-col lg:gap-2">
+    <div ref={ref} className="hidden lg:block lg:w-56 lg:shrink-0 lg:sticky lg:top-24 lg:self-start relative z-10">
+      <nav className="flex flex-col gap-2">
         {allItems.map((item) => {
           const isActive = item.id === activeSection;
 

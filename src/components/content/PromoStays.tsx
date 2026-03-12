@@ -1,13 +1,26 @@
-import { useState, useEffect } from "react";
-import { IconFlash, IconArrowRight } from "../icons";
-import { Button } from "../ui/Button";
 import { useBookingStore } from "../../stores/booking-store";
-import { formatDateRange, formatCurrency, calculateSavings, getTimeRemaining } from "../../lib/utils";
+import { formatCurrency } from "../../lib/utils";
+import { format, parseISO } from "date-fns";
 import type { Promo } from "../../types/cabin";
 
 interface PromoStaysProps {
   promos: Promo[];
   currency: string;
+}
+
+function IconFlashSvg({ size = 16 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path
+        d="M4.05999 8.85333H6.11999V13.6533C6.11999 14.7733 6.72665 15 7.46665 14.16L12.5133 8.42666C13.1333 7.72666 12.8733 7.14666 11.9333 7.14666H9.87332V2.34666C9.87332 1.22666 9.26665 0.999998 8.52665 1.84L3.47999 7.57333C2.86665 8.28 3.12665 8.85333 4.05999 8.85333Z"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeMiterlimit="10"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
 }
 
 export function PromoStays({ promos, currency }: PromoStaysProps) {
@@ -18,16 +31,13 @@ export function PromoStays({ promos, currency }: PromoStaysProps) {
   return (
     <section className="max-w-[1440px] mx-auto px-4 sm:px-8 py-10 sm:py-14 border-t border-border-light">
       {/* Header */}
-      <div className="flex items-center gap-3 mb-6">
-        <IconFlash size={24} className="text-text-primary" />
-        <h2 className="text-2xl font-bold text-text-primary">Special Offers</h2>
-        <span className="text-xs font-semibold text-text-secondary bg-bg-tertiary px-2.5 py-1 rounded-full">
-          Limited time
-        </span>
+      <div className="flex items-center gap-2 mb-4">
+        <span className="text-text-primary"><IconFlashSvg size={16} /></span>
+        <span className="text-base font-medium text-text-primary">Special offers</span>
       </div>
 
-      {/* Cards grid - horizontal scroll on mobile */}
-      <div className="flex gap-4 overflow-x-auto hide-scrollbar pb-2 -mx-4 px-4 sm:mx-0 sm:px-0 sm:grid sm:grid-cols-2 lg:grid-cols-3">
+      {/* Cards */}
+      <div className="flex flex-col gap-2">
         {promos.map((promo) => (
           <PromoCard
             key={promo.id}
@@ -50,74 +60,79 @@ function PromoCard({
   currency: string;
   onBook: () => void;
 }) {
-  const savings = calculateSavings(promo.originalPrice, promo.dealPrice);
+  const nights = Math.round(
+    (new Date(promo.dates.end).getTime() - new Date(promo.dates.start).getTime()) /
+      (1000 * 60 * 60 * 24)
+  );
+  const perNight = Math.round(promo.dealPrice / nights);
 
   return (
-    <div className="shrink-0 w-[300px] sm:w-auto border border-border-light rounded-lg p-5 flex flex-col hover:opacity-80 transition-opacity">
-      {/* Badge + savings */}
-      <div className="flex items-center justify-between mb-3">
-        <span className="text-xs font-semibold text-text-primary bg-bg-tertiary px-2.5 py-1 rounded-full">
-          {promo.badge}
-        </span>
-        <span className="text-xs font-bold text-text-primary bg-bg-tertiary px-2 py-0.5 rounded-full">
-          Save {savings}%
-        </span>
-      </div>
-
-      {/* Title */}
-      <h3 className="text-base font-semibold text-text-primary mb-1">{promo.title}</h3>
-      <p className="text-xs text-text-secondary mb-3">{promo.description}</p>
-
-      {/* Dates */}
-      <div className="text-sm text-text-secondary mb-3">
-        {formatDateRange(promo.dates.start, promo.dates.end)}
-      </div>
-
-      {/* Pricing */}
-      <div className="flex items-baseline gap-2 mb-4">
-        <span className="text-2xl font-bold text-text-primary">
-          {formatCurrency(promo.dealPrice, currency)}
-        </span>
-        <span className="text-sm text-text-tertiary line-through">
+    <button
+      onClick={onBook}
+      style={{ borderColor: "var(--color-border-default)" }}
+      onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.borderColor = "var(--color-border-dark)"; }}
+      onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.borderColor = "var(--color-border-default)"; }}
+      className="w-full text-left rounded-xl px-4 py-4 flex flex-col justify-center transition-all cursor-pointer border bg-bg-primary"
+    >
+      {/* Top row: date + badge | strikethrough price */}
+      <div className="flex items-center justify-between gap-4">
+        <div className="flex items-center gap-2 flex-1 min-w-0">
+          <span className="text-sm font-medium text-text-primary whitespace-nowrap">
+            {format(parseISO(promo.dates.start), "d MMM")} - {format(parseISO(promo.dates.end), "d MMM")}
+          </span>
+          <span className="shrink-0"><PromoBadge badge={promo.badge} /></span>
+        </div>
+        <span className="text-sm text-text-secondary line-through shrink-0">
           {formatCurrency(promo.originalPrice, currency)}
         </span>
       </div>
 
-      {/* Countdown for last-minute */}
-      {promo.expiresAt && <CountdownTimer expiresAt={promo.expiresAt} />}
+      {/* Middle row: title · N nights | deal price/night */}
+      <div className="flex items-center justify-between gap-4 mt-1">
+        <span className="text-sm text-text-secondary truncate [text-overflow:clip]">
+          {promo.title} · {nights} night{nights !== 1 ? "s" : ""}
+        </span>
+        <span className="text-sm font-medium text-text-primary shrink-0">
+          {formatCurrency(perNight, currency)}
+          <span className="font-medium text-text-primary"> / night</span>
+        </span>
+      </div>
 
-      {/* Spacer to push button to bottom */}
-      <div className="flex-1" />
-
-      {/* CTA */}
-      <Button variant="primary" size="md" onClick={onBook} className="w-full mt-3">
-        Book this deal
-        <IconArrowRight size={14} />
-      </Button>
-    </div>
+      {/* Description row */}
+      <p className="text-xs text-text-secondary mt-1.5 truncate [text-overflow:clip]">{promo.description}</p>
+    </button>
   );
 }
 
-function CountdownTimer({ expiresAt }: { expiresAt: string }) {
-  const [time, setTime] = useState(getTimeRemaining(expiresAt));
+function PromoBadge({ badge }: { badge: string }) {
+  const isPercent = badge.includes("%");
+  const isFor = badge.toLowerCase().includes("for");
+  const isSeasonal = badge.toLowerCase().includes("seasonal");
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setTime(getTimeRemaining(expiresAt));
-    }, 60000);
-    return () => clearInterval(interval);
-  }, [expiresAt]);
-
-  if (time.expired) {
+  if (isPercent) {
     return (
-      <div className="text-xs text-text-secondary font-semibold">Offer expired</div>
+      <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-[12px] font-semibold" style={{ background: "#FFE4D0", color: "#FF8427" }}>
+        {badge}
+      </span>
     );
   }
-
+  if (isFor) {
+    return (
+      <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-[12px] font-semibold" style={{ background: "#FFEDED", color: "#E53E3E" }}>
+        {badge}
+      </span>
+    );
+  }
+  if (isSeasonal) {
+    return (
+      <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-[12px] font-semibold" style={{ background: "#E3EEFC", color: "#0C3B7C" }}>
+        {badge}
+      </span>
+    );
+  }
   return (
-    <div className="flex items-center gap-1.5 text-xs text-text-secondary font-semibold">
-      <span className="inline-block w-1.5 h-1.5 rounded-full bg-text-primary animate-pulse" />
-      Ends in {time.hours}h {time.minutes}m
-    </div>
+    <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-[12px] font-semibold" style={{ background: "#FFE4D0", color: "#FF8427" }}>
+      {badge}
+    </span>
   );
 }

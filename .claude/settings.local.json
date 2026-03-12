@@ -47,7 +47,32 @@
       "mcp__playwright__browser_install",
       "mcp__playwright__browser_console_messages",
       "mcp__figma-console__figma_get_file_data",
-      "mcp__figma-console__figma_get_component_image"
+      "mcp__figma-console__figma_get_component_image",
+      "Bash(git add src/components/content/Description.tsx src/components/layout/TopBar.tsx)",
+      "Bash(git commit:*)",
+      "Bash(open -a \"Google Chrome\" http://localhost:3000/)",
+      "Bash(git checkout main)",
+      "Bash(git merge geo)",
+      "Bash(git checkout geo)",
+      "mcp__playwright__browser_resize",
+      "WebSearch",
+      "mcp__playwright__browser_press_key",
+      "mcp__figma-console__figma_get_component_for_development",
+      "mcp__figma-console__figma_get_component",
+      "mcp__figma-console__figma_navigate",
+      "mcp__figma-console__figma_take_screenshot",
+      "Bash(for f in bathroom bedroom parking pets)",
+      "Bash(do echo \"=== $f ===\")",
+      "Read(//Users/michal/Downloads/cabinly-bookingpage/cabinly-bookingpage/public/icons/**)",
+      "Bash(done)",
+      "Bash(grep -r \"accent\\\\|brand\" /Users/michal/Downloads/cabinly-bookingpage/cabinly-bookingpage/tailwind.config.*)",
+      "Bash(git add src/App.tsx src/components/content/Description.tsx src/components/content/CtaSection.tsx src/components/content/TrustBar.tsx src/components/ScrollToTop.tsx src/main.tsx src/pages/PrivacyPolicy.tsx src/pages/TermsAndConditions.tsx src/components/gallery/Gallery.tsx src/components/hero/HeroSection.tsx src/components/layout/TopBar.tsx src/components/ui/Button.tsx)",
+      "Bash(npm run build)",
+      "Bash(node -e \":*)",
+      "mcp__figma-console__figma_get_selection",
+      "mcp__figma-console__figma_reconnect",
+      "mcp__figma-console__figma_list_open_files",
+      "WebFetch(domain:figma-alpha-api.s3.us-west-2.amazonaws.com)"
     ]
   }
 }

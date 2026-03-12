@@ -1,12 +1,12 @@
 import { TopBar } from "./components/layout/TopBar";
 import { Footer } from "./components/layout/Footer";
+import { CabinlyFooter } from "./components/layout/CabinlyFooter";
 import { HeroSection } from "./components/hero/HeroSection";
 import { Gallery } from "./components/gallery/Gallery";
 import { LocationTicker } from "./components/content/LocationTicker";
 import { Description } from "./components/content/Description";
 import { CtaSection } from "./components/content/CtaSection";
 import { TrustBar } from "./components/content/TrustBar";
-import { BookingDrawer } from "./components/booking/BookingDrawer";
 import { MobileBookingBar } from "./components/booking/MobileBookingBar";
 import { useChat } from "./hooks/useChat";
 import { useAccentColor } from "./hooks/useAccentColor";
@@ -56,8 +56,8 @@ function App() {
       {/* Footer */}
       <Footer />
 
-      {/* Booking Drawer (side panel) */}
-      <BookingDrawer cabin={cabin} />
+      {/* Cabinly branding footer */}
+      <CabinlyFooter />
 
       {/* Mobile sticky booking bar */}
       <MobileBookingBar cabin={cabin} />

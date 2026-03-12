@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { IconStar } from "../icons";
 import type { Cabin } from "../../types/cabin";
 
@@ -6,6 +7,20 @@ interface HeroSectionProps {
 }
 
 export function HeroSection({ cabin }: HeroSectionProps) {
+  const titleWords = useMemo(
+    () =>
+      cabin.title.split(" ").reduce<React.ReactNode[]>((acc, word, i, arr) => {
+        // Create natural line breaks for the title
+        acc.push(<span key={i}>{word}</span>);
+        if (i < arr.length - 1) {
+          // Add space between words, line breaks at natural points
+          acc.push(<span key={`s${i}`}> </span>);
+        }
+        return acc;
+      }, []),
+    [cabin.title]
+  );
+
   return (
     <section className="pt-14 pb-2 text-center">
       {/* Rating badge */}
@@ -25,15 +40,7 @@ export function HeroSection({ cabin }: HeroSectionProps) {
           fontSize: "clamp(3rem, 9vw, 8rem)",
         }}
       >
-        {cabin.title.split(" ").reduce<React.ReactNode[]>((acc, word, i, arr) => {
-          // Create natural line breaks for the title
-          acc.push(<span key={i}>{word}</span>);
-          if (i < arr.length - 1) {
-            // Add space between words, line breaks at natural points
-            acc.push(<span key={`s${i}`}> </span>);
-          }
-          return acc;
-        }, [])}
+        {titleWords}
       </h1>
     </section>
   );

@@ -1,13 +1,12 @@
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import type { Cabin } from "../../types/cabin";
-import { useBookingStore } from "../../stores/booking-store";
 
 interface CtaSectionProps {
   cabin: Cabin;
 }
 
 export function CtaSection({ cabin }: CtaSectionProps) {
-  const openBooking = useBookingStore((s) => s.openBooking);
+  const navigate = useNavigate();
 
   return (
     <section className="w-full bg-accent">
@@ -44,59 +43,13 @@ export function CtaSection({ cabin }: CtaSectionProps) {
 
           {/* Button */}
           <button
-            onClick={() => openBooking()}
+            onClick={() => navigate("/book")}
             className="h-12 px-6 rounded-lg bg-accent-fg text-accent text-base font-semibold hover:opacity-80 transition-opacity cursor-pointer"
           >
             Book a stay
           </button>
         </div>
 
-        {/* Footer rows */}
-        <div className="flex flex-col gap-6 pt-6" style={{ borderTop: "1px solid color-mix(in srgb, var(--color-accent-fg) 15%, transparent)" }}>
-          {/* Contact row */}
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
-            <div className="flex items-center gap-4">
-              <a href="#" aria-label="Instagram" className="text-accent-fg opacity-40 hover:opacity-100 transition-opacity">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <rect x="2" y="2" width="20" height="20" rx="5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                  <circle cx="12" cy="12" r="4" stroke="currentColor" strokeWidth="1.5"/>
-                  <circle cx="17.5" cy="6.5" r="1" fill="currentColor"/>
-                </svg>
-              </a>
-              <a href="#" aria-label="Facebook" className="text-accent-fg opacity-40 hover:opacity-100 transition-opacity">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M18 2H15C13.6739 2 12.4021 2.52678 11.4645 3.46447C10.5268 4.40215 10 5.67392 10 7V10H7V14H10V22H14V14H17L18 10H14V7C14 6.73478 14.1054 6.48043 14.2929 6.29289C14.4804 6.10536 14.7348 6 15 6H18V2Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
-              </a>
-            </div>
-
-            <p className="text-accent-fg opacity-60" style={{ fontSize: "16px", lineHeight: "28px" }}>
-              Contact us&nbsp;&nbsp;—&nbsp;&nbsp;
-              <a href="mailto:magda@drugidom.co.pl" className="opacity-100 hover:opacity-80 transition-opacity">
-                magda@drugidom.co.pl
-              </a>
-              &nbsp;&nbsp;—&nbsp;&nbsp;
-              <a href="tel:+48509799278" className="opacity-100 hover:opacity-80 transition-opacity">
-                +48 509 799 278
-              </a>
-            </p>
-          </div>
-
-          {/* Copyright row */}
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
-            <span className="text-accent-fg opacity-60" style={{ fontSize: "16px", lineHeight: "28px" }}>
-              © 2026 All rights reserved.
-            </span>
-            <div className="flex items-center gap-6">
-              <Link to="/terms" className="text-accent-fg opacity-60 hover:opacity-100 transition-opacity" style={{ fontSize: "16px", lineHeight: "28px" }}>
-                Terms &amp; Conditions
-              </Link>
-              <Link to="/privacy" className="text-accent-fg opacity-60 hover:opacity-100 transition-opacity" style={{ fontSize: "16px", lineHeight: "28px" }}>
-                Privacy policy
-              </Link>
-            </div>
-          </div>
-        </div>
       </div>
     </section>
   );

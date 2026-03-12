@@ -130,6 +130,9 @@ export function StepPayment({ cabin }: StepPaymentProps) {
             <label className="block text-xs text-text-tertiary mb-1">Card number</label>
             <input
               type="text"
+              id="card-number"
+              name="card-number"
+              autoComplete="cc-number"
               value={cardNumber}
               onChange={(e) => setCardNumber(formatCardNumber(e.target.value))}
               placeholder="4242 4242 4242 4242"
@@ -141,6 +144,9 @@ export function StepPayment({ cabin }: StepPaymentProps) {
               <label className="block text-xs text-text-tertiary mb-1">Expiry</label>
               <input
                 type="text"
+                id="card-expiry"
+                name="card-expiry"
+                autoComplete="cc-exp"
                 value={cardExpiry}
                 onChange={(e) => setCardExpiry(formatExpiry(e.target.value))}
                 placeholder="MM/YY"
@@ -151,6 +157,9 @@ export function StepPayment({ cabin }: StepPaymentProps) {
               <label className="block text-xs text-text-tertiary mb-1">CVC</label>
               <input
                 type="text"
+                id="card-cvc"
+                name="card-cvc"
+                autoComplete="cc-csc"
                 value={cardCvc}
                 onChange={(e) => setCardCvc(e.target.value.replace(/\D/g, "").slice(0, 4))}
                 placeholder="123"
