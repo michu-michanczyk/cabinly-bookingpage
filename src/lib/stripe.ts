@@ -1,11 +1,15 @@
 import { loadStripe } from "@stripe/stripe-js";
 
-// Use a test publishable key - replace with real key in production
-const STRIPE_PUBLISHABLE_KEY =
-  import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY ||
-  "pk_test_placeholder";
+const KEY = import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY || "pk_test_placeholder";
 
-export const stripePromise = loadStripe(STRIPE_PUBLISHABLE_KEY);
+let _stripePromise: ReturnType<typeof loadStripe> | null = null;
+
+export function getStripePromise() {
+  if (!_stripePromise) {
+    _stripePromise = loadStripe(KEY);
+  }
+  return _stripePromise;
+}
 
 // Mock payment intent creation - in production this would call your backend
 export async function createPaymentIntent(_amount: number, _currency: string) {

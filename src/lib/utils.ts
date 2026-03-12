@@ -1,4 +1,5 @@
-import { format, differenceInDays, parseISO } from "date-fns";
+import { format, differenceInDays, parseISO, isAfter, isBefore } from "date-fns";
+import type { Promo } from "../types/cabin";
 
 export function formatCurrency(amount: number, currency = "USD"): string {
   return new Intl.NumberFormat("en-US", {
@@ -31,6 +32,24 @@ export function calculateSavings(original: number, deal: number): number {
 
 export function cn(...classes: (string | boolean | undefined | null)[]): string {
   return classes.filter(Boolean).join(" ");
+}
+
+export function getApplicablePromos(promos: Promo[], checkIn?: string | null, checkOut?: string | null): Promo[] {
+  const now = new Date();
+  return promos.filter((promo) => {
+    // Filter out expired promos
+    if (promo.expiresAt && !isAfter(new Date(promo.expiresAt), now)) return false;
+    // If dates provided, filter by date overlap
+    if (checkIn && checkOut) {
+      const promoStart = parseISO(promo.dates.start);
+      const promoEnd = parseISO(promo.dates.end);
+      const stayStart = parseISO(checkIn);
+      const stayEnd = parseISO(checkOut);
+      // Overlap: promo start < stay end AND promo end > stay start
+      return isBefore(promoStart, stayEnd) && isAfter(promoEnd, stayStart);
+    }
+    return true;
+  });
 }
 
 export function getTimeRemaining(expiresAt: string): {

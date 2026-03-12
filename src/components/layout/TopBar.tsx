@@ -1,8 +1,8 @@
 import { useState, useRef, useEffect, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import { IconMicrophone, IconArrowUp, IconLoading, IconCalendar, IconChartSquare, IconFinances, IconRanking, IconGPS, IconMessageText, IconChevronLeft } from "../icons";
 import { Button } from "../ui/Button";
-import { useBookingStore } from "../../stores/booking-store";
 import { useChatStore } from "../../stores/chat-store";
 import { cn, formatCurrency } from "../../lib/utils";
 import type { Cabin, ChatAction } from "../../types/cabin";
@@ -23,7 +23,7 @@ interface TopBarProps {
 
 export function TopBar({ cabin, onSendMessage }: TopBarProps) {
   const [inputValue, setInputValue] = useState("");
-  const openBooking = useBookingStore((s) => s.openBooking);
+  const navigate = useNavigate();
   const isOpen = useChatStore((s) => s.isOpen);
   const openChat = useChatStore((s) => s.openChat);
   const closeChat = useChatStore((s) => s.closeChat);
@@ -86,6 +86,13 @@ export function TopBar({ cabin, onSendMessage }: TopBarProps) {
     if (!isOpen && isListening) stopListening();
   }, [isOpen, isListening, stopListening]);
 
+  // Abort recognition on unmount
+  useEffect(() => {
+    return () => {
+      recognitionRef.current?.abort();
+    };
+  }, []);
+
   const handleSubmit = () => {
     if (!inputValue.trim()) return;
     onSendMessage(inputValue.trim());
@@ -110,12 +117,7 @@ export function TopBar({ cabin, onSendMessage }: TopBarProps) {
   const handleAction = (action: ChatAction) => {
     if (action.type === "book") {
       const promoId = (action.payload as { promoId?: string })?.promoId;
-      if (promoId) {
-        const promo = cabin.promos.find((p) => p.id === promoId);
-        openBooking(promo || null);
-      } else {
-        openBooking();
-      }
+      navigate(promoId ? `/book?promo=${promoId}` : "/book");
       closeChat();
     } else if (action.type === "navigate") {
       const section = (action.payload as { section?: string })?.section;
@@ -349,9 +351,10 @@ export function TopBar({ cabin, onSendMessage }: TopBarProps) {
           </AnimatePresence>
         </div>
 
-        {/* Right: Price + Book CTA - Hidden on mobile/tablet */}
-        <div className="hidden md:flex items-center justify-end shrink-0 w-[200px] lg:w-[260px] gap-4">
-          <div className="flex flex-col items-end text-right whitespace-nowrap">
+        {/* Right: Price + Book CTA */}
+        <div className="hidden md:flex items-center justify-end shrink-0 gap-4">
+          {/* Price — only at lg+ */}
+          <div className="hidden lg:flex flex-col items-end text-right whitespace-nowrap">
             <span className="text-sm leading-tight text-text-secondary">starts from</span>
             <div className="flex items-baseline gap-0.5">
               <span className="text-sm font-semibold text-text-primary leading-tight">
@@ -363,7 +366,7 @@ export function TopBar({ cabin, onSendMessage }: TopBarProps) {
           <Button
             variant="primary"
             size="lg"
-            onClick={() => openBooking()}
+            onClick={() => navigate("/book")}
             className="whitespace-nowrap"
           >
             Book a stay

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { IconClose, IconChevronLeft, IconArrowRight } from "../icons";
+import { IconClose, IconArrowRight } from "../icons";
 import type { CabinImage } from "../../types/cabin";
 
 interface GalleryModalProps {
@@ -16,17 +16,17 @@ export function GalleryModal({ images, isOpen, onClose, initialIndex = 0 }: Gall
   useEffect(() => {
     if (isOpen) {
       setCurrentIndex(initialIndex);
-      // Calculate scrollbar width to prevent layout shift
-      const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
-      document.body.style.overflow = "hidden";
-      document.body.style.paddingRight = `${scrollbarWidth}px`;
+      // Scroll is always visible via overflow-y: scroll on html, so just lock position
+      const scrollY = window.scrollY;
+      document.body.style.position = "fixed";
+      document.body.style.top = `-${scrollY}px`;
+      document.body.style.width = "100%";
     } else {
-      // Delay cleanup until after exit animation completes
-      const timer = setTimeout(() => {
-        document.body.style.overflow = "";
-        document.body.style.paddingRight = "";
-      }, 300);
-      return () => clearTimeout(timer);
+      const scrollY = Math.abs(parseInt(document.body.style.top || "0"));
+      document.body.style.position = "";
+      document.body.style.top = "";
+      document.body.style.width = "";
+      window.scrollTo(0, scrollY);
     }
   }, [isOpen, initialIndex]);
 
@@ -88,7 +88,7 @@ export function GalleryModal({ images, isOpen, onClose, initialIndex = 0 }: Gall
               className="absolute left-4 p-3 rounded-full bg-white/10 hover:opacity-80 transition-opacity"
               style={{ cursor: 'pointer' }}
             >
-              <IconChevronLeft size={24} className="text-white" />
+              <IconArrowRight size={24} className="text-white rotate-180" />
             </button>
             <button
               onClick={next}

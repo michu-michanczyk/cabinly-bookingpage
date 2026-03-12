@@ -1,4 +1,4 @@
-import { useEffect, useRef, useMemo } from 'react';
+import React, { useEffect, useRef, useMemo } from 'react';
 import type { Cabin } from '../../types/cabin';
 import { extractKeywords } from '../../utils/extractKeywords';
 
@@ -40,16 +40,12 @@ export function LocationTicker({ cabin }: LocationTickerProps) {
         {[...Array(3)].map((_, groupIndex) => (
           <div key={groupIndex} className="flex items-center whitespace-nowrap shrink-0">
             {locations.map((location, index) => (
-              <>
-                <span
-                  key={`${groupIndex}-${index}`}
-                  className="font-medium text-sm text-text-primary px-3"
-                >
+              <React.Fragment key={`${groupIndex}-${index}`}>
+                <span className="font-medium text-sm text-text-primary px-3">
                   {location}
                 </span>
-                {/* Separator - dash character */}
                 <span className="text-text-primary text-sm">—</span>
-              </>
+              </React.Fragment>
             ))}
           </div>
         ))}

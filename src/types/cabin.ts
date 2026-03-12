@@ -75,6 +75,7 @@ export interface Pricing {
   cleaningFee: number;
   serviceFee: number;
   currency: string;
+  nightlyPrices?: Record<string, number>;
 }
 
 export interface Promo {
@@ -111,6 +112,7 @@ export interface BookingState {
   };
   selectedPromo: Promo | null;
   pricing: PriceBreakdown | null;
+  paymentOption: 'full' | 'split';
 }
 
 export interface PriceBreakdown {

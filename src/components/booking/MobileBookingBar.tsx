@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import { Button } from "../ui/Button";
 import { useBookingStore } from "../../stores/booking-store";
 import { formatCurrency } from "../../lib/utils";
@@ -8,7 +9,7 @@ interface MobileBookingBarProps {
 }
 
 export function MobileBookingBar({ cabin }: MobileBookingBarProps) {
-  const openBooking = useBookingStore((s) => s.openBooking);
+  const navigate = useNavigate();
   const isOpen = useBookingStore((s) => s.isOpen);
 
   if (isOpen) return null;
@@ -23,7 +24,7 @@ export function MobileBookingBar({ cabin }: MobileBookingBarProps) {
           </span>
           <span className="text-sm font-medium text-text-secondary">/ night</span>
         </div>
-        <Button variant="primary" size="md" onClick={() => openBooking()}>
+        <Button variant="primary" size="md" onClick={() => navigate("/book")}>
           Book a stay
         </Button>
       </div>

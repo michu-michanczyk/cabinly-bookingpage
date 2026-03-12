@@ -1,8 +1,11 @@
-import { useState } from "react";
+import { lazy, Suspense, useState } from "react";
 import { IconPlay, IconArrowRight } from "../icons";
 import { cn } from "../../lib/utils";
-import { GalleryModal } from "./GalleryModal";
 import type { CabinImage } from "../../types/cabin";
+
+const GalleryModal = lazy(() =>
+  import("./GalleryModal").then((m) => ({ default: m.GalleryModal }))
+);
 
 interface GalleryProps {
   images: CabinImage[];
@@ -27,7 +30,7 @@ export function Gallery({ images }: GalleryProps) {
       return (
         <section className="hidden md:grid mt-4" style={{ height: "840px" }}>
           <div className="relative min-h-0">
-            <GalleryImage image={images[0]} onClick={() => openModal(0)} className="h-full min-h-0" />
+            <GalleryImage image={images[0]} onClick={() => openModal(0)} className="h-full min-h-0" eager />
             {images[0].isVideo && (
               <div className="absolute bottom-4 left-4 flex items-center gap-1 bg-text-primary px-2 py-1 rounded-full">
                 <IconPlay size={14} className="text-text-tertiary" />
@@ -43,7 +46,7 @@ export function Gallery({ images }: GalleryProps) {
     if (count === 2) {
       return (
         <section className="hidden md:grid grid-cols-2 gap-2 mt-4" style={{ height: "840px" }}>
-          <GalleryImage image={images[0]} onClick={() => openModal(0)} className="min-h-0" />
+          <GalleryImage image={images[0]} onClick={() => openModal(0)} className="min-h-0" eager />
           <GalleryImage image={images[1]} onClick={() => openModal(1)} className="min-h-0" />
         </section>
       );
@@ -53,7 +56,7 @@ export function Gallery({ images }: GalleryProps) {
     if (count === 3) {
       return (
         <section className="hidden md:grid grid-cols-2 gap-2 mt-4" style={{ height: "840px" }}>
-          <GalleryImage image={images[0]} onClick={() => openModal(0)} className="min-h-0" />
+          <GalleryImage image={images[0]} onClick={() => openModal(0)} className="min-h-0" eager />
           <div className="grid grid-rows-2 gap-2 min-h-0">
             <GalleryImage image={images[1]} onClick={() => openModal(1)} className="min-h-0" />
             <GalleryImage image={images[2]} onClick={() => openModal(2)} className="min-h-0" />
@@ -67,7 +70,7 @@ export function Gallery({ images }: GalleryProps) {
       return (
         <section className="hidden md:grid grid-cols-2 gap-2 mt-4" style={{ height: "840px" }}>
           <div className="grid grid-rows-2 gap-2 min-h-0">
-            <GalleryImage image={images[0]} onClick={() => openModal(0)} className="min-h-0" />
+            <GalleryImage image={images[0]} onClick={() => openModal(0)} className="min-h-0" eager />
             <GalleryImage image={images[1]} onClick={() => openModal(1)} className="min-h-0" />
           </div>
           <div className="grid grid-rows-2 gap-2 min-h-0">
@@ -83,7 +86,7 @@ export function Gallery({ images }: GalleryProps) {
       return (
         <section className="hidden md:grid grid-cols-[1.4fr_1fr] gap-2 mt-4" style={{ height: "840px" }}>
           <div className="grid grid-rows-[1.8fr_1fr] gap-2 min-h-0">
-            <GalleryImage image={images[0]} onClick={() => openModal(0)} className="min-h-0" />
+            <GalleryImage image={images[0]} onClick={() => openModal(0)} className="min-h-0" eager />
             <div className="grid grid-cols-2 gap-2 min-h-0">
               <GalleryImage image={images[1]} onClick={() => openModal(1)} className="min-h-0" />
               <GalleryImage image={images[2]} onClick={() => openModal(2)} className="min-h-0" />
@@ -102,7 +105,7 @@ export function Gallery({ images }: GalleryProps) {
       return (
         <section className="hidden md:grid grid-cols-3 gap-2 mt-4" style={{ height: "840px" }}>
           <div className="grid grid-rows-2 gap-2 min-h-0">
-            <GalleryImage image={images[0]} onClick={() => openModal(0)} className="min-h-0" />
+            <GalleryImage image={images[0]} onClick={() => openModal(0)} className="min-h-0" eager />
             <GalleryImage image={images[1]} onClick={() => openModal(1)} className="min-h-0" />
           </div>
           <div className="grid grid-rows-2 gap-2 min-h-0">
@@ -126,7 +129,7 @@ export function Gallery({ images }: GalleryProps) {
         </div>
         <div className="grid grid-rows-[1.8fr_1fr] gap-2 min-h-0">
           <div className="relative min-h-0">
-            <GalleryImage image={images[0]} onClick={() => openModal(0)} className="h-full" />
+            <GalleryImage image={images[0]} onClick={() => openModal(0)} className="h-full" eager />
             {images[0].isVideo && (
               <div className="absolute bottom-4 left-4 flex items-center gap-1 bg-text-primary px-2 py-1 rounded-full">
                 <IconPlay size={14} className="text-text-tertiary" />
@@ -176,6 +179,9 @@ export function Gallery({ images }: GalleryProps) {
                 src={image.url}
                 alt={image.alt}
                 className="w-full h-full object-cover"
+                loading={i === 0 ? "eager" : "lazy"}
+                fetchPriority={i === 0 ? "high" : "auto"}
+                decoding={i === 0 ? "sync" : "async"}
               />
             </div>
           ))}
@@ -207,12 +213,14 @@ export function Gallery({ images }: GalleryProps) {
       </section>
 
       {/* Gallery Modal */}
-      <GalleryModal
-        images={images}
-        isOpen={modalOpen}
-        onClose={() => setModalOpen(false)}
-        initialIndex={activeIndex}
-      />
+      <Suspense fallback={null}>
+        <GalleryModal
+          images={images}
+          isOpen={modalOpen}
+          onClose={() => setModalOpen(false)}
+          initialIndex={activeIndex}
+        />
+      </Suspense>
     </>
   );
 }
@@ -221,10 +229,12 @@ function GalleryImage({
   image,
   onClick,
   className,
+  eager,
 }: {
   image: CabinImage;
   onClick: () => void;
   className?: string;
+  eager?: boolean;
 }) {
   return (
     <div
@@ -237,7 +247,9 @@ function GalleryImage({
         alt={image.alt}
         className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
         style={{ cursor: 'pointer' }}
-        loading="lazy"
+        loading={eager ? "eager" : "lazy"}
+        fetchPriority={eager ? "high" : "auto"}
+        decoding={eager ? "sync" : "async"}
       />
       <div className="absolute inset-0 bg-black/10 group-hover:bg-black/5 transition-colors" style={{ cursor: 'pointer' }} />
     </div>

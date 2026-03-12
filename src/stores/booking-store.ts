@@ -3,6 +3,8 @@ import type { BookingState, Promo, PriceBreakdown } from "../types/cabin";
 import { getNights } from "../lib/utils";
 
 interface BookingStore extends BookingState {
+  agreedToTerms: boolean;
+  setAgreedToTerms: (agreed: boolean) => void;
   openBooking: (promo?: Promo | null) => void;
   closeBooking: () => void;
   setStep: (step: 1 | 2 | 3 | 4) => void;
@@ -10,6 +12,8 @@ interface BookingStore extends BookingState {
   setGuests: (adults: number, children: number) => void;
   setGuestDetails: (details: Partial<BookingState["guestDetails"]>) => void;
   calculatePricing: (baseNight: number, cleaningFee: number, serviceFee: number) => void;
+  setPaymentOption: (option: 'full' | 'split') => void;
+  setSelectedPromo: (promo: Promo | null) => void;
   reset: () => void;
 }
 
@@ -21,10 +25,13 @@ const initialState: BookingState = {
   guestDetails: { name: "", email: "", phone: "", requests: "" },
   selectedPromo: null,
   pricing: null,
+  paymentOption: 'full',
 };
 
 export const useBookingStore = create<BookingStore>((set, get) => ({
   ...initialState,
+  agreedToTerms: false,
+  setAgreedToTerms: (agreed) => set({ agreedToTerms: agreed }),
 
   openBooking: (promo = null) => {
     if (promo) {
@@ -75,5 +82,9 @@ export const useBookingStore = create<BookingStore>((set, get) => ({
     set({ pricing });
   },
 
-  reset: () => set(initialState),
+  setPaymentOption: (option) => set({ paymentOption: option }),
+
+  setSelectedPromo: (promo) => set({ selectedPromo: promo }),
+
+  reset: () => set({ ...initialState, agreedToTerms: false }),
 }));
