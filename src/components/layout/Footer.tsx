@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 export function Footer() {
   return (
     <footer className="w-full bg-accent">
-      <div className="max-w-[1440px] mx-auto px-4 sm:px-8 pt-8 pb-24 md:pb-8 flex flex-col gap-6">
+      <div className="max-w-[1440px] mx-auto px-4 sm:px-8 pt-8 pb-16 md:pb-8 flex flex-col gap-6">
         {/* Top row: socials left, contact right */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           {/* Social icons */}
