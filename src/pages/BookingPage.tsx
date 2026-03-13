@@ -53,9 +53,10 @@ export function BookingPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Keep URL in sync whenever step changes
+  // Keep URL in sync and scroll to top whenever step changes
   useEffect(() => {
     navigate(`/book/${STEP_SLUGS[step]}`, { replace: true });
+    window.scrollTo({ top: 0, behavior: "instant" });
   }, [step, navigate]);
 
   return (
