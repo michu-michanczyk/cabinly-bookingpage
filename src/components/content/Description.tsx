@@ -583,6 +583,9 @@ function SpecialOffersSection({ cabin }: { cabin: Cabin }) {
                   <span className="text-base font-normal text-text-secondary line-through">{formatCurrency(promo.originalPrice, cabin.pricing.currency)}</span>
                 </div>
               </div>
+              <span className="shrink-0 h-12 px-6 rounded-lg border border-text-primary text-base font-semibold text-text-primary flex items-center whitespace-nowrap">
+                Book now
+              </span>
             </button>
           );
         })}
