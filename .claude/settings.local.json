@@ -72,7 +72,12 @@
       "mcp__figma-console__figma_get_selection",
       "mcp__figma-console__figma_reconnect",
       "mcp__figma-console__figma_list_open_files",
-      "WebFetch(domain:figma-alpha-api.s3.us-west-2.amazonaws.com)"
+      "WebFetch(domain:figma-alpha-api.s3.us-west-2.amazonaws.com)",
+      "WebFetch(domain:www.figma.com)",
+      "mcp__figma-console__figma_get_status",
+      "Bash(xargs kill -9)",
+      "mcp__figma-console__figma_get_component_details",
+      "Bash(git add:*)"
     ]
   }
 }

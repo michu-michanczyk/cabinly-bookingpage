@@ -13,7 +13,7 @@ export function CabinlyFooter() {
           </div>
         </div>
 
-        <button className="flex items-center gap-2 bg-white text-[#010101] dark:bg-[#010101] dark:text-white px-4 py-2.5 rounded-lg text-xs font-semibold shadow-lg hover:opacity-80 transition-opacity cursor-pointer shrink-0">
+        <button className="flex items-center gap-2 bg-white text-[#010101] dark:bg-[#010101] dark:text-white px-4 py-2.5 rounded-lg text-sm font-semibold shadow-lg hover:opacity-80 transition-opacity cursor-pointer shrink-0">
           Create your own page
           <IconArrowRight size={14} />
         </button>
