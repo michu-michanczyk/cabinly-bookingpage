@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+
+    <!-- Favicon — overridden at runtime by useSeoMeta -->
+    <link rel="icon" type="image/webp" href="/cabinly-bookingpage/images/IMG_2832.webp" />
+
+    <!-- Baseline — overridden at runtime by useSeoMeta -->
+    <title>Cabin Rental | Cabinly</title>
+    <meta name="description" content="Find and book unique cabin stays." />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#ffffff" />
+    <meta name="color-scheme" content="light dark" />
+
+    <!-- Preload hero image — starts downloading before React boots -->
+    <link rel="preload" as="image" href="/cabinly-bookingpage/images/IMG_2832.webp" type="image/webp" />
+
+    <!-- Preconnect to image CDNs used in cabin data -->
+    <link rel="preconnect" href="https://images.unsplash.com" />
+
+    <!-- DNS-prefetch for analytics / maps (add as needed) -->
+    <link rel="dns-prefetch" href="https://maps.googleapis.com" />
+    <link rel="dns-prefetch" href="https://maps.gstatic.com" />
+
+    <!-- Non-blocking font load -->
+    <link rel="preconnect" href="https://fonts.cdnfonts.com" crossorigin />
+    <link rel="stylesheet" href="https://fonts.cdnfonts.com/css/switzer" media="print" onload="this.media='all'" />
+    <noscript><link rel="stylesheet" href="https://fonts.cdnfonts.com/css/switzer" /></noscript>
+    <script type="module" crossorigin src="/cabinly-bookingpage/assets/index-Dj8FbWfP.js"></script>
+    <link rel="modulepreload" crossorigin href="/cabinly-bookingpage/assets/vendor-motion-BX0gn2BS.js">
+    <link rel="modulepreload" crossorigin href="/cabinly-bookingpage/assets/vendor-react-fvk_MuXT.js">
+    <link rel="modulepreload" crossorigin href="/cabinly-bookingpage/assets/vendor-dates-C_W3zLWt.js">
+    <link rel="stylesheet" crossorigin href="/cabinly-bookingpage/assets/index-C5azr6Zn.css">
+  </head>
+  <body>
+    <div id="root"></div>
+    <!-- Restore path redirected by 404.html for GitHub Pages SPA routing -->
+    <script>
+      (function () {
+        var params = new URLSearchParams(window.location.search);
+        var p = params.get('p');
+        if (p) {
+          var h = params.get('h') || '';
+          params.delete('p');
+          params.delete('h');
+          var qs = params.toString();
+          window.history.replaceState(
+            null, null,
+            '/cabinly-bookingpage' + p + (qs ? '?' + qs : '') + h
+          );
+        }
+      })();
+    </script>
+  </body>
+</html>
