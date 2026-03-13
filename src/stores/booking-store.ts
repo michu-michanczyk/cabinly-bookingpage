@@ -10,7 +10,7 @@ interface BookingStore extends BookingState {
   toggleExtra: (id: string) => void;
   openBooking: (promo?: Promo | null) => void;
   closeBooking: () => void;
-  setStep: (step: 1 | 2 | 3 | 4) => void;
+  setStep: (step: 1 | 2 | 3 | 4 | 5) => void;
   setDates: (checkIn: string | null, checkOut: string | null) => void;
   setGuests: (partial: Partial<BookingState["guests"]>) => void;
   setGuestDetails: (details: Partial<BookingState["guestDetails"]>) => void;
@@ -57,7 +57,7 @@ export const useBookingStore = create<BookingStore>((set, get) => ({
 
   closeBooking: () => set({ isOpen: false }),
 
-  setStep: (step) => set({ step }),
+  setStep: (step: 1 | 2 | 3 | 4 | 5) => set({ step }),
 
   setDates: (checkIn, checkOut) => set({ dates: { checkIn, checkOut } }),
 

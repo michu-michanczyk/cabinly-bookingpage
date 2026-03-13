@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { IconClose, IconArrowRight } from "../icons";
 import type { CabinImage } from "../../types/cabin";
@@ -12,11 +12,21 @@ interface GalleryModalProps {
 
 export function GalleryModal({ images, isOpen, onClose, initialIndex = 0 }: GalleryModalProps) {
   const [currentIndex, setCurrentIndex] = useState(initialIndex);
+  const thumbStripRef = useRef<HTMLDivElement>(null);
+  const thumbRefs = useRef<(HTMLButtonElement | null)[]>([]);
 
   useEffect(() => {
     if (isOpen) {
       setCurrentIndex(initialIndex);
       document.body.style.overflow = "hidden";
+      // Scroll thumbnail strip to the opening index on next frame
+      requestAnimationFrame(() => {
+        const thumb = thumbRefs.current[initialIndex];
+        const strip = thumbStripRef.current;
+        if (!thumb || !strip) return;
+        const offset = thumb.offsetLeft - strip.clientWidth / 2 + thumb.offsetWidth / 2;
+        strip.scrollLeft = offset;
+      });
     } else {
       document.body.style.overflow = "";
     }
@@ -35,6 +45,25 @@ export function GalleryModal({ images, isOpen, onClose, initialIndex = 0 }: Gall
 
   const next = () => setCurrentIndex((i) => (i + 1) % images.length);
   const prev = () => setCurrentIndex((i) => (i - 1 + images.length) % images.length);
+
+  const touchStartX = useRef<number | null>(null);
+  const handleTouchStart = (e: React.TouchEvent) => { touchStartX.current = e.touches[0].clientX; };
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (touchStartX.current === null) return;
+    const diff = touchStartX.current - e.changedTouches[0].clientX;
+    if (Math.abs(diff) > 50) diff > 0 ? next() : prev();
+    touchStartX.current = null;
+  };
+
+  useEffect(() => {
+    const thumb = thumbRefs.current[currentIndex];
+    const strip = thumbStripRef.current;
+    if (!thumb || !strip) return;
+    const stripRect = strip.getBoundingClientRect();
+    const thumbRect = thumb.getBoundingClientRect();
+    const offset = thumbRect.left - stripRect.left - strip.clientWidth / 2 + thumbRect.width / 2;
+    strip.scrollBy({ left: offset, behavior: "smooth" });
+  }, [currentIndex]);
 
   return (
     <AnimatePresence>
@@ -60,7 +89,7 @@ export function GalleryModal({ images, isOpen, onClose, initialIndex = 0 }: Gall
           </div>
 
           {/* Main image */}
-          <div className="flex-1 flex items-center justify-center px-4 relative min-h-0">
+          <div className="flex-1 flex items-center justify-center px-4 relative min-h-0" onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}>
             <AnimatePresence mode="wait">
               <motion.img
                 key={currentIndex}
@@ -92,10 +121,12 @@ export function GalleryModal({ images, isOpen, onClose, initialIndex = 0 }: Gall
           </div>
 
           {/* Thumbnail strip */}
-          <div className="flex gap-2 px-4 py-3 overflow-x-auto hide-scrollbar justify-center">
+          <div ref={thumbStripRef} className="overflow-x-auto hide-scrollbar py-3" style={{ scrollSnapType: "none" }}>
+          <div className="flex gap-2 px-4 w-max mx-auto">
             {images.map((img, i) => (
               <button
                 key={i}
+                ref={(el) => { thumbRefs.current[i] = el; }}
                 onClick={() => setCurrentIndex(i)}
                 className={`shrink-0 w-16 h-12 rounded overflow-hidden transition-all ${
                   i === currentIndex
@@ -107,6 +138,7 @@ export function GalleryModal({ images, isOpen, onClose, initialIndex = 0 }: Gall
                 <img src={img.url} alt={img.alt} className="w-full h-full object-cover" />
               </button>
             ))}
+          </div>
           </div>
         </motion.div>
       )}

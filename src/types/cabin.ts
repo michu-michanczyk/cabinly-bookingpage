@@ -95,7 +95,7 @@ export interface Promo {
 }
 
 export interface BookingState {
-  step: 1 | 2 | 3 | 4;
+  step: 1 | 2 | 3 | 4 | 5;
   isOpen: boolean;
   dates: {
     checkIn: string | null;

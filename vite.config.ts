@@ -5,6 +5,9 @@ import tailwindcss from '@tailwindcss/vite'
 export default defineConfig({
   base: "/cabinly-bookingpage/",
   plugins: [react(), tailwindcss()],
+  server: {
+    open: "/cabinly-bookingpage/",
+  },
   build: {
     rollupOptions: {
       output: {

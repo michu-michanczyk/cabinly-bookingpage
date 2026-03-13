@@ -183,7 +183,7 @@ export function TopBar({ cabin, onSendMessage }: TopBarProps) {
           {/* Input — always in the same position */}
           <div
             className={cn(
-              "relative z-[52] flex items-center gap-1 rounded-sm h-12 pl-3 pr-2 w-full transition-colors",
+              "relative z-[52] flex items-center gap-1 rounded-lg h-12 pl-3 pr-2 w-full transition-colors",
               isOpen
                 ? "bg-bg-tertiary border border-border-focus ring-3 ring-border-focus/30"
                 : "bg-bg-tertiary border border-transparent hover:border-border-hover"

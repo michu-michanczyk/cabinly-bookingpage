@@ -23,6 +23,7 @@ createRoot(document.getElementById('root')!).render(
         <Route path="/book/dates" element={<BookingPage />} />
         <Route path="/book/guests" element={<BookingPage />} />
         <Route path="/book/extras" element={<BookingPage />} />
+        <Route path="/book/details" element={<BookingPage />} />
         <Route path="/book/confirmation" element={<BookingPage />} />
         <Route path="/book/confirmed" element={<BookingConfirmed />} />
       </Routes>
