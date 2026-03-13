@@ -100,8 +100,8 @@ export function BookingStepConfirmation({ cabin }: BookingStepConfirmationProps)
             </span>
           </div>
           <div className="flex items-center justify-between py-3 border-t border-border-light">
-            <span className="text-base font-bold text-text-primary">Total</span>
-            <span className="text-base font-bold text-text-primary">{formatCurrency(grandTotal, currency)}</span>
+            <span className="text-base font-medium text-text-primary">Total</span>
+            <span className="text-base font-medium text-text-primary">{formatCurrency(grandTotal, currency)}</span>
           </div>
         </div>
       </div>
