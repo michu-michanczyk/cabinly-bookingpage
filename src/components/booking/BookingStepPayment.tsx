@@ -135,10 +135,10 @@ export function BookingStepPayment({ cabin }: BookingStepPaymentProps) {
             >
               <span className="shrink-0 text-text-primary">{extra.icon}</span>
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-text-primary">{extra.title}</p>
+                <p className="text-sm text-text-primary">{extra.title}</p>
                 <p className="text-sm text-text-secondary">{extra.subtitle}</p>
               </div>
-              <span className="text-sm font-medium text-text-primary shrink-0">
+              <span className="text-sm text-text-primary shrink-0">
                 +{formatCurrency(extra.price, cabin.pricing.currency)}
               </span>
             </button>

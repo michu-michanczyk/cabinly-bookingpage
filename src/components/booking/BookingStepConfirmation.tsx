@@ -70,7 +70,7 @@ export function BookingStepConfirmation({ cabin }: BookingStepConfirmationProps)
         </div>
 
         {/* Price breakdown */}
-        <div className="px-4 divide-y divide-border-light">
+        <div className="px-4">
           <div className="flex items-center justify-between py-2">
             <span className="text-sm text-text-secondary">{formatCurrency(pricing.subtotal / pricing.nights, currency)} × {pricing.nights} night{pricing.nights !== 1 ? "s" : ""}</span>
             <span className="text-sm text-text-secondary">{formatCurrency(pricing.subtotal, currency)}</span>
@@ -99,7 +99,7 @@ export function BookingStepConfirmation({ cabin }: BookingStepConfirmationProps)
               {formatCurrency(pricing.serviceFee, currency)}
             </span>
           </div>
-          <div className="flex items-center justify-between py-3">
+          <div className="flex items-center justify-between py-3 border-t border-border-light">
             <span className="text-sm font-bold text-text-primary">Total</span>
             <span className="text-sm font-bold text-text-primary">{formatCurrency(grandTotal, currency)}</span>
           </div>
