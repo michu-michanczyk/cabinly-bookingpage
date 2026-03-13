@@ -17,7 +17,7 @@ export function BookingLayout({ cabin, children }: BookingLayoutProps) {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen bg-bg-primary flex flex-col">
+    <div className="min-h-screen min-h-dvh bg-bg-primary flex flex-col">
       {/* Top bar — avatar only, exactly 80px height, 16px top+bottom padding, 48px centered avatar */}
       <header className="bg-bg-primary border-b border-border-light">
         <div className="flex items-center justify-center" style={{ height: 64, paddingTop: 8, paddingBottom: 8 }}>

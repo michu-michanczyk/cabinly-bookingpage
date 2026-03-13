@@ -3,7 +3,22 @@ import { CabinlyLogo, IconArrowRight } from "../icons";
 export function CabinlyFooter() {
   return (
     <div className="w-full bg-bg-surface-secondary dark:bg-white dark:border-t dark:border-[#e5e5e5]">
-      <div className="max-w-[1440px] mx-auto px-4 sm:px-8 pt-8 sm:pt-12 pb-20 sm:pb-28 md:pb-12 flex flex-col sm:flex-row items-center sm:justify-between gap-4">
+      {/* Mobile: stacked center layout */}
+      <div className="flex sm:hidden flex-col items-center gap-3 px-4 pt-8 pb-20">
+        <CabinlyLogo variant="onDark" className="dark:hidden shrink-0" />
+        <CabinlyLogo variant="onWhite" className="hidden dark:block shrink-0" />
+        <div className="flex flex-col items-center text-xs leading-tight text-center">
+          <span className="text-white dark:text-[#010101] font-medium">Built with Cabinly</span>
+          <span className="text-white/60 dark:text-[#010101]/60">Turn empty nights into direct bookings</span>
+        </div>
+        <button className="flex items-center gap-2 bg-white text-[#010101] dark:bg-[#010101] dark:text-white px-4 py-2.5 rounded-lg text-sm font-semibold shadow-lg hover:opacity-80 transition-opacity cursor-pointer shrink-0">
+          Create your own page
+          <IconArrowRight size={14} />
+        </button>
+      </div>
+
+      {/* Desktop: inline layout */}
+      <div className="hidden sm:flex max-w-[1440px] mx-auto px-8 pt-12 pb-28 md:pb-12 flex-row items-center justify-between gap-4">
         <div className="flex items-center gap-3">
           <CabinlyLogo variant="onDark" className="dark:hidden shrink-0" />
           <CabinlyLogo variant="onWhite" className="hidden dark:block shrink-0" />
@@ -12,7 +27,6 @@ export function CabinlyFooter() {
             <span className="text-white/60 dark:text-[#010101]/60">Turn empty nights into direct bookings</span>
           </div>
         </div>
-
         <button className="flex items-center gap-2 bg-white text-[#010101] dark:bg-[#010101] dark:text-white px-4 py-2.5 rounded-lg text-sm font-semibold shadow-lg hover:opacity-80 transition-opacity cursor-pointer shrink-0">
           Create your own page
           <IconArrowRight size={14} />
