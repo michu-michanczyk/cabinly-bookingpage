@@ -1,7 +1,6 @@
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { IconChevronLeft } from "../icons";
 import { useBookingStore } from "../../stores/booking-store";
-import { CabinlyFooter } from "../layout/CabinlyFooter";
 import type { Cabin } from "../../types/cabin";
 
 const TOTAL_STEPS = 5;
@@ -22,11 +21,13 @@ export function BookingLayout({ cabin, children }: BookingLayoutProps) {
       {/* Top bar — avatar only, exactly 80px height, 16px top+bottom padding, 48px centered avatar */}
       <header className="bg-bg-primary border-b border-border-light">
         <div className="flex items-center justify-center" style={{ height: 64, paddingTop: 8, paddingBottom: 8 }}>
-          <img
-            src={cabin.images[0].url}
-            alt={cabin.images[0].alt}
-            className="w-12 h-12 rounded-full object-cover"
-          />
+          <button onClick={() => navigate("/")} className="cursor-pointer">
+            <img
+              src={cabin.images[0].url}
+              alt={cabin.images[0].alt}
+              className="w-12 h-12 rounded-full object-cover"
+            />
+          </button>
         </div>
       </header>
 
@@ -63,42 +64,30 @@ export function BookingLayout({ cabin, children }: BookingLayoutProps) {
 
       {/* Main content */}
       <main className="flex-1 px-4 sm:px-6">
-        <div className="max-w-[520px] mx-auto w-full pt-4 pb-6">
+        <div className="max-w-[520px] mx-auto w-full pt-4 pb-8">
           {children}
         </div>
       </main>
 
-      {/* Trust banner — always 24px above footer */}
-      <div className="px-4 sm:px-6 pb-6">
-        <div
-          className="max-w-[520px] mx-auto flex items-center gap-3 px-4 rounded-xl"
-          style={{
-            height: 68,
-            border: "1px solid #ADDFB2",
-            background: "#DDFFE0",
-          }}
-        >
-          <span className="shrink-0">
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-              <path d="M2.78001 10.2L5.80001 13.22C7.04001 14.46 9.05334 14.46 10.3 13.22L13.2267 10.2934C14.4667 9.05337 14.4667 7.04003 13.2267 5.79337L10.2 2.78003C9.56668 2.1467 8.69334 1.8067 7.80001 1.85337L4.46668 2.01337C3.13334 2.07337 2.07334 3.13337 2.00668 4.46003L1.84668 7.79337C1.80668 8.69337 2.14668 9.5667 2.78001 10.2Z" stroke="#158820" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-              <path d="M6.33317 8.00002C7.25364 8.00002 7.99984 7.25383 7.99984 6.33335C7.99984 5.41288 7.25364 4.66669 6.33317 4.66669C5.4127 4.66669 4.6665 5.41288 4.6665 6.33335C4.6665 7.25383 5.4127 8.00002 6.33317 8.00002Z" stroke="#158820" strokeWidth="1.5" strokeLinecap="round"/>
+      {/* Footer */}
+      <footer className="px-4 sm:px-6 py-5">
+        <div className="max-w-[520px] mx-auto w-full flex items-center justify-center">
+          <div className="flex items-center gap-1.5">
+            <svg width="14" height="16" viewBox="0 0 14 16" fill="none">
+              <path d="M7.92675 0C9.97158 0 11.511 0.457909 13.1652 1.57963C10.1366 5.16654 10.1242 10.4113 13.1359 14.0124L13.2744 14.178C11.5053 15.4143 9.60402 15.9336 7.5362 15.842C3.0329 15.636 3.89762e-06 12.3852 0 7.78373C0 3.38826 3.44643 0 7.92675 0Z" fill="url(#booking-footer-grad)"/>
+              <defs>
+                <linearGradient id="booking-footer-grad" x1="6.63721" y1="0" x2="6.63721" y2="15.8523" gradientUnits="userSpaceOnUse">
+                  <stop stopColor="#34D399"/>
+                  <stop offset="0.634615" stopColor="#3B82F6"/>
+                  <stop offset="1" stopColor="#17179A"/>
+                </linearGradient>
+              </defs>
             </svg>
-          </span>
-          <div>
-            <p className="text-sm font-semibold leading-tight" style={{ color: "var(--color-alert-positive)" }}>
-              You're booking directly · 0% commission
-            </p>
-            <p className="text-sm leading-tight mt-0.5" style={{ color: "#6FAE75" }}>
-              Best price guaranteed. Cheaper than OTA.
-            </p>
+            <span className="text-sm font-medium text-text-primary">Cabinly</span>
           </div>
         </div>
-      </div>
-
-      {/* Footer */}
-      <footer>
-        <CabinlyFooter />
       </footer>
+
     </div>
   );
 }

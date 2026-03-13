@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { format, parseISO, eachDayOfInterval, isSameDay, isAfter, isBefore, startOfDay } from "date-fns";
 import { IconChevronLeft } from "../icons";
 import { useBookingStore } from "../../stores/booking-store";
-import { formatCurrency, cn } from "../../lib/utils";
+import { formatCurrency, getNights, cn } from "../../lib/utils";
 import { Button } from "../ui/Button";
 import { StickyButtonWrapper } from "./StickyButtonWrapper";
 import type { Cabin, Promo } from "../../types/cabin";
@@ -42,26 +42,28 @@ function IconCalendarSvg({ size = 16 }: { size?: number }) {
 export function BookingStepDates({ cabin }: BookingStepDatesProps) {
   const dates = useBookingStore((s) => s.dates);
   const selectedPromo = useBookingStore((s) => s.selectedPromo);
+  const pricing = useBookingStore((s) => s.pricing);
   const setDates = useBookingStore((s) => s.setDates);
   const setSelectedPromo = useBookingStore((s) => s.setSelectedPromo);
   const calculatePricing = useBookingStore((s) => s.calculatePricing);
   const setStep = useBookingStore((s) => s.setStep);
 
-  const [showCalendar, setShowCalendar] = useState(false);
-  const [calendarMonth, setCalendarMonth] = useState(() => new Date());
+  const [showCalendar, setShowCalendar] = useState(
+    () => !!(dates.checkIn && !selectedPromo)
+  );
+  const [calendarMonth, setCalendarMonth] = useState(
+    () => dates.checkIn ? parseISO(dates.checkIn) : new Date()
+  );
   const [selectingCheckOut, setSelectingCheckOut] = useState(false);
 
   const hasDates = dates.checkIn && dates.checkOut;
 
+  const { baseNight, cleaningFee, serviceFee, nightlyPrices } = cabin.pricing;
   useEffect(() => {
     if (dates.checkIn && dates.checkOut) {
-      calculatePricing(
-        cabin.pricing.baseNight,
-        cabin.pricing.cleaningFee,
-        cabin.pricing.serviceFee
-      );
+      calculatePricing(baseNight, cleaningFee, serviceFee, nightlyPrices);
     }
-  }, [dates.checkIn, dates.checkOut, cabin.pricing, calculatePricing]);
+  }, [dates.checkIn, dates.checkOut, baseNight, cleaningFee, serviceFee, nightlyPrices, calculatePricing]);
 
   const handlePromoSelect = (promo: Promo) => {
     if (selectedPromo?.id === promo.id) {
@@ -116,10 +118,7 @@ export function BookingStepDates({ cabin }: BookingStepDatesProps) {
         <div className="space-y-2">
           {cabin.promos.map((promo) => {
             const isSelected = selectedPromo?.id === promo.id;
-            const nights = Math.round(
-              (new Date(promo.dates.end).getTime() - new Date(promo.dates.start).getTime()) /
-                (1000 * 60 * 60 * 24)
-            );
+            const nights = getNights(promo.dates.start, promo.dates.end);
             const perNight = Math.round(promo.dealPrice / nights);
 
             return (
@@ -139,7 +138,7 @@ export function BookingStepDates({ cabin }: BookingStepDatesProps) {
                     : "bg-bg-primary"
                 )}
               >
-                {/* Top row: date + badge | strikethrough price */}
+                {/* Top row: date + badge | current price/night */}
                 <div className="flex items-center justify-between gap-4">
                   <div className="flex items-center gap-2 flex-1 min-w-0">
                     <span className="text-sm font-medium text-text-primary whitespace-nowrap">
@@ -147,19 +146,19 @@ export function BookingStepDates({ cabin }: BookingStepDatesProps) {
                     </span>
                     <PromoBadge badge={promo.badge} />
                   </div>
-                  <span className="text-sm text-text-secondary line-through shrink-0">
-                    {formatCurrency(cabin.pricing.baseNight, cabin.pricing.currency)}
+                  <span className="text-sm font-medium text-text-primary shrink-0">
+                    {formatCurrency(perNight, cabin.pricing.currency)}
+                    <span className="text-sm font-medium text-text-primary"> / night</span>
                   </span>
                 </div>
 
-                {/* Bottom row: description | deal price/night — 4px gap */}
+                {/* Bottom row: description | strikethrough original price — 4px gap */}
                 <div className="flex items-center justify-between gap-4 mt-1">
                   <span className="text-sm text-text-secondary">
                     {promo.title} · {nights} night{nights !== 1 ? "s" : ""}
                   </span>
-                  <span className="text-sm font-medium text-text-primary shrink-0">
-                    {formatCurrency(perNight, cabin.pricing.currency)}
-                    <span className="text-sm font-medium text-text-primary"> / night</span>
+                  <span className="text-sm text-text-secondary line-through shrink-0">
+                    {formatCurrency(cabin.pricing.baseNight, cabin.pricing.currency)}
                   </span>
                 </div>
               </button>
@@ -241,45 +240,45 @@ export function BookingStepDates({ cabin }: BookingStepDatesProps) {
         )}
       </div>
 
-      {/* Continue button */}
+      {/* Summary row */}
+      <div className="flex items-center justify-between">
+        <span className="text-sm text-text-secondary">{hasDates && pricing ? `${pricing.nights} night${pricing.nights !== 1 ? "s" : ""}` : "No dates selected"}</span>
+        <span className="text-base font-medium text-text-primary">{hasDates && pricing ? formatCurrency(pricing.subtotal - pricing.discount, cabin.pricing.currency) : formatCurrency(0, cabin.pricing.currency)}</span>
+      </div>
       <StickyButtonWrapper>
         <Button variant="primary" size="lg" className="w-full" disabled={!hasDates} onClick={() => setStep(2)}>
           Continue
         </Button>
       </StickyButtonWrapper>
 
+      <div className="h-6" />
+
+      {/* Direct booking banner */}
+      <div className="flex items-center gap-3 px-4 py-3 rounded-xl" style={{ background: "#DDFFE0", border: "1px solid #ADDFB2" }}>
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" className="shrink-0">
+          <path d="M2.78001 10.2L5.80001 13.22C7.04001 14.46 9.05334 14.46 10.3 13.22L13.2267 10.2934C14.4667 9.05337 14.4667 7.04003 13.2267 5.79337L10.2 2.78003C9.56668 2.1467 8.69334 1.8067 7.80001 1.85337L4.46668 2.01337C3.13334 2.07337 2.07334 3.13337 2.00668 4.46003L1.84668 7.79337C1.80668 8.69337 2.14668 9.5667 2.78001 10.2Z" stroke="#158820" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+          <path d="M6.33317 8.00002C7.25364 8.00002 7.99984 7.25383 7.99984 6.33335C7.99984 5.41288 7.25364 4.66669 6.33317 4.66669C5.4127 4.66669 4.6665 5.41288 4.6665 6.33335C4.6665 7.25383 5.4127 8.00002 6.33317 8.00002Z" stroke="#158820" strokeWidth="1.5" strokeLinecap="round"/>
+        </svg>
+        <div>
+          <p className="text-sm font-semibold" style={{ color: "#1A5C22" }}>You're booking directly - 0% commission</p>
+          <p className="text-sm" style={{ color: "#3A8A44" }}>Best price guaranteed. Cheaper than OTA.</p>
+        </div>
+      </div>
+
     </div>
   );
 }
 
-function PromoBadge({ badge }: { badge: string }) {
-  const isPercent = badge.includes("%");
-  const isFor = badge.toLowerCase().includes("for");
-  const isSeasonal = badge.toLowerCase().includes("seasonal");
+const BADGE_STYLES: Array<{ test: (b: string) => boolean; bg: string; color: string }> = [
+  { test: (b) => b.toLowerCase().includes("for"),      bg: "#FFEDED", color: "#E53E3E" },
+  { test: (b) => b.toLowerCase().includes("seasonal"), bg: "#E3EEFC", color: "#0C3B7C" },
+  { test: (b) => b.includes("%"),                      bg: "#FFE4D0", color: "#FF8427" },
+];
 
-  if (isPercent) {
-    return (
-      <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-[12px] font-semibold" style={{ background: "#FFE4D0", color: "#FF8427" }}>
-        {badge}
-      </span>
-    );
-  }
-  if (isFor) {
-    return (
-      <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-[12px] font-semibold" style={{ background: "#FFEDED", color: "#E53E3E" }}>
-        {badge}
-      </span>
-    );
-  }
-  if (isSeasonal) {
-    return (
-      <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-[12px] font-semibold" style={{ background: "#E3EEFC", color: "#0C3B7C" }}>
-        {badge}
-      </span>
-    );
-  }
+function PromoBadge({ badge }: { badge: string }) {
+  const style = BADGE_STYLES.find((s) => s.test(badge)) ?? BADGE_STYLES[2];
   return (
-    <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-[12px] font-semibold" style={{ background: "#FFE4D0", color: "#FF8427" }}>
+    <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-[12px] font-semibold" style={{ background: style.bg, color: style.color }}>
       {badge}
     </span>
   );
@@ -322,12 +321,12 @@ function CalendarGrid({ month, checkIn, checkOut, onDayClick, nightlyPrices, bas
             <span className={cn("text-lg font-medium leading-none",
               isPast && "text-text-tertiary/30",
               !isPast && !isCheckIn && !isCheckOut && "text-text-primary",
-              (isCheckIn || isCheckOut) && "text-white")}>
+              (isCheckIn || isCheckOut) && "text-bg-primary")}>
               {format(day, "d")}
             </span>
             {!isPast && (
               <span className={cn("text-xs leading-none",
-                isCheckIn || isCheckOut ? "text-white/60" : "text-text-secondary")}>
+                isCheckIn || isCheckOut ? "text-bg-primary/60" : "text-text-secondary")}>
                 {symbol}{nightPrice}
               </span>
             )}

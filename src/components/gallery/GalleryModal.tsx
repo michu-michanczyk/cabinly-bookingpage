@@ -16,17 +16,9 @@ export function GalleryModal({ images, isOpen, onClose, initialIndex = 0 }: Gall
   useEffect(() => {
     if (isOpen) {
       setCurrentIndex(initialIndex);
-      // Scroll is always visible via overflow-y: scroll on html, so just lock position
-      const scrollY = window.scrollY;
-      document.body.style.position = "fixed";
-      document.body.style.top = `-${scrollY}px`;
-      document.body.style.width = "100%";
+      document.body.style.overflow = "hidden";
     } else {
-      const scrollY = Math.abs(parseInt(document.body.style.top || "0"));
-      document.body.style.position = "";
-      document.body.style.top = "";
-      document.body.style.width = "";
-      window.scrollTo(0, scrollY);
+      document.body.style.overflow = "";
     }
   }, [isOpen, initialIndex]);
 
