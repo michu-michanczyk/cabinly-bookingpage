@@ -69,10 +69,7 @@ function PromoCard({
   return (
     <button
       onClick={onBook}
-      style={{ borderColor: "var(--color-border-default)" }}
-      onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.borderColor = "var(--color-border-dark)"; }}
-      onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.borderColor = "var(--color-border-default)"; }}
-      className="w-full text-left rounded-xl px-4 py-4 flex flex-col justify-center transition-all cursor-pointer border bg-bg-primary"
+      className="w-full text-left rounded-2xl px-4 py-4 flex flex-col justify-center transition-colors cursor-pointer border border-border-default hover:border-border-hover bg-bg-primary overflow-hidden"
     >
       {/* Top row: date + badge | strikethrough price */}
       <div className="flex items-center justify-between gap-4">
