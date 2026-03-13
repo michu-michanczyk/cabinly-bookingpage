@@ -372,9 +372,9 @@ export function IconHotTub({ className, size = 16 }: IconProps) {
 }
 
 // Cabinly Logo
-export function CabinlyLogo({ className, variant = "onDark" }: { className?: string; variant?: "onDark" | "onWhite" }) {
+export function CabinlyLogo({ className, variant = "onDark", id }: { className?: string; variant?: "onDark" | "onWhite"; id?: string }) {
   const textFill = variant === "onWhite" ? "#010101" : "white";
-  const gradId = `cabinly-grad-${variant}`;
+  const gradId = id ? `cabinly-grad-${id}` : `cabinly-grad-${variant}`;
   return (
     <svg width="104" height="24" viewBox="0 0 78 18" fill="none" className={className}>
       <path d="M71.2729 18L72.7249 13.6923L73.0373 13.14L75.6473 4.72705H77.9999L73.5887 18H71.2729ZM71.714 14.2445L68.3872 4.72705H70.7215L73.313 12.643H73.9563L73.8093 14.2445H71.714Z" fill={textFill}/>
