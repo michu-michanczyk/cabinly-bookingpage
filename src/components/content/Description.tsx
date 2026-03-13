@@ -559,9 +559,10 @@ function SpecialOffersSection({ cabin }: { cabin: Cabin }) {
           );
           const perNight = Math.round(promo.dealPrice / nights);
           return (
-            <div
+            <button
               key={promo.id}
-              className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 px-4 py-4 sm:px-8 sm:py-8 rounded-2xl border border-border-default"
+              onClick={() => navigate("/book?promo=" + promo.id)}
+              className="w-full text-left flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 px-4 py-4 sm:px-8 sm:py-8 rounded-2xl border border-border-default transition-colors cursor-pointer hover:border-border-hover overflow-hidden"
             >
               {/* Left: text */}
               <div className="flex flex-col gap-1 min-w-0 flex-1">
@@ -582,15 +583,7 @@ function SpecialOffersSection({ cabin }: { cabin: Cabin }) {
                   <span className="text-base font-normal text-text-secondary line-through">{formatCurrency(promo.originalPrice, cabin.pricing.currency)}</span>
                 </div>
               </div>
-
-              {/* Book now button */}
-              <button
-                onClick={() => navigate("/book?promo=" + promo.id)}
-                className="shrink-0 h-12 px-6 rounded-lg border border-text-primary text-base font-semibold text-text-primary hover:opacity-70 transition-opacity cursor-pointer whitespace-nowrap"
-              >
-                Book now
-              </button>
-            </div>
+            </button>
           );
         })}
       </div>
