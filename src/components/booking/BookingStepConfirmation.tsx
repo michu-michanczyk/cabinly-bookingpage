@@ -71,27 +71,27 @@ export function BookingStepConfirmation({ cabin }: BookingStepConfirmationProps)
 
         {/* Price breakdown */}
         <div className="px-4">
-          <div className="flex items-center justify-between py-3">
+          <div className="flex items-center justify-between py-4">
             <span className="text-sm text-text-secondary">{formatCurrency(pricing.subtotal / pricing.nights, currency)} × {pricing.nights} night{pricing.nights !== 1 ? "s" : ""}</span>
             <span className="text-sm text-text-primary">{formatCurrency(pricing.subtotal, currency)}</span>
           </div>
           {pricing.discount > 0 && (
-            <div className="flex items-center justify-between py-3">
+            <div className="flex items-center justify-between py-4">
               <span className="text-sm text-alert-positive">Proposed date discount</span>
               <span className="text-sm text-alert-positive">-{formatCurrency(pricing.discount, currency)}</span>
             </div>
           )}
           {extrasTotal > 0 && (
-            <div className="flex items-center justify-between py-3">
+            <div className="flex items-center justify-between py-4">
               <span className="text-sm text-text-secondary">Additional services</span>
               <span className="text-sm text-text-primary">+{formatCurrency(extrasTotal, currency)}</span>
             </div>
           )}
-          <div className="flex items-center justify-between py-3">
+          <div className="flex items-center justify-between py-4">
             <span className="text-sm text-text-secondary">Cleaning fee</span>
             <span className="text-sm text-text-primary">{formatCurrency(pricing.cleaningFee, currency)}</span>
           </div>
-          <div className="flex items-center justify-between py-3">
+          <div className="flex items-center justify-between py-4">
             <span className={cn("text-sm", pricing.serviceFee === 0 ? "text-alert-positive" : "text-text-secondary")}>
               Service fee{pricing.serviceFee === 0 ? " ✨" : ""}
             </span>
@@ -99,7 +99,7 @@ export function BookingStepConfirmation({ cabin }: BookingStepConfirmationProps)
               {formatCurrency(pricing.serviceFee, currency)}
             </span>
           </div>
-          <div className="flex items-center justify-between py-3 border-t border-border-light">
+          <div className="flex items-center justify-between py-4 border-t border-border-light">
             <span className="text-base font-medium text-text-primary">Total</span>
             <span className="text-base font-medium text-text-primary">{formatCurrency(grandTotal, currency)}</span>
           </div>
