@@ -13,7 +13,7 @@ interface BookingLayoutProps {
 export function BookingLayout({ cabin, children }: BookingLayoutProps) {
   const step = useBookingStore((s) => s.step);
   const setStep = useBookingStore((s) => s.setStep);
-  const showStepper = step !== 5;
+  const showStepper = true;
   const navigate = useNavigate();
 
   return (
