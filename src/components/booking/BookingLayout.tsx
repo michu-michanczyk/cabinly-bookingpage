@@ -34,7 +34,7 @@ export function BookingLayout({ cabin, children }: BookingLayoutProps) {
       {/* Stepper row — outside/below the top bar, aligned to content width */}
       {showStepper && (
         <div className="bg-bg-primary px-4 sm:px-6">
-          <div className="max-w-[520px] mx-auto w-full pt-8 pb-4 flex items-center gap-14">
+          <div className="max-w-[520px] mx-auto w-full pt-5 sm:pt-8 pb-4 flex items-center gap-14">
             <button
               onClick={() => step > 1 ? setStep((step - 1) as 1 | 2 | 3 | 4) : navigate("/")}
               className="text-text-secondary hover:text-text-primary transition-colors shrink-0 cursor-pointer"
@@ -64,13 +64,13 @@ export function BookingLayout({ cabin, children }: BookingLayoutProps) {
 
       {/* Main content */}
       <main className="flex-1 px-4 sm:px-6">
-        <div className="max-w-[520px] mx-auto w-full pt-4 pb-8">
+        <div className="max-w-[520px] mx-auto w-full pt-4 pb-4 sm:pb-8">
           {children}
         </div>
       </main>
 
       {/* Footer */}
-      <footer className="px-4 sm:px-6 py-5">
+      <footer className="px-4 sm:px-6 py-3 sm:py-5">
         <div className="max-w-[520px] mx-auto w-full flex items-center justify-center">
           <div className="flex items-center gap-1.5">
             <svg width="14" height="16" viewBox="0 0 14 16" fill="none">
