@@ -40,6 +40,9 @@ export function useSeoMeta(cabin: Cabin) {
     const ogImageUrl = `${siteUrl}/og/${cabin.slug}.png`;
     const locationStr = `${cabin.location.city}, ${cabin.location.country}`;
 
+    // ── FAVICON ──────────────────────────────────────────────────────────────
+    setLink("icon", cabin.images[0].url);
+
     // ── TITLE ────────────────────────────────────────────────────────────────
     document.title = `${cabin.title} — ${locationStr} | from $${cabin.pricing.baseNight}/night`;
 
