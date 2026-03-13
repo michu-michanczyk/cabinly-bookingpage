@@ -9,7 +9,6 @@ import { BookingStepDates } from "../components/booking/BookingStepDates";
 import { BookingStepDetails } from "../components/booking/BookingStepDetails";
 import { BookingStepPayment } from "../components/booking/BookingStepPayment";
 import { BookingStepConfirmation } from "../components/booking/BookingStepConfirmation";
-import { Button } from "../components/ui/Button";
 
 const ACCENT_COLOR = "#010101";
 
@@ -17,10 +16,6 @@ export function BookingPage() {
   const cabin = mockCabin;
   useAccentColor(ACCENT_COLOR);
   const step = useBookingStore((s) => s.step);
-  const setStep = useBookingStore((s) => s.setStep);
-  const dates = useBookingStore((s) => s.dates);
-  const guestDetails = useBookingStore((s) => s.guestDetails);
-  const agreedToTerms = useBookingStore((s) => s.agreedToTerms);
   const openBooking = useBookingStore((s) => s.openBooking);
   const [searchParams, setSearchParams] = useSearchParams();
 
@@ -32,28 +27,8 @@ export function BookingPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const hasDates = !!(dates.checkIn && dates.checkOut);
-  const canContinueStep2 =
-    guestDetails.name.trim() !== "" &&
-    guestDetails.email.trim() !== "" &&
-    guestDetails.phone.trim() !== "" &&
-    agreedToTerms;
-
-  const showStickyBar = step === 1 || step === 2;
-  const stickyBar = showStickyBar ? (
-    <Button
-      variant="primary"
-      size="lg"
-      className="w-full"
-      disabled={step === 1 ? !hasDates : !canContinueStep2}
-      onClick={() => setStep((step + 1) as 1 | 2 | 3 | 4)}
-    >
-      {step === 1 ? "Continue" : "Continue to payment"}
-    </Button>
-  ) : undefined;
-
   return (
-    <BookingLayout cabin={cabin} stickyBar={stickyBar}>
+    <BookingLayout cabin={cabin}>
       <motion.div
         key={step}
         initial={{ opacity: 0, scale: 0.98 }}

@@ -185,7 +185,8 @@ export const mockCabin: Cabin = {
     { id: "room5", name: "Bathroom", beds: "1 double bed", image: "/images/IMG_2847.webp" },
     { id: "room6", name: "Garden", beds: "1 double bed, sofa bed", image: "/images/IMG_2910.webp" },
   ],
-  maxGuests: 10,
+  maxGuests: 8,
+  maxPets: 2,
   bedrooms: 4,
   bathrooms: 3,
   houseRules: [

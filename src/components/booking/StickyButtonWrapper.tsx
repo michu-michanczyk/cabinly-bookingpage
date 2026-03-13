@@ -18,7 +18,7 @@ export function StickyButtonWrapper({ children }: StickyButtonWrapperProps) {
 
     const observer = new IntersectionObserver(
       ([entry]) => setIsSticky(!entry.isIntersecting),
-      { threshold: 0, rootMargin: "0px 0px -16px 0px" }
+      { threshold: 0 }
     );
     observer.observe(el);
     return () => observer.disconnect();
@@ -31,7 +31,13 @@ export function StickyButtonWrapper({ children }: StickyButtonWrapperProps) {
 
       {/* Fixed bar — only when inline button is off-screen */}
       {isSticky && (
-        <div className="fixed bottom-0 left-0 right-0 z-40 bg-bg-primary border-t border-border-light px-4 sm:px-6 py-4">
+        <div
+          className="fixed bottom-0 left-0 right-0 z-50 bg-bg-primary border-t border-border-light px-4 sm:px-6 pt-3"
+          style={{
+            paddingBottom: "calc(0.75rem + env(safe-area-inset-bottom, 0px))",
+            marginBottom: 0,
+          }}
+        >
           <div className="max-w-[520px] mx-auto w-full">
             {children}
           </div>

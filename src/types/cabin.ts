@@ -33,6 +33,7 @@ export interface Cabin {
   pricing: Pricing;
   promos: Promo[];
   maxGuests: number;
+  maxPets: number;
   bedrooms: number;
   bathrooms: number;
   houseRules: string[];
@@ -103,6 +104,8 @@ export interface BookingState {
   guests: {
     adults: number;
     children: number;
+    babies: number;
+    pets: number;
   };
   guestDetails: {
     name: string;
