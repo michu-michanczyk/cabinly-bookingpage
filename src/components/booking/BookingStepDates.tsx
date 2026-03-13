@@ -125,17 +125,12 @@ export function BookingStepDates({ cabin }: BookingStepDatesProps) {
               <button
                 key={promo.id}
                 onClick={() => handlePromoSelect(promo)}
-                style={{
-                  height: 75,
-                  borderColor: isSelected ? "var(--color-text-primary)" : "var(--color-border-default)",
-                }}
-                onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.borderColor = "var(--color-border-dark)"; }}
-                onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.borderColor = isSelected ? "var(--color-text-primary)" : "var(--color-border-default)"; }}
+                style={{ height: 75 }}
                 className={cn(
-                  "w-full text-left rounded-xl px-4 flex flex-col justify-center transition-all cursor-pointer border",
+                  "w-full text-left rounded-2xl px-4 flex flex-col justify-center transition-colors cursor-pointer border overflow-hidden",
                   isSelected
-                    ? "bg-bg-secondary"
-                    : "bg-bg-primary"
+                    ? "bg-bg-secondary border-text-primary"
+                    : "bg-bg-primary border-border-default hover:border-border-hover"
                 )}
               >
                 {/* Top row: date + badge | current price/night */}
@@ -170,10 +165,8 @@ export function BookingStepDates({ cabin }: BookingStepDatesProps) {
         {!showCalendar ? (
           <button
             onClick={() => { setShowCalendar(true); handleClearDates(); }}
-            style={{ height: 75, borderColor: "var(--color-border-default)" }}
-            onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.borderColor = "var(--color-border-dark)"; }}
-            onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.borderColor = "var(--color-border-default)"; }}
-            className="w-full flex items-center gap-2 px-4 rounded-xl border transition-colors text-left bg-bg-primary cursor-pointer"
+            style={{ height: 75 }}
+            className="w-full flex items-center gap-2 px-4 rounded-2xl border border-border-default transition-colors text-left bg-bg-primary cursor-pointer overflow-hidden hover:border-border-hover"
           >
             <span className="text-text-primary shrink-0"><IconCalendarSvg size={16} /></span>
             <span className="text-sm font-medium text-text-primary">
