@@ -1,6 +1,12 @@
 import { format, differenceInDays, parseISO, isAfter, isBefore } from "date-fns";
 import type { Promo } from "../types/cabin";
 
+/** Prepend Vite base URL to a /public asset path so it works on GitHub Pages subpaths. */
+export function asset(path: string): string {
+  const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+  return `${base}${path}`;
+}
+
 export function formatCurrency(amount: number, currency = "USD"): string {
   return new Intl.NumberFormat("en-US", {
     style: "currency",
