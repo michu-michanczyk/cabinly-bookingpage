@@ -244,8 +244,6 @@ export function BookingStepDates({ cabin }: BookingStepDatesProps) {
         </Button>
       </StickyButtonWrapper>
 
-      <div className="h-6" />
-
       {/* Direct booking banner */}
       <div className="flex items-center gap-3 px-4 py-3 rounded-xl" style={{ background: "#DDFFE0", border: "1px solid #ADDFB2" }}>
         <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" className="shrink-0">

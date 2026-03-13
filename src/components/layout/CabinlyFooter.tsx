@@ -4,7 +4,7 @@ export function CabinlyFooter() {
   return (
     <div className="w-full bg-bg-surface-secondary dark:bg-white dark:border-t dark:border-[#e5e5e5]">
       {/* Mobile: stacked center layout */}
-      <div className="flex sm:hidden flex-col items-center gap-3 px-4 pt-8 pb-20">
+      <div className="flex sm:hidden flex-col items-center gap-6 px-4 pt-8 pb-24">
         <CabinlyLogo variant="onDark" className="dark:hidden shrink-0" />
         <CabinlyLogo variant="onWhite" className="hidden dark:block shrink-0" />
         <div className="flex flex-col items-center text-xs leading-tight text-center">
