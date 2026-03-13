@@ -70,7 +70,7 @@ export function BookingLayout({ cabin, children }: BookingLayoutProps) {
       </main>
 
       {/* Footer */}
-      <footer className="px-4 sm:px-6 py-3 sm:py-5">
+      <footer className="px-4 sm:px-6 pt-3 sm:pt-5 pb-16 sm:pb-5">
         <div className="max-w-[520px] mx-auto w-full flex items-center justify-center">
           <div className="flex items-center gap-1.5">
             <svg width="14" height="16" viewBox="0 0 14 16" fill="none">
