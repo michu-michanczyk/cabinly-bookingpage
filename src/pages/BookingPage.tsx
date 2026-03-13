@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useLocation, useSearchParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useBookingStore } from "../stores/booking-store";
 import { useAccentColor } from "../hooks/useAccentColor";
@@ -12,20 +12,45 @@ import { BookingStepConfirmation } from "../components/booking/BookingStepConfir
 
 const ACCENT_COLOR = "#010101";
 
+const STEP_SLUGS: Record<1 | 2 | 3 | 4, string> = {
+  1: "dates",
+  2: "guests",
+  3: "extras",
+  4: "confirmation",
+};
+
+const SLUG_TO_STEP: Record<string, 1 | 2 | 3 | 4> = {
+  dates: 1,
+  guests: 2,
+  extras: 3,
+  confirmation: 4,
+};
+
 export function BookingPage() {
   const cabin = mockCabin;
   useAccentColor(ACCENT_COLOR);
   const step = useBookingStore((s) => s.step);
+  const setStep = useBookingStore((s) => s.setStep);
   const openBooking = useBookingStore((s) => s.openBooking);
-  const [searchParams, setSearchParams] = useSearchParams();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [searchParams] = useSearchParams();
 
+  // On mount: initialise booking, derive step from current path slug
   useEffect(() => {
     const promoId = searchParams.get("promo");
     const promo = promoId ? cabin.promos.find((p) => p.id === promoId) ?? null : null;
     openBooking(promo ?? undefined);
-    if (promoId) setSearchParams({}, { replace: true });
+    const slug = location.pathname.split("/").pop() ?? "";
+    const stepFromSlug = SLUG_TO_STEP[slug];
+    if (stepFromSlug) setStep(stepFromSlug);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // Keep URL in sync whenever step changes
+  useEffect(() => {
+    navigate(`/book/${STEP_SLUGS[step]}`, { replace: true });
+  }, [step, navigate]);
 
   return (
     <BookingLayout cabin={cabin}>

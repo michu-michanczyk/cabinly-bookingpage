@@ -5,7 +5,9 @@ import { getNights } from "../lib/utils";
 
 interface BookingStore extends BookingState {
   agreedToTerms: boolean;
+  selectedExtras: string[];
   setAgreedToTerms: (agreed: boolean) => void;
+  toggleExtra: (id: string) => void;
   openBooking: (promo?: Promo | null) => void;
   closeBooking: () => void;
   setStep: (step: 1 | 2 | 3 | 4) => void;
@@ -32,7 +34,13 @@ const initialState: BookingState = {
 export const useBookingStore = create<BookingStore>((set, get) => ({
   ...initialState,
   agreedToTerms: false,
+  selectedExtras: [],
   setAgreedToTerms: (agreed) => set({ agreedToTerms: agreed }),
+  toggleExtra: (id) => set((state) => ({
+    selectedExtras: state.selectedExtras.includes(id)
+      ? state.selectedExtras.filter((e) => e !== id)
+      : [...state.selectedExtras, id],
+  })),
 
   openBooking: (promo = null) => {
     if (promo) {
@@ -91,5 +99,5 @@ export const useBookingStore = create<BookingStore>((set, get) => ({
 
   setSelectedPromo: (promo) => set({ selectedPromo: promo }),
 
-  reset: () => set({ ...initialState, agreedToTerms: false }),
+  reset: () => set({ ...initialState, agreedToTerms: false, selectedExtras: [] }),
 }));
