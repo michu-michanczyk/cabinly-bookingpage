@@ -84,7 +84,7 @@ export function BookingStepDetails({ cabin }: BookingStepDetailsProps) {
               <span className="text-text-primary"><IconAdults /></span>
               <div>
                 <p className="text-sm font-medium text-text-primary">Adults</p>
-                <p className="text-xs text-text-secondary">13 years old and more</p>
+                <p className="text-sm text-text-secondary">13 years old and more</p>
               </div>
             </div>
             <GuestCounter
@@ -103,7 +103,7 @@ export function BookingStepDetails({ cabin }: BookingStepDetailsProps) {
               <span className="text-text-primary"><IconChildren /></span>
               <div>
                 <p className="text-sm font-medium text-text-primary">Children</p>
-                <p className="text-xs text-text-secondary">2 – 12 years old</p>
+                <p className="text-sm text-text-secondary">2 – 12 years old</p>
               </div>
             </div>
             <GuestCounter
@@ -122,7 +122,7 @@ export function BookingStepDetails({ cabin }: BookingStepDetailsProps) {
               <span className="text-text-primary"><IconBaby /></span>
               <div>
                 <p className="text-sm font-medium text-text-primary">Baby</p>
-                <p className="text-xs text-text-secondary">Less than 2 years</p>
+                <p className="text-sm text-text-secondary">Less than 2 years</p>
               </div>
             </div>
             <GuestCounter
@@ -141,7 +141,7 @@ export function BookingStepDetails({ cabin }: BookingStepDetailsProps) {
               <span className="text-text-primary"><IconPets /></span>
               <div>
                 <p className="text-sm font-medium text-text-primary">Pets</p>
-                <p className="text-xs text-text-secondary">Dogs, cats</p>
+                <p className="text-sm text-text-secondary">Dogs, cats</p>
               </div>
             </div>
             <GuestCounter
