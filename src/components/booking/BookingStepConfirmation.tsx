@@ -61,47 +61,47 @@ export function BookingStepConfirmation({ cabin }: BookingStepConfirmationProps)
         <div className="px-4 py-4 space-y-1 border-b border-border-default">
           <div className="flex items-center justify-between">
             <span className="text-sm text-text-secondary">Dates</span>
-            <span className="text-sm font-medium text-text-primary">{checkInDate} — {checkOutDate}</span>
+            <span className="text-sm text-text-primary">{checkInDate} — {checkOutDate}</span>
           </div>
           <div className="flex items-center justify-between">
             <span className="text-sm text-text-secondary">Guests</span>
-            <span className="text-sm font-medium text-text-primary">{totalGuests} guest{totalGuests !== 1 ? "s" : ""}</span>
+            <span className="text-sm text-text-primary">{totalGuests} guest{totalGuests !== 1 ? "s" : ""}</span>
           </div>
         </div>
 
         {/* Price breakdown */}
         <div className="px-4">
-          <div className="flex items-center justify-between py-2">
+          <div className="flex items-center justify-between py-3">
             <span className="text-sm text-text-secondary">{formatCurrency(pricing.subtotal / pricing.nights, currency)} × {pricing.nights} night{pricing.nights !== 1 ? "s" : ""}</span>
-            <span className="text-sm text-text-secondary">{formatCurrency(pricing.subtotal, currency)}</span>
+            <span className="text-sm text-text-primary">{formatCurrency(pricing.subtotal, currency)}</span>
           </div>
           {pricing.discount > 0 && (
-            <div className="flex items-center justify-between py-2">
+            <div className="flex items-center justify-between py-3">
               <span className="text-sm text-alert-positive">Proposed date discount</span>
               <span className="text-sm text-alert-positive">-{formatCurrency(pricing.discount, currency)}</span>
             </div>
           )}
           {extrasTotal > 0 && (
-            <div className="flex items-center justify-between py-2">
+            <div className="flex items-center justify-between py-3">
               <span className="text-sm text-text-secondary">Additional services</span>
-              <span className="text-sm text-text-secondary">+{formatCurrency(extrasTotal, currency)}</span>
+              <span className="text-sm text-text-primary">+{formatCurrency(extrasTotal, currency)}</span>
             </div>
           )}
-          <div className="flex items-center justify-between py-2">
+          <div className="flex items-center justify-between py-3">
             <span className="text-sm text-text-secondary">Cleaning fee</span>
-            <span className="text-sm text-text-secondary">{formatCurrency(pricing.cleaningFee, currency)}</span>
+            <span className="text-sm text-text-primary">{formatCurrency(pricing.cleaningFee, currency)}</span>
           </div>
-          <div className="flex items-center justify-between py-2">
+          <div className="flex items-center justify-between py-3">
             <span className={cn("text-sm", pricing.serviceFee === 0 ? "text-alert-positive" : "text-text-secondary")}>
               Service fee{pricing.serviceFee === 0 ? " ✨" : ""}
             </span>
-            <span className={cn("text-sm", pricing.serviceFee === 0 ? "text-alert-positive" : "text-text-secondary")}>
+            <span className={cn("text-sm", pricing.serviceFee === 0 ? "text-alert-positive" : "text-text-primary")}>
               {formatCurrency(pricing.serviceFee, currency)}
             </span>
           </div>
           <div className="flex items-center justify-between py-3 border-t border-border-light">
-            <span className="text-sm font-bold text-text-primary">Total</span>
-            <span className="text-sm font-bold text-text-primary">{formatCurrency(grandTotal, currency)}</span>
+            <span className="text-base font-bold text-text-primary">Total</span>
+            <span className="text-base font-bold text-text-primary">{formatCurrency(grandTotal, currency)}</span>
           </div>
         </div>
       </div>
