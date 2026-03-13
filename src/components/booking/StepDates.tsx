@@ -143,14 +143,14 @@ export function StepDates({ cabin }: StepDatesProps) {
             value={guests.adults}
             min={1}
             max={cabin.maxGuests}
-            onChange={(v) => setGuests(v, guests.children)}
+            onChange={(v) => setGuests({ adults: v })}
           />
           <GuestCounter
             label="Children"
             value={guests.children}
             min={0}
             max={Math.max(0, cabin.maxGuests - guests.adults)}
-            onChange={(v) => setGuests(guests.adults, v)}
+            onChange={(v) => setGuests({ children: v })}
           />
         </div>
       </div>
