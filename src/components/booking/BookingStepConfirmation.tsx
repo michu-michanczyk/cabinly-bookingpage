@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Navigate } from "react-router-dom";
 import { useBookingStore } from "../../stores/booking-store";
 import { formatCurrency, formatDateShort, cn } from "../../lib/utils";
 import { Button } from "../ui/Button";
@@ -27,7 +27,7 @@ export function BookingStepConfirmation({ cabin }: BookingStepConfirmationProps)
   const setPaymentOption = useBookingStore((s) => s.setPaymentOption);
   const reset = useBookingStore((s) => s.reset);
 
-  if (!dates.checkIn || !dates.checkOut || !pricing) return null;
+  if (!dates.checkIn || !dates.checkOut || !pricing) return <Navigate to="/book/dates" replace />;
 
   const totalGuests = guests.adults + guests.children;
   const extrasTotal = EXTRAS.filter((e) => selectedExtras.includes(e.id)).reduce((sum, e) => sum + e.price, 0);
