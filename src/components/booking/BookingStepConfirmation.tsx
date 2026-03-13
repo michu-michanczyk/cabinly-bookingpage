@@ -52,117 +52,109 @@ export function BookingStepConfirmation({ cabin }: BookingStepConfirmationProps)
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       <h1 className="text-xl font-medium text-text-primary">Book & Pay</h1>
 
-      {/* Summary rows */}
-      <div>
+      {/* Summary card */}
+      <div className="border border-border-default rounded-2xl overflow-hidden">
         {/* Dates + guests */}
-        <div className="flex items-center justify-between py-4">
-          <span className="text-sm text-text-secondary">Dates</span>
-          <span className="text-sm font-medium text-text-primary">{checkInDate} — {checkOutDate}</span>
+        <div className="px-4 py-4 space-y-1 border-b border-border-default">
+          <div className="flex items-center justify-between">
+            <span className="text-sm text-text-secondary">Dates</span>
+            <span className="text-sm font-medium text-text-primary">{checkInDate} — {checkOutDate}</span>
+          </div>
+          <div className="flex items-center justify-between">
+            <span className="text-sm text-text-secondary">Guests</span>
+            <span className="text-sm font-medium text-text-primary">{totalGuests} guest{totalGuests !== 1 ? "s" : ""}</span>
+          </div>
         </div>
-        <div className="h-px bg-border-light" />
-        <div className="flex items-center justify-between py-4">
-          <span className="text-sm text-text-secondary">Guests</span>
-          <span className="text-sm font-medium text-text-primary">{totalGuests} guest{totalGuests !== 1 ? "s" : ""}</span>
-        </div>
-        <div className="h-px bg-border-light" />
 
-        {/* Price rows */}
-        <div className="flex items-center justify-between py-4">
-          <span className="text-sm text-text-secondary">{formatCurrency(pricing.subtotal / pricing.nights, currency)} × {pricing.nights} night{pricing.nights !== 1 ? "s" : ""}</span>
-          <span className="text-sm text-text-secondary">{formatCurrency(pricing.subtotal, currency)}</span>
-        </div>
-        {pricing.discount > 0 && (
-          <>
-            <div className="h-px bg-border-light" />
-            <div className="flex items-center justify-between py-4">
+        {/* Price breakdown */}
+        <div className="px-4 divide-y divide-border-light">
+          <div className="flex items-center justify-between py-2">
+            <span className="text-sm text-text-secondary">{formatCurrency(pricing.subtotal / pricing.nights, currency)} × {pricing.nights} night{pricing.nights !== 1 ? "s" : ""}</span>
+            <span className="text-sm text-text-secondary">{formatCurrency(pricing.subtotal, currency)}</span>
+          </div>
+          {pricing.discount > 0 && (
+            <div className="flex items-center justify-between py-2">
               <span className="text-sm text-alert-positive">Proposed date discount</span>
               <span className="text-sm text-alert-positive">-{formatCurrency(pricing.discount, currency)}</span>
             </div>
-          </>
-        )}
-        {extrasTotal > 0 && (
-          <>
-            <div className="h-px bg-border-light" />
-            <div className="flex items-center justify-between py-4">
+          )}
+          {extrasTotal > 0 && (
+            <div className="flex items-center justify-between py-2">
               <span className="text-sm text-text-secondary">Additional services</span>
               <span className="text-sm text-text-secondary">+{formatCurrency(extrasTotal, currency)}</span>
             </div>
-          </>
-        )}
-        <div className="h-px bg-border-light" />
-        <div className="flex items-center justify-between py-4">
-          <span className="text-sm text-text-secondary">Cleaning fee</span>
-          <span className="text-sm text-text-secondary">{formatCurrency(pricing.cleaningFee, currency)}</span>
-        </div>
-        <div className="h-px bg-border-light" />
-        <div className="flex items-center justify-between py-4">
-          <span className={cn("text-sm", pricing.serviceFee === 0 ? "text-alert-positive" : "text-text-secondary")}>
-            Service fee{pricing.serviceFee === 0 ? " ✨" : ""}
-          </span>
-          <span className={cn("text-sm", pricing.serviceFee === 0 ? "text-alert-positive" : "text-text-secondary")}>
-            {formatCurrency(pricing.serviceFee, currency)}
-          </span>
-        </div>
-        <div className="h-px bg-border-light" />
-        <div className="flex items-center justify-between py-4">
-          <span className="text-sm font-bold text-text-primary">Total</span>
-          <span className="text-sm font-bold text-text-primary">{formatCurrency(grandTotal, currency)}</span>
+          )}
+          <div className="flex items-center justify-between py-2">
+            <span className="text-sm text-text-secondary">Cleaning fee</span>
+            <span className="text-sm text-text-secondary">{formatCurrency(pricing.cleaningFee, currency)}</span>
+          </div>
+          <div className="flex items-center justify-between py-2">
+            <span className={cn("text-sm", pricing.serviceFee === 0 ? "text-alert-positive" : "text-text-secondary")}>
+              Service fee{pricing.serviceFee === 0 ? " ✨" : ""}
+            </span>
+            <span className={cn("text-sm", pricing.serviceFee === 0 ? "text-alert-positive" : "text-text-secondary")}>
+              {formatCurrency(pricing.serviceFee, currency)}
+            </span>
+          </div>
+          <div className="flex items-center justify-between py-3">
+            <span className="text-sm font-bold text-text-primary">Total</span>
+            <span className="text-sm font-bold text-text-primary">{formatCurrency(grandTotal, currency)}</span>
+          </div>
         </div>
       </div>
 
       {/* Split payment toggle */}
-      <div>
-        <div className="h-px bg-border-light" />
-        <div className="flex items-center justify-between py-4">
-          <div className="flex items-center gap-3">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" className="shrink-0 text-text-primary">
-              <path d="M8 6H21M8 12H21M8 18H21M3 6H3.01M3 12H3.01M3 18H3.01" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
-            <div>
-              <p className="text-sm font-medium text-text-primary">Split payment</p>
-              <p className="text-xs text-text-secondary">50% now, 50% 7 days before arrival</p>
+      <div className="border border-border-default rounded-2xl overflow-hidden">
+        <div className="px-4 py-4">
+          <div className="flex items-start justify-between gap-3">
+            <div className="flex items-center gap-3">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" className="shrink-0 text-text-primary">
+                <path d="M8 6H21M8 12H21M8 18H21M3 6H3.01M3 12H3.01M3 18H3.01" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+              <div>
+                <p className="text-sm font-semibold text-text-primary">Split payment</p>
+                <p className="text-sm text-text-secondary">50% now, 50% 7 days before arrival</p>
+              </div>
             </div>
+            <button
+              onClick={() => setPaymentOption(isSplit ? "full" : "split")}
+              className={cn(
+                "relative shrink-0 w-11 h-6 rounded-full transition-colors cursor-pointer",
+                isSplit ? "bg-text-primary" : "bg-border-hover"
+              )}
+            >
+              <span className={cn(
+                "absolute top-0.5 w-5 h-5 bg-white rounded-full shadow transition-all",
+                isSplit ? "left-[calc(100%-1.375rem)]" : "left-0.5"
+              )} />
+            </button>
           </div>
-          <button
-            onClick={() => setPaymentOption(isSplit ? "full" : "split")}
-            className={cn(
-              "relative shrink-0 w-11 h-6 rounded-full transition-colors cursor-pointer",
-              isSplit ? "bg-text-primary" : "bg-border-hover"
-            )}
-          >
-            <span className={cn(
-              "absolute top-0.5 w-5 h-5 bg-white rounded-full shadow transition-all",
-              isSplit ? "left-[calc(100%-1.375rem)]" : "left-0.5"
-            )} />
-          </button>
+
+          {isSplit && (
+            <div className="mt-4 pt-3 border-t border-border-light space-y-2">
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-text-secondary">Now (50%)</span>
+                <span className="text-sm font-semibold text-text-primary">{formatCurrency(dueNow, currency)}</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-text-secondary">7 days before ({checkInDate})</span>
+                <span className="text-sm font-semibold text-text-primary">{formatCurrency(dueLater, currency)}</span>
+              </div>
+            </div>
+          )}
         </div>
-        {isSplit && (
-          <>
-            <div className="h-px bg-border-light" />
-            <div className="flex items-center justify-between py-4">
-              <span className="text-sm text-text-secondary">Now (50%)</span>
-              <span className="text-sm font-semibold text-text-primary">{formatCurrency(dueNow, currency)}</span>
-            </div>
-            <div className="h-px bg-border-light" />
-            <div className="flex items-center justify-between py-4">
-              <span className="text-sm text-text-secondary">7 days before ({checkInDate})</span>
-              <span className="text-sm font-semibold text-text-primary">{formatCurrency(dueLater, currency)}</span>
-            </div>
-          </>
-        )}
-        <div className="h-px bg-border-light" />
       </div>
 
-      {/* Due now */}
-      <div>
+      {/* Due now card */}
+      <div className="border border-border-default rounded-2xl px-4 py-4">
         <div className="flex items-center justify-between">
           <span className="text-sm text-text-secondary">Due now</span>
           <span className="text-base font-bold text-text-primary">{formatCurrency(dueNow, currency)}</span>
         </div>
-        <p className="text-xs text-text-secondary mt-1">
+        <p className="text-sm text-text-secondary mt-1">
           Free cancellation until {sevenDaysBeforeStr}
         </p>
       </div>
