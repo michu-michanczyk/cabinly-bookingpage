@@ -35,11 +35,13 @@ export function BookingPage() {
   const step = useBookingStore((s) => s.step);
   const setStep = useBookingStore((s) => s.setStep);
   const openBooking = useBookingStore((s) => s.openBooking);
+  const closeBooking = useBookingStore((s) => s.closeBooking);
   const navigate = useNavigate();
   const location = useLocation();
   const [searchParams] = useSearchParams();
 
   // On mount: initialise booking, derive step from current path slug
+  // On unmount: mark booking as closed so MobileBookingBar reappears
   useEffect(() => {
     const promoId = searchParams.get("promo");
     const promo = promoId ? cabin.promos.find((p) => p.id === promoId) ?? null : null;
@@ -47,6 +49,7 @@ export function BookingPage() {
     const slug = location.pathname.split("/").pop() ?? "";
     const stepFromSlug = SLUG_TO_STEP[slug];
     if (stepFromSlug) setStep(stepFromSlug as 1 | 2 | 3 | 4 | 5);
+    return () => closeBooking();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

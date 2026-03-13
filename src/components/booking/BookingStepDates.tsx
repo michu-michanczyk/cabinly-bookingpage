@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { format, parseISO, eachDayOfInterval, isSameDay, isAfter, isBefore, startOfDay } from "date-fns";
 import { IconChevronLeft } from "../icons";
 import { useBookingStore } from "../../stores/booking-store";
@@ -51,6 +51,7 @@ export function BookingStepDates({ cabin }: BookingStepDatesProps) {
   const [showCalendar, setShowCalendar] = useState(
     () => !!(dates.checkIn && !selectedPromo)
   );
+  const calendarRef = useRef<HTMLDivElement>(null);
   const [calendarMonth, setCalendarMonth] = useState(
     () => dates.checkIn ? parseISO(dates.checkIn) : new Date()
   );
@@ -164,7 +165,11 @@ export function BookingStepDates({ cabin }: BookingStepDatesProps) {
         {/* Not a fit? — same height and style as promo cards */}
         {!showCalendar ? (
           <button
-            onClick={() => { setShowCalendar(true); handleClearDates(); }}
+            onClick={() => {
+              setShowCalendar(true);
+              handleClearDates();
+              setTimeout(() => calendarRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 50);
+            }}
             style={{ height: 75 }}
             className="w-full flex items-center gap-2 px-4 rounded-2xl border border-border-default transition-colors text-left bg-bg-primary cursor-pointer overflow-hidden hover:border-border-hover"
           >
@@ -174,7 +179,7 @@ export function BookingStepDates({ cabin }: BookingStepDatesProps) {
             </span>
           </button>
         ) : (
-          <div className="space-y-3">
+          <div ref={calendarRef} className="space-y-3">
             {/* Calendar header */}
             <div className="mt-6">
               <p className="text-base font-medium text-text-primary">
