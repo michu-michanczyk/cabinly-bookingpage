@@ -1,4 +1,4 @@
-import { lazy, Suspense, useState } from "react";
+import { lazy, Suspense, useState, useRef } from "react";
 import { IconPlay, IconArrowRight } from "../icons";
 import { cn } from "../../lib/utils";
 import type { CabinImage } from "../../types/cabin";
@@ -14,7 +14,16 @@ interface GalleryProps {
 export function Gallery({ images }: GalleryProps) {
   const [modalOpen, setModalOpen] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
-  const [mobileIndex] = useState(0);
+  const [mobileIndex, setMobileIndex] = useState(0);
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  const handleMobileScroll = () => {
+    const el = scrollRef.current;
+    if (!el) return;
+    const itemWidth = el.clientWidth * 0.85 + 8; // 85vw + gap-2 (8px)
+    const index = Math.min(Math.round(el.scrollLeft / itemWidth), images.length - 1);
+    setMobileIndex(index);
+  };
 
   const openModal = (index: number) => {
     setActiveIndex(index);
@@ -168,7 +177,7 @@ export function Gallery({ images }: GalleryProps) {
 
       {/* Mobile carousel */}
       <section className="md:hidden mt-4 -mx-4">
-        <div className="overflow-x-auto hide-scrollbar snap-x snap-mandatory flex gap-2 px-4">
+        <div ref={scrollRef} onScroll={handleMobileScroll} className="overflow-x-auto hide-scrollbar snap-x snap-mandatory flex gap-2 px-4">
           {images.map((image, i) => (
             <div
               key={i}
