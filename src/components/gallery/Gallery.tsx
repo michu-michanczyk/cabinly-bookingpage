@@ -178,7 +178,7 @@ export function Gallery({ images }: GalleryProps) {
       {/* Mobile carousel */}
       <section className="md:hidden mt-4 -mx-4">
         <div ref={scrollRef} onScroll={handleMobileScroll} className="overflow-x-auto hide-scrollbar snap-x snap-mandatory flex gap-2 px-4">
-          {images.map((image, i) => (
+          {images.slice(0, 7).map((image, i) => (
             <div
               key={i}
               className="snap-center shrink-0 w-[85vw] aspect-[4/3] rounded-lg overflow-hidden cursor-pointer"
