@@ -113,9 +113,9 @@ export function BookingStepPayment({ cabin }: BookingStepPaymentProps) {
 
   return (
     <div className="space-y-6">
-      <div>
+      <div className="flex items-center justify-between">
         <h1 className="text-xl font-medium text-text-primary">Additional services</h1>
-        <p className="text-sm text-text-secondary mt-1">Improve your experience - optional</p>
+        <span className="text-sm text-text-secondary">Improve your experience - optional</span>
       </div>
 
       <div className="space-y-2">
