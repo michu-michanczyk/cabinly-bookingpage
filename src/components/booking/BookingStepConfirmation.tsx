@@ -33,7 +33,6 @@ export function BookingStepConfirmation({ cabin }: BookingStepConfirmationProps)
   const selectedExtras = useBookingStore((s) => s.selectedExtras);
   const paymentOption = useBookingStore((s) => s.paymentOption);
   const setPaymentOption = useBookingStore((s) => s.setPaymentOption);
-  const guestDetails = useBookingStore((s) => s.guestDetails);
   const reset = useBookingStore((s) => s.reset);
 
   if (!dates.checkIn || !dates.checkOut || !pricing) return null;
