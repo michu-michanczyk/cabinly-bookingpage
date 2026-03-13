@@ -216,7 +216,7 @@ export function TopBar({ cabin, onSendMessage }: TopBarProps) {
                   onKeyDown={handleKeyDown}
                   onFocus={() => { if (!isOpen) openChat(); }}
                   placeholder={isOpen ? "" : "Ask me anything about this place"}
-                  className="flex-1 bg-transparent text-sm text-text-primary placeholder:text-text-secondary outline-none min-w-0"
+                  className="flex-1 bg-transparent text-base sm:text-sm text-text-primary placeholder:text-text-secondary outline-none min-w-0"
                 />
                 <div className="flex items-center gap-2 shrink-0">
                   <button
