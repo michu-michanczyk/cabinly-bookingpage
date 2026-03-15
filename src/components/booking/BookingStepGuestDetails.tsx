@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useBookingStore } from "../../stores/booking-store";
 import { formatCurrency, cn } from "../../lib/utils";
+import { calcExtrasTotal } from "../../data/extras";
 import { Button } from "../ui/Button";
 import { StickyButtonWrapper } from "./StickyButtonWrapper";
 import type { Cabin } from "../../types/cabin";
@@ -24,12 +25,14 @@ export function BookingStepGuestDetails({ cabin }: BookingStepGuestDetailsProps)
   const setGuestDetails = useBookingStore((s) => s.setGuestDetails);
   const pricing = useBookingStore((s) => s.pricing);
   const guests = useBookingStore((s) => s.guests);
+  const selectedExtras = useBookingStore((s) => s.selectedExtras);
   const setStep = useBookingStore((s) => s.setStep);
 
   const [firstName, setFirstName] = useState(() => guestDetails.name.split(" ")[0] ?? "");
   const [lastName, setLastName] = useState(() => guestDetails.name.split(" ").slice(1).join(" "));
 
-  const totalGuests = guests.adults + guests.children;
+  const totalGuests = guests.adults + guests.children + guests.babies + guests.pets;
+  const extrasTotal = calcExtrasTotal(selectedExtras);
   const canContinue = firstName.trim() && guestDetails.email.trim() && guestDetails.phone.trim();
 
   const inputClass = cn(
@@ -124,10 +127,10 @@ export function BookingStepGuestDetails({ cabin }: BookingStepGuestDetailsProps)
       <div className="flex items-center justify-between">
         <span className="text-sm text-text-secondary">
           {pricing ? `${pricing.nights} night${pricing.nights !== 1 ? "s" : ""} · ` : ""}
-          {totalGuests} guest{totalGuests !== 1 ? "s" : ""}
+          {totalGuests} guest{totalGuests !== 1 ? "s" : ""}{extrasTotal > 0 ? " + extras" : ""}
         </span>
         <span className="text-base font-medium text-text-primary">
-          {pricing ? formatCurrency(pricing.total, cabin.pricing.currency) : ""}
+          {pricing ? formatCurrency(pricing.total + extrasTotal, cabin.pricing.currency) : ""}
         </span>
       </div>
 

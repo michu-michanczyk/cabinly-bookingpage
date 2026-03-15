@@ -1,0 +1,18 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <script>
+      // SPA redirect for GitHub Pages
+      // Encodes the path into a query string so index.html can restore it
+      const base = '/cabinly-bookingpage';
+      const path = window.location.pathname.replace(base, '') || '/';
+      const search = window.location.search;
+      const hash = window.location.hash;
+      window.location.replace(
+        base + '/?p=' + encodeURIComponent(path + search) + (hash ? '&h=' + encodeURIComponent(hash) : '')
+      );
+    </script>
+  </head>
+  <body></body>
+</html>

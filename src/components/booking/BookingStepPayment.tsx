@@ -1,5 +1,6 @@
 import { useBookingStore } from "../../stores/booking-store";
 import { formatCurrency, cn } from "../../lib/utils";
+import { calcExtrasTotal, EXTRAS_DATA } from "../../data/extras";
 import { Button } from "../ui/Button";
 import { StickyButtonWrapper } from "./StickyButtonWrapper";
 import type { Cabin } from "../../types/cabin";
@@ -70,34 +71,10 @@ function IconFireplace({ size = 24 }: { size?: number }) {
 }
 
 const EXTRAS: Extra[] = [
-  {
-    id: "sauna",
-    title: "Private sauna",
-    subtitle: "Exclusive use for your group",
-    price: 280,
-    icon: <IconSauna size={24} />,
-  },
-  {
-    id: "hottub",
-    title: "Hot tube on terrace",
-    subtitle: "Heated outdoor hot tub",
-    price: 200,
-    icon: <IconJacuzzi size={24} />,
-  },
-  {
-    id: "late-checkout",
-    title: "Late check-out",
-    subtitle: "Check out until 2 PM",
-    price: 100,
-    icon: <IconCheckout size={24} />,
-  },
-  {
-    id: "firewood",
-    title: "Additional fireplace wood",
-    subtitle: "Extra bundle of firewood",
-    price: 150,
-    icon: <IconFireplace size={24} />,
-  },
+  { ...EXTRAS_DATA[0], subtitle: "Exclusive use for your group", icon: <IconSauna size={24} /> },
+  { ...EXTRAS_DATA[1], subtitle: "Heated outdoor hot tub", icon: <IconJacuzzi size={24} /> },
+  { ...EXTRAS_DATA[2], subtitle: "Check out until 2 PM", icon: <IconCheckout size={24} /> },
+  { ...EXTRAS_DATA[3], subtitle: "Extra bundle of firewood", icon: <IconFireplace size={24} /> },
 ];
 
 export function BookingStepPayment({ cabin }: BookingStepPaymentProps) {
@@ -107,15 +84,15 @@ export function BookingStepPayment({ cabin }: BookingStepPaymentProps) {
   const toggleExtra = useBookingStore((s) => s.toggleExtra);
   const setStep = useBookingStore((s) => s.setStep);
 
-  const extrasTotal = EXTRAS.filter((e) => selectedExtras.includes(e.id)).reduce((sum, e) => sum + e.price, 0);
+  const extrasTotal = calcExtrasTotal(selectedExtras);
   const total = (pricing?.total ?? 0) + extrasTotal;
-  const totalGuests = guests.adults + guests.children;
+  const totalGuests = guests.adults + guests.children + guests.babies + guests.pets;
 
   return (
     <div className="space-y-6">
-      <div>
+      <div className="flex items-center justify-between">
         <h1 className="text-xl font-medium text-text-primary">Additional services</h1>
-        <p className="text-sm text-text-secondary mt-1">Improve your experience - optional</p>
+        <span className="text-sm text-text-secondary">Improve your experience - optional</span>
       </div>
 
       <div className="space-y-2">
@@ -135,10 +112,10 @@ export function BookingStepPayment({ cabin }: BookingStepPaymentProps) {
             >
               <span className="shrink-0 text-text-primary">{extra.icon}</span>
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-text-primary">{extra.title}</p>
+                <p className="text-sm text-text-primary">{extra.title}</p>
                 <p className="text-sm text-text-secondary">{extra.subtitle}</p>
               </div>
-              <span className="text-sm font-medium text-text-primary shrink-0">
+              <span className="text-sm text-text-primary shrink-0">
                 +{formatCurrency(extra.price, cabin.pricing.currency)}
               </span>
             </button>

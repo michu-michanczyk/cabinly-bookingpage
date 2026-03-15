@@ -45,9 +45,9 @@ export function BookingPage() {
   useEffect(() => {
     const promoId = searchParams.get("promo");
     const promo = promoId ? cabin.promos.find((p) => p.id === promoId) ?? null : null;
-    openBooking(promo ?? undefined);
     const slug = location.pathname.split("/").pop() ?? "";
     const stepFromSlug = SLUG_TO_STEP[slug];
+    openBooking(promo ?? undefined);
     if (stepFromSlug) setStep(stepFromSlug as 1 | 2 | 3 | 4 | 5);
     return () => closeBooking();
     // eslint-disable-next-line react-hooks/exhaustive-deps
