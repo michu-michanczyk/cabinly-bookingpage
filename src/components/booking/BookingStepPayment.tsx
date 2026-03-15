@@ -1,6 +1,8 @@
+import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 import { useBookingStore } from "../../stores/booking-store";
-import { formatCurrency, cn } from "../../lib/utils";
-import { calcExtrasTotal, EXTRAS_DATA } from "../../data/extras";
+import { formatCurrency } from "../../lib/utils";
+import { calcExtrasTotal } from "../../data/extras";
 import { Button } from "../ui/Button";
 import { StickyButtonWrapper } from "./StickyButtonWrapper";
 import type { Cabin } from "../../types/cabin";
@@ -9,135 +11,48 @@ interface BookingStepPaymentProps {
   cabin: Cabin;
 }
 
-interface Extra {
-  id: string;
-  title: string;
-  subtitle: string;
-  price: number;
-  icon: React.ReactNode;
-}
-
-function IconSauna({ size = 24 }: { size?: number }) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path fillRule="evenodd" clipRule="evenodd" d="M15.5 13H8.5C7.395 13 6.5 12.105 6.5 11V9C6.5 7.895 7.395 7 8.5 7H15.5C16.605 7 17.5 7.895 17.5 9V11C17.5 12.105 16.605 13 15.5 13Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-      <path fillRule="evenodd" clipRule="evenodd" d="M18 21H6C4.343 21 3 19.657 3 18V6C3 4.343 4.343 3 6 3H18C19.657 3 21 4.343 21 6V18C21 19.657 19.657 21 18 21Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-    </svg>
-  );
-}
-
-function IconJacuzzi({ size = 24 }: { size?: number }) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path fillRule="evenodd" clipRule="evenodd" d="M14.5268 9.12H11.4738C10.7908 9.12 10.3088 8.451 10.5248 7.804V7.804C10.8598 6.798 11.8008 6.12 12.8608 6.12H13.1388C14.1988 6.12 15.1398 6.798 15.4748 7.804V7.804C15.6908 8.451 15.2088 9.12 14.5268 9.12V9.12Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-      <path d="M6.99278 13.263H3.99978C3.38578 13.263 2.91678 13.811 3.01178 14.417L3.35578 16.617C3.65978 18.565 5.33678 20 7.30778 20H16.6918C18.6628 20 20.3398 18.565 20.6438 16.618L20.9878 14.418C21.0828 13.812 20.6138 13.264 19.9998 13.264H12.2628" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-      <path d="M13 6.12V6C13 4.343 14.343 3 16 3V3C17.657 3 19 4.343 19 6V13.263" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-      <path fillRule="evenodd" clipRule="evenodd" d="M10.158 17.263H9.105C7.943 17.263 7 16.321 7 15.158V13.153C7 12.516 7.516 12 8.153 12H11.11C11.747 12 12.263 12.516 12.263 13.153V15.158C12.263 16.321 11.321 17.263 10.158 17.263Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-      <path d="M6.04 19.8L5 21" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-      <path d="M19 21L17.96 19.8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-    </svg>
-  );
-}
-
-function IconCheckout({ size = 24 }: { size?: number }) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path fillRule="evenodd" clipRule="evenodd" d="M7.99994 21V21C9.10794 21 10.0069 20.102 10.0079 18.994L10.0119 14.95C10.9759 14.528 11.8469 13.822 12.4229 12.716C13.3369 10.962 13.1619 8.758 11.9189 7.22C9.88894 4.709 6.09094 4.715 4.06994 7.238C2.83294 8.781 2.66394 10.986 3.58694 12.735C4.16494 13.831 5.03394 14.535 5.99594 14.954L5.99194 18.989C5.99094 20.099 6.88994 21 7.99994 21V21Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-      <path d="M8.273 10.346C8.273 10.183 8.141 10.052 7.979 10.052C7.816 10.053 7.685 10.185 7.685 10.347C7.685 10.51 7.817 10.641 7.979 10.641C8.141 10.641 8.273 10.509 8.273 10.346" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-      <path d="M13.263 5.632C13.263 4.178 12.085 3 10.631 3V3C9.178 3 8 4.178 8 5.632V10.052" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-      <path d="M11.3979 6.666L11.8479 6.216C12.6289 5.435 13.8949 5.435 14.6759 6.216L20.4129 11.953C21.1939 12.734 21.1939 14 20.4129 14.781L17.7659 17.428C16.9849 18.209 15.7189 18.209 14.9379 17.428L11.4849 13.975" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-    </svg>
-  );
-}
-
-function IconFireplace({ size = 24 }: { size?: number }) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <g clipPath="url(#clip0_fireplace)">
-        <path d="M3 21V3H21V21" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-        <path d="M21 6.00001H3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-        <path d="M22 3.00001H2" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-        <path d="M17.5 21V11.1C13.98 9.63333 10.02 9.63333 6.5 11.1V21" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-        <path fillRule="evenodd" clipRule="evenodd" d="M10.1237 20.107V20.107C9.29211 19.1121 9.29211 17.6646 10.1237 16.6697L11.2328 15.3428C11.4228 15.1155 11.7038 14.9842 12 14.9842C12.2962 14.9842 12.5772 15.1155 12.7672 15.3428L13.8763 16.6697C14.7079 17.6646 14.7079 19.1121 13.8763 20.107V20.107C13.4117 20.6629 12.7245 20.9841 12 20.9841C11.2755 20.9841 10.5883 20.6629 10.1237 20.107Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-        <path d="M22 21H2" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-      </g>
-      <defs>
-        <clipPath id="clip0_fireplace">
-          <rect width="24" height="24" fill="white"/>
-        </clipPath>
-      </defs>
-    </svg>
-  );
-}
-
-const EXTRAS: Extra[] = [
-  { ...EXTRAS_DATA[0], subtitle: "Exclusive use for your group", icon: <IconSauna size={24} /> },
-  { ...EXTRAS_DATA[1], subtitle: "Heated outdoor hot tub", icon: <IconJacuzzi size={24} /> },
-  { ...EXTRAS_DATA[2], subtitle: "Check out until 2 PM", icon: <IconCheckout size={24} /> },
-  { ...EXTRAS_DATA[3], subtitle: "Extra bundle of firewood", icon: <IconFireplace size={24} /> },
-];
-
 export function BookingStepPayment({ cabin }: BookingStepPaymentProps) {
+  const navigate = useNavigate();
   const pricing = useBookingStore((s) => s.pricing);
-  const guests = useBookingStore((s) => s.guests);
   const selectedExtras = useBookingStore((s) => s.selectedExtras);
-  const toggleExtra = useBookingStore((s) => s.toggleExtra);
+  const paymentOption = useBookingStore((s) => s.paymentOption);
   const setStep = useBookingStore((s) => s.setStep);
+  const reset = useBookingStore((s) => s.reset);
+
+  const missingData = !pricing;
+
+  useEffect(() => {
+    if (missingData) setStep(1);
+  }, [missingData, setStep]);
+
+  if (missingData) return null;
 
   const extrasTotal = calcExtrasTotal(selectedExtras);
-  const total = (pricing?.total ?? 0) + extrasTotal;
-  const totalGuests = guests.adults + guests.children + guests.babies + guests.pets;
+  const grandTotal = pricing.total + extrasTotal;
+  const isSplit = paymentOption === "split";
+  const dueNow = isSplit ? Math.ceil(grandTotal / 2) : grandTotal;
+  const currency = cabin.pricing.currency;
+
+  const handleBook = () => {
+    navigate("/book/confirmed");
+    setTimeout(() => reset(), 300);
+  };
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-xl font-medium text-text-primary">Additional services</h1>
-        <span className="text-sm text-text-secondary">Improve your experience - optional</span>
-      </div>
+      <h1 className="text-xl font-medium text-text-primary">Payment</h1>
 
-      <div className="space-y-2">
-        {EXTRAS.map((extra) => {
-          const isSelected = selectedExtras.includes(extra.id);
-          return (
-            <button
-              key={extra.id}
-              onClick={() => toggleExtra(extra.id)}
-              style={{ minHeight: 75 }}
-              className={cn(
-                "w-full text-left rounded-2xl px-4 py-4 flex items-center gap-3 transition-colors cursor-pointer border overflow-hidden",
-                isSelected
-                  ? "bg-bg-secondary border-text-primary"
-                  : "bg-bg-primary border-border-default hover:border-border-hover"
-              )}
-            >
-              <span className="shrink-0 text-text-primary">{extra.icon}</span>
-              <div className="flex-1 min-w-0">
-                <p className="text-sm text-text-primary">{extra.title}</p>
-                <p className="text-sm text-text-secondary">{extra.subtitle}</p>
-              </div>
-              <span className="text-sm text-text-primary shrink-0">
-                +{formatCurrency(extra.price, cabin.pricing.currency)}
-              </span>
-            </button>
-          );
-        })}
-      </div>
-
-      <div className="flex items-center justify-between">
-        <span className="text-sm text-text-secondary">
-          {pricing ? `${pricing.nights} night${pricing.nights !== 1 ? "s" : ""}` : "No dates selected"}
-          {" · "}
-          {totalGuests} guest{totalGuests !== 1 ? "s" : ""}
-          {extrasTotal > 0 ? " + extras" : ""}
-        </span>
-        <span className="text-base font-medium text-text-primary">
-          {formatCurrency(total, cabin.pricing.currency)}
-        </span>
+      {/* Stripe Payment Element placeholder */}
+      <div className="border border-border-default rounded-2xl px-4 py-8 flex flex-col items-center justify-center gap-3 text-center">
+        <svg width="32" height="32" viewBox="0 0 34 24" fill="none" className="opacity-40">
+          <path fillRule="evenodd" clipRule="evenodd" d="M18.2681 8.14192L16.541 8.52349V7.08202L18.2681 6.70752V8.14192ZM21.8599 8.94038C21.1856 8.94038 20.7521 9.26542 20.5112 9.49153L20.4218 9.05344H18.908V17.2924L20.6282 16.9179L20.6351 14.9183C20.8828 15.102 21.2475 15.3634 21.853 15.3634C23.0847 15.3634 24.2063 14.3459 24.2063 12.106C24.1994 10.0568 23.0641 8.94038 21.8599 8.94038ZM21.447 13.8089C21.041 13.8089 20.8002 13.6605 20.6351 13.4768L20.6282 10.8553C20.8071 10.6504 21.0548 10.509 21.447 10.509C22.0732 10.509 22.5067 11.2298 22.5067 12.1554C22.5067 13.1023 22.0801 13.8089 21.447 13.8089ZM29.6286 12.1766C29.6286 10.3677 28.7753 8.94038 27.1446 8.94038C25.5069 8.94038 24.516 10.3677 24.516 12.1625C24.516 14.2894 25.6858 15.3634 27.3647 15.3634C28.1836 15.3634 28.8029 15.1726 29.2708 14.9041V13.4909C28.8029 13.7312 28.2661 13.8795 27.5849 13.8795C26.9175 13.8795 26.3257 13.6393 26.25 12.8055H29.6148C29.6148 12.7666 29.6173 12.6782 29.6201 12.5763L29.6201 12.5761C29.624 12.4377 29.6286 12.2743 29.6286 12.1766ZM26.2293 11.5054C26.2293 10.7069 26.7041 10.3748 27.1376 10.3748C27.5574 10.3748 28.0046 10.7069 28.0046 11.5054H26.2293ZM16.5409 9.06052H18.268V15.2433H16.5409V9.06052ZM14.58 9.06051L14.6901 9.5834C15.0961 8.82026 15.9011 8.97572 16.1213 9.06051V10.6857C15.908 10.608 15.2199 10.509 14.8139 11.0531V15.2433H13.0937V9.06051H14.58ZM11.2495 7.52717L9.57053 7.8946L9.56365 13.5545C9.56365 14.6003 10.3274 15.3705 11.3458 15.3705C11.9101 15.3705 12.3229 15.2645 12.55 15.1373V13.7029C12.3298 13.7947 11.2426 14.1198 11.2426 13.074V10.5656H12.55V9.0605H11.2426L11.2495 7.52717ZM7.18292 10.4737C6.81823 10.4737 6.59804 10.5797 6.59804 10.8553C6.59804 11.1562 6.97699 11.2885 7.44712 11.4527C8.21355 11.7204 9.22231 12.0728 9.22657 13.3779C9.22657 14.6427 8.24259 15.3705 6.81135 15.3705C6.21958 15.3705 5.57277 15.2504 4.93284 14.9677V13.286C5.51084 13.611 6.24023 13.8513 6.81135 13.8513C7.19668 13.8513 7.47192 13.7453 7.47192 13.4203C7.47192 13.087 7.06113 12.9346 6.56519 12.7507C5.80991 12.4706 4.85715 12.1173 4.85715 10.9401C4.85715 9.6894 5.78608 8.9404 7.18292 8.9404C7.75404 8.9404 8.31828 9.03225 8.88941 9.26543V10.926C8.36645 10.6362 7.70588 10.4737 7.18292 10.4737Z" fill="currentColor"/>
+        </svg>
+        <p className="text-sm text-text-secondary">Stripe Payment Element will be integrated here</p>
       </div>
 
       <StickyButtonWrapper>
-        <Button variant="primary" size="lg" className="w-full" onClick={() => setStep(4)}>
-          Continue
+        <Button variant="primary" size="lg" className="w-full" onClick={handleBook}>
+          Book & pay {formatCurrency(dueNow, currency)}
         </Button>
       </StickyButtonWrapper>
     </div>

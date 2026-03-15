@@ -1,4 +1,3 @@
-import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { useBookingStore } from "../../stores/booking-store";
 import { formatCurrency, formatDateShort, cn } from "../../lib/utils";
@@ -7,12 +6,11 @@ import { Button } from "../ui/Button";
 import { StickyButtonWrapper } from "./StickyButtonWrapper";
 import type { Cabin } from "../../types/cabin";
 
-interface BookingStepConfirmationProps {
+interface BookingStepSummaryProps {
   cabin: Cabin;
 }
 
-export function BookingStepConfirmation({ cabin }: BookingStepConfirmationProps) {
-  const navigate = useNavigate();
+export function BookingStepSummary({ cabin }: BookingStepSummaryProps) {
   const dates = useBookingStore((s) => s.dates);
   const guests = useBookingStore((s) => s.guests);
   const pricing = useBookingStore((s) => s.pricing);
@@ -20,7 +18,6 @@ export function BookingStepConfirmation({ cabin }: BookingStepConfirmationProps)
   const setStep = useBookingStore((s) => s.setStep);
   const paymentOption = useBookingStore((s) => s.paymentOption);
   const setPaymentOption = useBookingStore((s) => s.setPaymentOption);
-  const reset = useBookingStore((s) => s.reset);
 
   const missingData = !dates.checkIn || !dates.checkOut || !pricing;
 
@@ -50,11 +47,6 @@ export function BookingStepConfirmation({ cabin }: BookingStepConfirmationProps)
 
   const sevenDaysBefore = new Date(new Date(dates.checkIn).getTime() - 7 * 24 * 60 * 60 * 1000);
   const sevenDaysBeforeStr = sevenDaysBefore.toLocaleDateString("en-US", { day: "numeric", month: "short" });
-
-  const handleBook = () => {
-    navigate("/book/confirmed");
-    setTimeout(() => reset(), 300);
-  };
 
   return (
     <div className="space-y-4">
@@ -168,8 +160,8 @@ export function BookingStepConfirmation({ cabin }: BookingStepConfirmationProps)
       </p>
 
       <StickyButtonWrapper>
-        <Button variant="primary" size="lg" className="w-full" onClick={handleBook}>
-          Book & pay {formatCurrency(dueNow, currency)}
+        <Button variant="primary" size="lg" className="w-full" onClick={() => setStep(6)}>
+          Continue to payment
         </Button>
       </StickyButtonWrapper>
 
