@@ -13,13 +13,14 @@ interface BookingStepPaymentProps {
 
 export function BookingStepPayment({ cabin }: BookingStepPaymentProps) {
   const navigate = useNavigate();
+  const dates = useBookingStore((s) => s.dates);
   const pricing = useBookingStore((s) => s.pricing);
   const selectedExtras = useBookingStore((s) => s.selectedExtras);
   const paymentOption = useBookingStore((s) => s.paymentOption);
   const setStep = useBookingStore((s) => s.setStep);
   const reset = useBookingStore((s) => s.reset);
 
-  const missingData = !pricing;
+  const missingData = !dates.checkIn || !dates.checkOut || !pricing;
 
   useEffect(() => {
     if (missingData) setStep(1);
