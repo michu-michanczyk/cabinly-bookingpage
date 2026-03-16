@@ -114,26 +114,24 @@ export function BookingConfirmed() {
                 </div>
 
                 {grandTotal && (
-                  <>
-                    <div className="border-t border-border-light pt-3 mt-3">
-                      <div className="flex justify-between text-sm">
-                        <span className="text-text-secondary">Total</span>
-                        <span className="text-text-primary font-medium">{formatCurrency(grandTotal, currency)}</span>
-                      </div>
-                      {isSplit && dueNow && (
-                        <>
-                          <div className="flex justify-between text-sm mt-1">
-                            <span className="text-text-secondary">Paid now</span>
-                            <span className="text-text-primary font-medium">{formatCurrency(dueNow, currency)}</span>
-                          </div>
-                          <div className="flex justify-between text-sm mt-1">
-                            <span className="text-text-secondary">Due at check-in</span>
-                            <span className="text-text-primary font-medium">{formatCurrency(grandTotal - dueNow, currency)}</span>
-                          </div>
-                        </>
-                      )}
+                  <div className="border-t border-border-light pt-3 mt-3">
+                    <div className="flex justify-between text-sm">
+                      <span className="text-text-secondary">Total</span>
+                      <span className="text-text-primary font-medium">{formatCurrency(grandTotal, currency)}</span>
                     </div>
-                  </>
+                    {isSplit && dueNow && (
+                      <>
+                        <div className="flex justify-between text-sm mt-1">
+                          <span className="text-text-secondary">Paid now</span>
+                          <span className="text-text-primary font-medium">{formatCurrency(dueNow, currency)}</span>
+                        </div>
+                        <div className="flex justify-between text-sm mt-1">
+                          <span className="text-text-secondary">Due at check-in</span>
+                          <span className="text-text-primary font-medium">{formatCurrency(grandTotal - dueNow, currency)}</span>
+                        </div>
+                      </>
+                    )}
+                  </div>
                 )}
               </div>
             </div>
