@@ -57,11 +57,13 @@ export function BookingConfirmed() {
       {/* Header */}
       <header className="bg-bg-primary border-b border-border-light">
         <div className="flex items-center justify-center" style={{ height: 64, paddingTop: 8, paddingBottom: 8 }}>
-          <img
-            src={cabin.images[0].url}
-            alt={cabin.images[0].alt}
-            className="w-12 h-12 rounded-full object-cover"
-          />
+          <Link to="/">
+            <img
+              src={cabin.images[0].url}
+              alt={cabin.images[0].alt}
+              className="w-12 h-12 rounded-full object-cover"
+            />
+          </Link>
         </div>
       </header>
 
