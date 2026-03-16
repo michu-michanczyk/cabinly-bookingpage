@@ -29,14 +29,14 @@ export function BookingConfirmed() {
         angle: 60,
         spread: 55,
         origin: { x: 0 },
-        colors: ["#010101", "#34D399", "#3B82F6", "#a855f7", "#f59e0b"],
+        colors: ["#ff595e", "#ffca3a", "#6a4c93", "#1982c4", "#8ac926", "#ff924c"],
       });
       confetti({
         particleCount: 6,
         angle: 120,
         spread: 55,
         origin: { x: 1 },
-        colors: ["#010101", "#34D399", "#3B82F6", "#a855f7", "#f59e0b"],
+        colors: ["#ff595e", "#ffca3a", "#6a4c93", "#1982c4", "#8ac926", "#ff924c"],
       });
 
       if (Date.now() < end) requestAnimationFrame(frame);
