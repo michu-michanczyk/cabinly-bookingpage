@@ -1,5 +1,6 @@
+import type { ReactNode } from "react";
 import { useBookingStore } from "../../stores/booking-store";
-import { formatCurrency, cn } from "../../lib/utils";
+import { formatCurrency, cn, totalGuests as calcTotalGuests } from "../../lib/utils";
 import { calcExtrasTotal, EXTRAS_DATA } from "../../data/extras";
 import { Button } from "../ui/Button";
 import { StickyButtonWrapper } from "./StickyButtonWrapper";
@@ -14,7 +15,7 @@ interface Extra {
   title: string;
   subtitle: string;
   price: number;
-  icon: React.ReactNode;
+  icon: ReactNode;
 }
 
 function IconSauna({ size = 24 }: { size?: number }) {
@@ -70,14 +71,19 @@ function IconFireplace({ size = 24 }: { size?: number }) {
   );
 }
 
-const EXTRAS: Extra[] = [
-  { ...EXTRAS_DATA[0], subtitle: "Exclusive use for your group", icon: <IconSauna size={24} /> },
-  { ...EXTRAS_DATA[1], subtitle: "Heated outdoor hot tub", icon: <IconJacuzzi size={24} /> },
-  { ...EXTRAS_DATA[2], subtitle: "Check out until 2 PM", icon: <IconCheckout size={24} /> },
-  { ...EXTRAS_DATA[3], subtitle: "Extra bundle of firewood", icon: <IconFireplace size={24} /> },
+const EXTRAS_META: { subtitle: string; icon: (size: number) => ReactNode }[] = [
+  { subtitle: "Exclusive use for your group", icon: (s) => <IconSauna size={s} /> },
+  { subtitle: "Heated outdoor hot tub", icon: (s) => <IconJacuzzi size={s} /> },
+  { subtitle: "Check out until 2 PM", icon: (s) => <IconCheckout size={s} /> },
+  { subtitle: "Extra bundle of firewood", icon: (s) => <IconFireplace size={s} /> },
 ];
 
 export function BookingStepExtras({ cabin }: BookingStepExtrasProps) {
+  const EXTRAS: Extra[] = EXTRAS_DATA.map((e, i) => ({
+    ...e,
+    subtitle: EXTRAS_META[i].subtitle,
+    icon: EXTRAS_META[i].icon(24),
+  }));
   const pricing = useBookingStore((s) => s.pricing);
   const guests = useBookingStore((s) => s.guests);
   const selectedExtras = useBookingStore((s) => s.selectedExtras);
@@ -86,7 +92,7 @@ export function BookingStepExtras({ cabin }: BookingStepExtrasProps) {
 
   const extrasTotal = calcExtrasTotal(selectedExtras);
   const total = (pricing?.total ?? 0) + extrasTotal;
-  const totalGuests = guests.adults + guests.children + guests.babies + guests.pets;
+  const numGuests = calcTotalGuests(guests);
 
   return (
     <div className="space-y-6">
@@ -127,7 +133,7 @@ export function BookingStepExtras({ cabin }: BookingStepExtrasProps) {
         <span className="text-sm text-text-secondary">
           {pricing ? `${pricing.nights} night${pricing.nights !== 1 ? "s" : ""}` : "No dates selected"}
           {" · "}
-          {totalGuests} guest{totalGuests !== 1 ? "s" : ""}
+          {numGuests} guest{numGuests !== 1 ? "s" : ""}
           {extrasTotal > 0 ? " + extras" : ""}
         </span>
         <span className="text-base font-medium text-text-primary">

@@ -3,60 +3,44 @@ import { Link } from "react-router-dom";
 import confetti from "canvas-confetti";
 import { mockCabin } from "../data/mock-cabin";
 import { useBookingStore } from "../stores/booking-store";
-import { formatCurrency, formatDateShort } from "../lib/utils";
+import { formatCurrency, formatDateShort, calcDueNow, totalGuests as calcTotalGuests } from "../lib/utils";
 import { calcExtrasTotal } from "../data/extras";
 import { IconCalendar, IconUsers, IconTick } from "../components/icons";
 
 export function BookingConfirmed() {
   const cabin = mockCabin;
-  const firedRef = useRef(false);
-
   // Snapshot store on first render — before the delayed reset fires
   const snapshot = useRef(useBookingStore.getState());
 
   const { dates, guests, pricing, selectedExtras, paymentOption, guestDetails } = snapshot.current;
 
   useEffect(() => {
-    if (firedRef.current) return;
-    firedRef.current = true;
-
-    const duration = 3000;
-    const end = Date.now() + duration;
+    const colors = ["#ff595e", "#ffca3a", "#6a4c93", "#1982c4", "#8ac926", "#ff924c"];
+    const end = Date.now() + 3000;
+    let rafId: number;
 
     const frame = () => {
-      confetti({
-        particleCount: 6,
-        angle: 60,
-        spread: 55,
-        origin: { x: 0 },
-        colors: ["#ff595e", "#ffca3a", "#6a4c93", "#1982c4", "#8ac926", "#ff924c"],
-      });
-      confetti({
-        particleCount: 6,
-        angle: 120,
-        spread: 55,
-        origin: { x: 1 },
-        colors: ["#ff595e", "#ffca3a", "#6a4c93", "#1982c4", "#8ac926", "#ff924c"],
-      });
-
-      if (Date.now() < end) requestAnimationFrame(frame);
+      confetti({ particleCount: 6, angle: 60, spread: 55, origin: { x: 0 }, colors });
+      confetti({ particleCount: 6, angle: 120, spread: 55, origin: { x: 1 }, colors });
+      if (Date.now() < end) rafId = requestAnimationFrame(frame);
     };
 
-    frame();
+    rafId = requestAnimationFrame(frame);
+    return () => cancelAnimationFrame(rafId);
   }, []);
 
   const extrasTotal = calcExtrasTotal(selectedExtras);
   const grandTotal = pricing ? pricing.total + extrasTotal : null;
   const isSplit = paymentOption === "split";
-  const dueNow = grandTotal ? (isSplit ? Math.ceil(grandTotal / 2) : grandTotal) : null;
+  const dueNow = grandTotal ? calcDueNow(grandTotal, isSplit) : null;
   const currency = cabin.pricing.currency;
-  const totalGuests = guests.adults + guests.children + guests.babies + guests.pets;
+  const numGuests = calcTotalGuests(guests);
 
   return (
     <div className="min-h-screen min-h-dvh bg-bg-primary flex flex-col">
       {/* Header */}
       <header className="bg-bg-primary border-b border-border-light">
-        <div className="flex items-center justify-center" style={{ height: 64, paddingTop: 8, paddingBottom: 8 }}>
+        <div className="flex items-center justify-center h-16 py-2">
           <Link to="/">
             <img
               src={cabin.images[0].url}
@@ -125,7 +109,7 @@ export function BookingConfirmed() {
                 <div className="flex items-center gap-3">
                   <IconUsers size={16} className="text-text-tertiary shrink-0" />
                   <span className="text-sm text-text-primary">
-                    {totalGuests} guest{totalGuests !== 1 ? "s" : ""}
+                    {numGuests} guest{numGuests !== 1 ? "s" : ""}
                   </span>
                 </div>
 

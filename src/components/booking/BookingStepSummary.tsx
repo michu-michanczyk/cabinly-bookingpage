@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useBookingStore } from "../../stores/booking-store";
-import { formatCurrency, formatDateShort, cn } from "../../lib/utils";
+import { formatCurrency, formatDateShort, cn, calcDueNow, sevenDaysBefore } from "../../lib/utils";
 import { calcExtrasTotal } from "../../data/extras";
 import { Button } from "../ui/Button";
 import { StickyButtonWrapper } from "./StickyButtonWrapper";
@@ -39,14 +39,14 @@ export function BookingStepSummary({ cabin }: BookingStepSummaryProps) {
   const currency = cabin.pricing.currency;
 
   const isSplit = paymentOption === "split";
-  const dueNow = isSplit ? Math.ceil(grandTotal / 2) : grandTotal;
+  const dueNow = calcDueNow(grandTotal, isSplit);
   const dueLater = grandTotal - dueNow;
 
   const checkInDate = formatDateShort(dates.checkIn);
   const checkOutDate = formatDateShort(dates.checkOut);
 
-  const sevenDaysBefore = new Date(new Date(dates.checkIn).getTime() - 7 * 24 * 60 * 60 * 1000);
-  const sevenDaysBeforeStr = sevenDaysBefore.toLocaleDateString("en-US", { day: "numeric", month: "short" });
+  const sevenDaysBeforeDate = sevenDaysBefore(dates.checkIn);
+  const sevenDaysBeforeStr = sevenDaysBeforeDate.toLocaleDateString("en-US", { day: "numeric", month: "short" });
 
   return (
     <div className="space-y-4">

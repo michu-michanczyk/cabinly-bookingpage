@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { useBookingStore } from "../../stores/booking-store";
-import { formatCurrency } from "../../lib/utils";
+import { formatCurrency, calcDueNow } from "../../lib/utils";
 import { calcExtrasTotal } from "../../data/extras";
 import { Button } from "../ui/Button";
 import { StickyButtonWrapper } from "./StickyButtonWrapper";
@@ -31,7 +31,7 @@ export function BookingStepPayment({ cabin }: BookingStepPaymentProps) {
   const extrasTotal = calcExtrasTotal(selectedExtras);
   const grandTotal = pricing.total + extrasTotal;
   const isSplit = paymentOption === "split";
-  const dueNow = isSplit ? Math.ceil(grandTotal / 2) : grandTotal;
+  const dueNow = calcDueNow(grandTotal, isSplit);
   const currency = cabin.pricing.currency;
 
   const handleBook = () => {
