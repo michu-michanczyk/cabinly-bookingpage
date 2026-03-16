@@ -11,12 +11,10 @@ export function BookingConfirmed() {
   const cabin = mockCabin;
   const firedRef = useRef(false);
 
-  const dates = useBookingStore((s) => s.dates);
-  const guests = useBookingStore((s) => s.guests);
-  const pricing = useBookingStore((s) => s.pricing);
-  const selectedExtras = useBookingStore((s) => s.selectedExtras);
-  const paymentOption = useBookingStore((s) => s.paymentOption);
-  const guestDetails = useBookingStore((s) => s.guestDetails);
+  // Snapshot store on first render — before the delayed reset fires
+  const snapshot = useRef(useBookingStore.getState());
+
+  const { dates, guests, pricing, selectedExtras, paymentOption, guestDetails } = snapshot.current;
 
   useEffect(() => {
     if (firedRef.current) return;
