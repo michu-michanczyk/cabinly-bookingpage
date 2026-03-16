@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useBookingStore } from "../../stores/booking-store";
 import { formatCurrency, calcDueNow } from "../../lib/utils";
 import { calcExtrasTotal } from "../../data/extras";
@@ -34,9 +34,15 @@ export function BookingStepPayment({ cabin }: BookingStepPaymentProps) {
   const dueNow = calcDueNow(grandTotal, isSplit);
   const currency = cabin.pricing.currency;
 
+  const resetTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => () => {
+    if (resetTimeoutRef.current) clearTimeout(resetTimeoutRef.current);
+  }, []);
+
   const handleBook = () => {
     navigate("/book/confirmed");
-    setTimeout(() => reset(), 300);
+    resetTimeoutRef.current = setTimeout(() => reset(), 300);
   };
 
   return (
