@@ -1,113 +1,188 @@
-import { useEffect, useState } from "react";
-import { Link, useSearchParams } from "react-router-dom";
-import { getStripePromise } from "../lib/stripe";
-import { IconTick, IconChevronLeft } from "../components/icons";
-
-type PaymentStatus = "loading" | "success" | "error" | "no_secret";
+import { useEffect, useRef } from "react";
+import { Link } from "react-router-dom";
+import confetti from "canvas-confetti";
+import { mockCabin } from "../data/mock-cabin";
+import { useBookingStore } from "../stores/booking-store";
+import { formatCurrency, formatDateShort } from "../lib/utils";
+import { calcExtrasTotal } from "../data/extras";
+import { IconCalendar, IconUsers, IconTick } from "../components/icons";
 
 export function BookingConfirmed() {
-  const [searchParams] = useSearchParams();
-  const [status, setStatus] = useState<PaymentStatus>("loading");
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const cabin = mockCabin;
+  const firedRef = useRef(false);
+
+  const dates = useBookingStore((s) => s.dates);
+  const guests = useBookingStore((s) => s.guests);
+  const pricing = useBookingStore((s) => s.pricing);
+  const selectedExtras = useBookingStore((s) => s.selectedExtras);
+  const paymentOption = useBookingStore((s) => s.paymentOption);
+  const guestDetails = useBookingStore((s) => s.guestDetails);
 
   useEffect(() => {
-    const clientSecret = searchParams.get("payment_intent_client_secret");
-    if (!clientSecret) {
-      setStatus("no_secret");
-      return;
-    }
+    if (firedRef.current) return;
+    firedRef.current = true;
 
-    getStripePromise().then(async (stripe) => {
-      if (!stripe) {
-        setStatus("error");
-        setErrorMessage("Could not load payment processor.");
-        return;
-      }
+    const duration = 3000;
+    const end = Date.now() + duration;
 
-      try {
-        const { paymentIntent, error } = await stripe.retrievePaymentIntent(clientSecret);
-        if (error) {
-          setStatus("error");
-          setErrorMessage(error.message ?? "An error occurred while verifying your payment.");
-          return;
-        }
+    const frame = () => {
+      confetti({
+        particleCount: 6,
+        angle: 60,
+        spread: 55,
+        origin: { x: 0 },
+        colors: ["#010101", "#34D399", "#3B82F6", "#a855f7", "#f59e0b"],
+      });
+      confetti({
+        particleCount: 6,
+        angle: 120,
+        spread: 55,
+        origin: { x: 1 },
+        colors: ["#010101", "#34D399", "#3B82F6", "#a855f7", "#f59e0b"],
+      });
 
-        if (paymentIntent?.status === "succeeded") {
-          setStatus("success");
-        } else {
-          setStatus("error");
-          setErrorMessage(`Payment status: ${paymentIntent?.status ?? "unknown"}`);
-        }
-      } catch {
-        setStatus("error");
-        setErrorMessage("Failed to verify payment status.");
-      }
-    });
-  }, [searchParams]);
+      if (Date.now() < end) requestAnimationFrame(frame);
+    };
+
+    frame();
+  }, []);
+
+  const extrasTotal = calcExtrasTotal(selectedExtras);
+  const grandTotal = pricing ? pricing.total + extrasTotal : null;
+  const isSplit = paymentOption === "split";
+  const dueNow = grandTotal ? (isSplit ? Math.ceil(grandTotal / 2) : grandTotal) : null;
+  const currency = cabin.pricing.currency;
+  const totalGuests = guests.adults + guests.children + guests.babies + guests.pets;
 
   return (
-    <div className="min-h-screen bg-bg-primary flex flex-col">
+    <div className="min-h-screen min-h-dvh bg-bg-primary flex flex-col">
       {/* Header */}
-      <header className="sticky top-0 z-30 bg-bg-primary border-b border-border-light">
-        <div className="max-w-[640px] mx-auto px-4 py-3 flex items-center gap-3">
-          <Link
-            to="/"
-            className="flex items-center gap-1.5 text-sm text-text-secondary hover:opacity-80 transition-opacity"
-          >
-            <IconChevronLeft size={16} />
-            Back to home
-          </Link>
+      <header className="bg-bg-primary border-b border-border-light">
+        <div className="flex items-center justify-center" style={{ height: 64, paddingTop: 8, paddingBottom: 8 }}>
+          <img
+            src={cabin.images[0].url}
+            alt={cabin.images[0].alt}
+            className="w-12 h-12 rounded-full object-cover"
+          />
         </div>
       </header>
 
-      <main className="flex-1 flex items-center justify-center px-4 py-16">
-        <div className="max-w-[400px] w-full text-center">
-          {status === "loading" && (
-            <div className="flex flex-col items-center gap-4">
-              <div className="w-10 h-10 border-2 border-text-tertiary border-t-text-primary rounded-full animate-spin" />
-              <p className="text-sm text-text-secondary">Verifying your payment…</p>
-            </div>
-          )}
+      <main className="flex-1 px-4 sm:px-6">
+        <div className="max-w-[520px] mx-auto w-full pt-10 pb-12 flex flex-col items-center gap-8">
 
-          {status === "success" && (
-            <div className="flex flex-col items-center gap-4">
-              <div className="w-20 h-20 rounded-full bg-text-primary flex items-center justify-center">
-                <IconTick size={36} className="text-white" />
-              </div>
+          {/* Success icon */}
+          <div className="flex flex-col items-center gap-4 text-center">
+            <div className="w-20 h-20 rounded-full bg-text-primary flex items-center justify-center">
+              <IconTick size={36} className="text-bg-primary" />
+            </div>
+            <div>
               <h1 className="text-2xl font-bold text-text-primary">Booking confirmed!</h1>
+              {guestDetails.name && (
+                <p className="mt-1 text-text-secondary text-sm">
+                  Thanks, {guestDetails.name.split(" ")[0]}! You're all set.
+                </p>
+              )}
+            </div>
+            {guestDetails.email && (
               <p className="text-sm text-text-secondary">
-                Your payment was successful. Check your email for confirmation details.
+                Confirmation details have been sent to{" "}
+                <span className="text-text-primary font-medium">{guestDetails.email}</span>
               </p>
-              <Link
-                to="/"
-                className="mt-4 inline-flex items-center justify-center h-12 px-6 rounded-lg bg-accent text-accent-fg text-base font-medium hover:opacity-80 transition-opacity"
-              >
-                Back to home
-              </Link>
+            )}
+          </div>
+
+          {/* Booking summary card */}
+          {(dates.checkIn || dates.checkOut || grandTotal) && (
+            <div className="w-full border border-border-default rounded-2xl overflow-hidden">
+              {/* Cabin image strip */}
+              <div className="relative h-32 overflow-hidden">
+                <img
+                  src={cabin.images[0].url}
+                  alt={cabin.images[0].alt}
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-black/30" />
+                <div className="absolute bottom-3 left-4">
+                  <p className="text-white font-semibold text-base leading-tight">{cabin.title}</p>
+                  <p className="text-white/80 text-xs">{cabin.location.city}, {cabin.location.country}</p>
+                </div>
+              </div>
+
+              {/* Details */}
+              <div className="px-4 py-4 space-y-3">
+                {dates.checkIn && dates.checkOut && (
+                  <div className="flex items-center gap-3">
+                    <IconCalendar size={16} className="text-text-tertiary shrink-0" />
+                    <span className="text-sm text-text-primary">
+                      {formatDateShort(dates.checkIn)} – {formatDateShort(dates.checkOut)}
+                      {pricing && (
+                        <span className="text-text-secondary ml-1">· {pricing.nights} nights</span>
+                      )}
+                    </span>
+                  </div>
+                )}
+
+                <div className="flex items-center gap-3">
+                  <IconUsers size={16} className="text-text-tertiary shrink-0" />
+                  <span className="text-sm text-text-primary">
+                    {totalGuests} guest{totalGuests !== 1 ? "s" : ""}
+                  </span>
+                </div>
+
+                {grandTotal && (
+                  <>
+                    <div className="border-t border-border-light pt-3 mt-3">
+                      <div className="flex justify-between text-sm">
+                        <span className="text-text-secondary">Total</span>
+                        <span className="text-text-primary font-medium">{formatCurrency(grandTotal, currency)}</span>
+                      </div>
+                      {isSplit && dueNow && (
+                        <>
+                          <div className="flex justify-between text-sm mt-1">
+                            <span className="text-text-secondary">Paid now</span>
+                            <span className="text-text-primary font-medium">{formatCurrency(dueNow, currency)}</span>
+                          </div>
+                          <div className="flex justify-between text-sm mt-1">
+                            <span className="text-text-secondary">Due at check-in</span>
+                            <span className="text-text-primary font-medium">{formatCurrency(grandTotal - dueNow, currency)}</span>
+                          </div>
+                        </>
+                      )}
+                    </div>
+                  </>
+                )}
+              </div>
             </div>
           )}
 
-          {(status === "error" || status === "no_secret") && (
-            <div className="flex flex-col items-center gap-4">
-              <div className="w-20 h-20 rounded-full bg-bg-tertiary flex items-center justify-center">
-                <span className="text-3xl">!</span>
-              </div>
-              <h1 className="text-2xl font-bold text-text-primary">Payment issue</h1>
-              <p className="text-sm text-text-secondary">
-                {status === "no_secret"
-                  ? "No payment information found."
-                  : errorMessage ?? "Something went wrong with your payment."}
-              </p>
-              <Link
-                to="/book"
-                className="mt-4 inline-flex items-center justify-center h-12 px-6 rounded-lg bg-accent text-accent-fg text-base font-medium hover:opacity-80 transition-opacity"
-              >
-                Try again
-              </Link>
-            </div>
-          )}
+          {/* CTA */}
+          <Link
+            to="/"
+            className="inline-flex items-center justify-center h-12 px-8 rounded-xl bg-text-primary text-bg-primary text-base font-medium hover:opacity-80 transition-opacity w-full"
+          >
+            Back to home
+          </Link>
         </div>
       </main>
+
+      {/* Footer */}
+      <footer className="px-4 sm:px-6 pt-3 sm:pt-5 pb-8 sm:pb-5">
+        <div className="max-w-[520px] mx-auto w-full flex items-center justify-center">
+          <div className="flex items-center gap-1.5">
+            <svg width="14" height="16" viewBox="0 0 14 16" fill="none">
+              <path d="M7.92675 0C9.97158 0 11.511 0.457909 13.1652 1.57963C10.1366 5.16654 10.1242 10.4113 13.1359 14.0124L13.2744 14.178C11.5053 15.4143 9.60402 15.9336 7.5362 15.842C3.0329 15.636 3.89762e-06 12.3852 0 7.78373C0 3.38826 3.44643 0 7.92675 0Z" fill="url(#confirmed-footer-grad)"/>
+              <defs>
+                <linearGradient id="confirmed-footer-grad" x1="6.63721" y1="0" x2="6.63721" y2="15.8523" gradientUnits="userSpaceOnUse">
+                  <stop stopColor="#34D399"/>
+                  <stop offset="0.634615" stopColor="#3B82F6"/>
+                  <stop offset="1" stopColor="#17179A"/>
+                </linearGradient>
+              </defs>
+            </svg>
+            <span className="text-sm font-medium text-text-primary">Cabinly</span>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }
