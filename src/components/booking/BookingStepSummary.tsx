@@ -42,10 +42,10 @@ export function BookingStepSummary({ cabin }: BookingStepSummaryProps) {
   const dueNow = calcDueNow(grandTotal, isSplit);
   const dueLater = grandTotal - dueNow;
 
-  const checkInDate = formatDateShort(dates.checkIn);
-  const checkOutDate = formatDateShort(dates.checkOut);
+  const checkInDate = formatDateShort(dates.checkIn!);
+  const checkOutDate = formatDateShort(dates.checkOut!);
 
-  const sevenDaysBeforeDate = sevenDaysBefore(dates.checkIn);
+  const sevenDaysBeforeDate = sevenDaysBefore(dates.checkIn!);
   const sevenDaysBeforeStr = sevenDaysBeforeDate.toLocaleDateString("en-US", { day: "numeric", month: "short" });
 
   return (
