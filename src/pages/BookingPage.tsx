@@ -7,26 +7,29 @@ import { mockCabin } from "../data/mock-cabin";
 import { BookingLayout } from "../components/booking/BookingLayout";
 import { BookingStepDates } from "../components/booking/BookingStepDates";
 import { BookingStepDetails } from "../components/booking/BookingStepDetails";
-import { BookingStepPayment } from "../components/booking/BookingStepPayment";
+import { BookingStepExtras } from "../components/booking/BookingStepExtras";
 import { BookingStepGuestDetails } from "../components/booking/BookingStepGuestDetails";
-import { BookingStepConfirmation } from "../components/booking/BookingStepConfirmation";
+import { BookingStepSummary } from "../components/booking/BookingStepSummary";
+import { BookingStepPayment } from "../components/booking/BookingStepPayment";
 
 const ACCENT_COLOR = "#010101";
 
-const STEP_SLUGS: Record<1 | 2 | 3 | 4 | 5, string> = {
+const STEP_SLUGS: Record<1 | 2 | 3 | 4 | 5 | 6, string> = {
   1: "dates",
   2: "guests",
   3: "extras",
   4: "details",
   5: "confirmation",
+  6: "payment",
 };
 
-const SLUG_TO_STEP: Record<string, 1 | 2 | 3 | 4 | 5> = {
+const SLUG_TO_STEP: Record<string, 1 | 2 | 3 | 4 | 5 | 6> = {
   dates: 1,
   guests: 2,
   extras: 3,
   details: 4,
   confirmation: 5,
+  payment: 6,
 };
 
 export function BookingPage() {
@@ -48,7 +51,7 @@ export function BookingPage() {
     const slug = location.pathname.split("/").pop() ?? "";
     const stepFromSlug = SLUG_TO_STEP[slug];
     openBooking(promo ?? undefined);
-    if (stepFromSlug) setStep(stepFromSlug as 1 | 2 | 3 | 4 | 5);
+    if (stepFromSlug) setStep(stepFromSlug as 1 | 2 | 3 | 4 | 5 | 6);
     return () => closeBooking();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -69,9 +72,10 @@ export function BookingPage() {
       >
         {step === 1 && <BookingStepDates cabin={cabin} />}
         {step === 2 && <BookingStepDetails cabin={cabin} />}
-        {step === 3 && <BookingStepPayment cabin={cabin} />}
+        {step === 3 && <BookingStepExtras cabin={cabin} />}
         {step === 4 && <BookingStepGuestDetails cabin={cabin} />}
-        {step === 5 && <BookingStepConfirmation cabin={cabin} />}
+        {step === 5 && <BookingStepSummary cabin={cabin} />}
+        {step === 6 && <BookingStepPayment cabin={cabin} />}
       </motion.div>
     </BookingLayout>
   );

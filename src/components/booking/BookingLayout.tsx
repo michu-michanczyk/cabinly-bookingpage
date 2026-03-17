@@ -3,7 +3,7 @@ import { IconChevronLeft } from "../icons";
 import { useBookingStore } from "../../stores/booking-store";
 import type { Cabin } from "../../types/cabin";
 
-const TOTAL_STEPS = 5;
+const TOTAL_STEPS = 6;
 
 interface BookingLayoutProps {
   cabin: Cabin;
@@ -36,7 +36,7 @@ export function BookingLayout({ cabin, children }: BookingLayoutProps) {
         <div className="bg-bg-primary px-4 sm:px-6">
           <div className="max-w-[520px] mx-auto w-full pt-5 sm:pt-8 pb-4 flex items-center gap-14">
             <button
-              onClick={() => step > 1 ? setStep((step - 1) as 1 | 2 | 3 | 4 | 5) : navigate("/")}
+              onClick={() => step > 1 ? setStep((step - 1) as 1 | 2 | 3 | 4 | 5 | 6) : navigate("/")}
               className="text-text-secondary hover:text-text-primary transition-colors shrink-0 cursor-pointer"
             >
               <IconChevronLeft size={18} />

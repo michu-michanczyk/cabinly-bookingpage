@@ -1,4 +1,4 @@
-import { format, differenceInDays, parseISO, isAfter, isBefore } from "date-fns";
+import { format, differenceInDays, parseISO, isAfter, isBefore, subDays } from "date-fns";
 import type { Promo } from "../types/cabin";
 
 /** Prepend Vite base URL to a /public asset path so it works on GitHub Pages subpaths. */
@@ -56,6 +56,18 @@ export function getApplicablePromos(promos: Promo[], checkIn?: string | null, ch
     }
     return true;
   });
+}
+
+export function calcDueNow(grandTotal: number, isSplit: boolean): number {
+  return isSplit ? Math.ceil(grandTotal / 2) : grandTotal;
+}
+
+export function totalGuests(guests: { adults: number; children: number; babies: number; pets: number }): number {
+  return guests.adults + guests.children + guests.babies + guests.pets;
+}
+
+export function sevenDaysBefore(checkIn: string): Date {
+  return subDays(parseISO(checkIn), 7);
 }
 
 export function getTimeRemaining(expiresAt: string): {
